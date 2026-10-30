@@ -407,24 +407,8 @@ async function googleLogin() {
 }
 
 
-    loginBtn.disabled = true;
-    showStatus("Google Login open ho raha hai...");
-
-    try {
-      const { error } = await supabaseClient.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: window.location.origin
-        }
-      });
-
-      async function googleLogin() {
-    if (!supabaseClient) {
-      showStatus("Supabase abhi load nahi hui. Internet check karo.");
-      return;
-    }
-    }
-  }
+  // Google login button is connected above.
+  // No extra login code is needed here.
 
   async function logout() {
     if (!supabaseClient) return;
