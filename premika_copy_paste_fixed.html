@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#10091c">
+<title>Premika Social</title>
+
+<style>
+:root {
+  --bg:#10091c;
+  --panel:#211333;
+  --border:#49305d;
+  --accent:#d9a7ff;
+  --muted:#cbb8dd;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  background:var(--bg);
+  color:white;
+  font-family:Arial,sans-serif;
+}
+button { font:inherit; cursor:pointer; }
+button:disabled { opacity:.55; cursor:wait; }
+
+.auth {
+  max-width:440px;
+  margin:30px auto;
+  padding:22px;
+  background:var(--panel);
+  border:1px solid #67417d;
+  border-radius:20px;
+}
+.auth h2 { margin-top:0; color:var(--accent); }
+.auth p { font-size:13px; line-height:1.6; color:var(--muted); }
+
+.primary,.secondary {
+  width:100%;
+  padding:13px;
+  border-radius:11px;
+  color:white;
+  font-weight:bold;
+}
+.primary {
+  border:0;
+  background:linear-gradient(120deg,#a64ed0,#6932b5);
+}
+.secondary {
+  margin-top:10px;
+  border:1px solid #9a64cb;
+  background:#35204f;
+}
+.status { overflow-wrap:anywhere; }
+
+.app {
+  max-width:480px;
+  min-height:100vh;
+  margin:auto;
+  padding-bottom:85px;
+  background:linear-gradient(180deg,#211037,#10091c 55%);
+}
+.top {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:17px 15px;
+  background:#211333;
+  border-bottom:1px solid var(--border);
+}
+.logo { font-size:23px; font-weight:900; color:var(--accent); }
+.coins {
+  background:#38204c;
+  border-radius:22px;
+  padding:9px 12px;
+  color:#f5d2ff;
+  font-size:13px;
+}
+.content { padding:15px; }
+.hero {
+  padding:22px 16px;
+  border-radius:20px;
+  background:linear-gradient(120deg,#7435ad,#401b70,#a64ed0);
+}
+.hero h2 { margin:12px 0 6px; font-size:25px; }
+.hero p { font-size:12px; line-height:1.6; color:#efdcff; }
+.eyebrow {
+  font-size:11px;
+  letter-spacing:2px;
+  color:#f1d7ff;
+}
+.section-title {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin:23px 0 13px;
+}
+.section-title h3 { margin:0; font-size:17px; }
+.section-title small { color:#c78bfa; }
+
+.stats {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:9px;
+  margin-top:14px;
+}
+.stat {
+  background:#241735;
+  border:1px solid #412754;
+  border-radius:14px;
+  padding:13px 5px;
+  text-align:center;
+}
+.stat strong {
+  display:block;
+  font-size:17px;
+  color:#e0b6ff;
+}
+.stat small { font-size:10px; color:#b9a5ca; }
+
+.rooms {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:11px;
+}
+.room {
+  min-height:120px;
+  border-radius:16px;
+  padding:13px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  border:1px solid #67417d;
+  background:linear-gradient(145deg,#543075,#271438);
+}
+.room:nth-child(2) { background:linear-gradient(145deg,#65306e,#291535); }
+.room:nth-child(3) { background:linear-gradient(145deg,#49318a,#21173f); }
+.room:nth-child(4) { background:linear-gradient(145deg,#753d8b,#291438); }
+.room .emoji { font-size:26px; }
+.room strong { font-size:13px; }
+.room small { font-size:11px; color:#d2b6e8; }
+
+.feed-card {
+  background:#241735;
+  border:1px solid #40254f;
+  border-radius:17px;
+  padding:15px;
+  margin-bottom:12px;
+}
+.feed-head { display:flex; align-items:center; gap:10px; }
+.avatar {
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  font-size:20px;
+  background:linear-gradient(135deg,#c26cff,#4c2384);
+  border:2px solid #e2b8ff;
+}
+.feed-head strong { font-size:13px; }
+.feed-head small {
+  display:block;
+  color:#bca6cd;
+  margin-top:4px;
+}
+.feed-card p {
+  font-size:13px;
+  line-height:1.6;
+  color:#e1d3ed;
+}
+.page { display:none; }
+.page.active { display:block; }
+
+.bottom {
+  position:fixed;
+  bottom:0;
+  left:50%;
+  transform:translateX(-50%);
+  width:min(480px,100%);
+  display:flex;
+  justify-content:space-around;
+  background:#1a1027;
+  border-top:1px solid #422b53;
+  padding:12px 4px calc(12px + env(safe-area-inset-bottom));
+  z-index:5;
+}
+.bottom button {
+  background:none;
+  border:0;
+  color:#b9a6cb;
+  font-size:11px;
+  min-width:50px;
+}
+.bottom button span {
+  display:block;
+  font-size:20px;
+  margin-bottom:5px;
+}
+.bottom button.selected { color:#d9a0ff; }
+
+.hidden { display:none !important; }
+.mini {
+  background:#35204f;
+  color:white;
+  border:1px solid #9a64cb;
+  border-radius:10px;
+  padding:9px 12px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- GOOGLE-ONLY LOGIN -->
+<section class="auth" id="auth-section">
+  <h2>💜 Premika Login</h2>
+  <p>Welcome to your social universe. Sign in securely with Google.</p>
+
+  <button class="primary" id="google-login-btn" type="button">
+    🌐 Continue with Google
+  </button>
+
+  <p id="auth-status" class="status" role="status" aria-live="polite">
+    Connecting to Premika...
+  </p>
+</section>
+
+<!-- MAIN APP -->
+<div class="app hidden" id="main-app">
+
+  <header class="top">
+    <div class="logo">✦ PREMИKA</div>
+    <div class="coins">🪙 <b>2,580</b></div>
+  </header>
+
+  <main class="content">
+
+    <section id="home" class="page active">
+      <div class="hero">
+        <div class="eyebrow">YOUR SOCIAL UNIVERSE</div>
+        <h2>Find Your People 💜</h2>
+        <p>Meet new people, join communities and create unforgettable moments.</p>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><strong>08</strong><small>Family Level</small></div>
+        <div class="stat"><strong>128</strong><small>Followers</small></div>
+        <div class="stat"><strong>12</strong><small>Online Now</small></div>
+      </div>
+
+      <div class="section-title">
+        <h3>🔥 Popular Rooms</h3>
+        <small>Explore ›</small>
+      </div>
+
+      <div class="rooms">
+        <div class="room"><span class="emoji">🎙️</span><strong>Midnight Lounge</strong><small>Voice room preview</small></div>
+        <div class="room"><span class="emoji">💜</span><strong>Purple Hearts</strong><small>Community</small></div>
+        <div class="room"><span class="emoji">🎵</span><strong>Music World</strong><small>Chill & talk</small></div>
+        <div class="room"><span class="emoji">👑</span><strong>Royal Club</strong><small>Community</small></div>
+      </div>
+
+      <div class="section-title">
+        <h3>✨ Community Feed</h3>
+        <small>Latest</small>
+      </div>
+
+      <div class="feed-card">
+        <div class="feed-head">
+          <div class="avatar">🌙</div>
+          <div><strong>Moonlight</strong><small>Demo member</small></div>
+        </div>
+        <p>Good vibes, new friends and beautiful memories. Welcome to our purple world! 💜</p>
+      </div>
+    </section>
+
+    <section id="friends" class="page">
+      <div class="hero">
+        <h2>👥 Friends</h2>
+        <p>Discover people and grow your circle.</p>
+      </div>
+      <div class="section-title"><h3>Suggested People</h3></div>
+      <div class="feed-card">
+        <div class="feed-head">
+          <div class="avatar">🦋</div>
+          <div><strong>Mahi</strong><small>Demo profile</small></div>
+          <button class="mini" onclick="demoNotice()">＋ Add</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="chat" class="page">
+      <div class="hero">
+        <h2>💬 Messages</h2>
+        <p>Your conversations in one place.</p>
+      </div>
+      <div class="feed-card">
+        <strong>Chat preview</strong>
+        <p>Real messages require a database table and secure policies.</p>
+      </div>
+    </section>
+
+    <section id="family" class="page">
+      <div class="hero">
+        <h2>👑 My Family</h2>
+        <p>Your people. Your vibe. Your family.</p>
+      </div>
+      <div class="rooms">
+        <div class="room"><span class="emoji">👑</span><strong>Family Leader</strong><small>Demo member</small></div>
+        <div class="room"><span class="emoji">🦋</span><strong>Mahi</strong><small>Demo member</small></div>
+      </div>
+    </section>
+
+    <section id="profile" class="page">
+      <div class="hero">
+        <h2>◉ My Profile</h2>
+        <p id="profile-email">Loading account...</p>
+      </div>
+
+      <div class="feed-card">
+        <strong>Premika member</strong>
+        <p>Your Google account is connected to Premika.</p>
+        <button class="secondary" id="logout-btn" type="button">
+          Log Out
+        </button>
+        <p id="profile-status" class="status" role="status"></p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="bottom">
+    <button class="selected" onclick="showPage('home',this)"><span>⌂</span>Home</button>
+    <button onclick="showPage('friends',this)"><span>♧</span>Friends</button>
+    <button onclick="showPage('chat',this)"><span>▢</span>Chat</button>
+    <button onclick="showPage('family',this)"><span>♛</span>Family</button>
+    <button onclick="showPage('profile',this)"><span>◉</span>Profile</button>
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  const SUPABASE_URL =
+    "https://vlpeysngfrrujvztbnqe.supabase.co";
+
+  const SUPABASE_PUBLISHABLE_KEY =
+    "sb_publishable_DNyEEOK-geIDO4oBNDDWmg_wxK-31jW";
+
+  const authSection = document.getElementById("auth-section");
+  const mainApp = document.getElementById("main-app");
+  const loginBtn = document.getElementById("google-login-btn");
+  const logoutBtn = document.getElementById("logout-btn");
+  const statusEl = document.getElementById("auth-status");
+  const profileEmail = document.getElementById("profile-email");
+  const profileStatus = document.getElementById("profile-status");
+
+  let supabaseClient = null;
+
+  function showStatus(message) {
+    statusEl.textContent = message;
+  }
+
+  function updateUI(user) {
+    const loggedIn = Boolean(user);
+
+    authSection.classList.toggle("hidden", loggedIn);
+    mainApp.classList.toggle("hidden", !loggedIn);
+
+    if (loggedIn) {
+      profileEmail.textContent =
+        user.email || "Google account connected";
+    } else {
+      profileEmail.textContent = "Log in to show your account.";
+    }
+  }
+
+  async function googleLogin() {
+    if (!supabaseClient) {
+      showStatus("Supabase abhi load nahi hui. Internet check karo.");
+      return;
+    }
+
+    loginBtn.disabled = true;
+    showStatus("Google Login open ho raha hai...");
+
+    try {
+      const { error } = await supabaseClient.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: window.location.origin
+        }
+      });
+
+      if (error) {
+        showStatus("Google Login error: " + error.message);
+        loginBtn.disabled = false;
+      }
+    } catch (error) {
+      showStatus("Login error: " + error.message);
+      loginBtn.disabled = false;
+    }
+  }
+
+  async function logout() {
+    if (!supabaseClient) return;
+
+    logoutBtn.disabled = true;
+    profileStatus.textContent = "Logging out...";
+
+    try {
+      const { error } = await supabaseClient.auth.signOut();
+
+      if (error) {
+        profileStatus.textContent = "Logout failed: " + error.message;
+        return;
+      }
+
+      profileStatus.textContent = "You are logged out.";
+      updateUI(null);
+    } catch (error) {
+      profileStatus.textContent = "Logout error: " + error.message;
+    } finally {
+      logoutBtn.disabled = false;
+    }
+  }
+
+  function loadSupabase(urls, index) {
+    if (index >= urls.length) {
+      showStatus("Supabase library load nahi hui. Internet check karo.");
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = urls[index];
+
+    script.onload = async function () {
+      if (!window.supabase ||
+          typeof window.supabase.createClient !== "function") {
+        script.remove();
+        loadSupabase(urls, index + 1);
+        return;
+      }
+
+      try {
+        supabaseClient = window.supabase.createClient(
+          SUPABASE_URL,
+          SUPABASE_PUBLISHABLE_KEY
+        );
+
+        const { data, error } =
+          await supabaseClient.auth.getSession();
+
+        if (error) throw error;
+
+        updateUI(data.session ? data.session.user : null);
+
+        showStatus(
+          data.session
+            ? "Welcome back to Premika!"
+            : "Ready. Continue with Google."
+        );
+
+        supabaseClient.auth.onAuthStateChange(
+          function (_event, session) {
+            updateUI(session ? session.user : null);
+          }
+        );
+
+      } catch (error) {
+        showStatus("Supabase error: " + error.message);
+      }
+    };
+
+    script.onerror = function () {
+      script.remove();
+      loadSupabase(urls, index + 1);
+    };
+
+    document.head.appendChild(script);
+  }
+
+  loginBtn.addEventListener("click", googleLogin);
+  logoutBtn.addEventListener("click", logout);
+
+  window.showPage = function (id, button) {
+    document.querySelectorAll(".page").forEach(function (page) {
+      page.classList.remove("active");
+    });
+
+    const target = document.getElementById(id);
+    if (target) target.classList.add("active");
+
+    document.querySelectorAll(".bottom button").forEach(function (btn) {
+      btn.classList.remove("selected");
+    });
+
+    if (button) button.classList.add("selected");
+  };
+
+  window.demoNotice = function () {
+    alert("This is a demo feature. Backend setup is required.");
+  };
+
+  loadSupabase([
+    "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2",
+    "https://unpkg.com/@supabase/supabase-js@2"
+  ], 0);
+
+})();
+</script>
+
+</body>
+</html>
