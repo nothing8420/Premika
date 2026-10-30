@@ -378,11 +378,34 @@ button:disabled { opacity:.55; cursor:wait; }
     }
   }
 
-  async function googleLogin() {
-    if (!supabaseClient) {
-      showStatus("Supabase abhi load nahi hui. Internet check karo.");
-      return;
+  
+async function googleLogin() {
+  if (!supabaseClient) {
+    showStatus("Supabase abhi load nahi hui. Internet check karo.");
+    return;
+  }
+
+  try {
+    showStatus("Google login connecting...");
+
+    const { data, error } =
+      await supabaseClient.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: "https://nothing8420.github.io/Premika/"
+        }
+      });
+
+    if (error) {
+      throw error;
     }
+
+  } catch (error) {
+    console.error("Google Login Error:", error);
+    showStatus("Google Login Error: " + error.message);
+  }
+}
+
 
     loginBtn.disabled = true;
     showStatus("Google Login open ho raha hai...");
@@ -395,13 +418,11 @@ button:disabled { opacity:.55; cursor:wait; }
         }
       });
 
-      if (error) {
-        showStatus("Google Login error: " + error.message);
-        loginBtn.disabled = false;
-      }
-    } catch (error) {
-      showStatus("Login error: " + error.message);
-      loginBtn.disabled = false;
+      async function googleLogin() {
+    if (!supabaseClient) {
+      showStatus("Supabase abhi load nahi hui. Internet check karo.");
+      return;
+    }
     }
   }
 
