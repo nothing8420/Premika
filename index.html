@@ -861,6 +861,141 @@ window.loadFriends = async function () {
     container.appendChild(item);
   }
 };
+  // PREMIKA PRIVATE CHAT
+
+window.loadChatFriends = async function () {
+  const select = document.getElementById("chat-friend");
+  if (!select || !supabaseClient) return;
+
+  const { data: sessionData } =
+    await supabaseClient.auth.getSession();
+
+  const user = sessionData.session?.user;
+  if (!user) return;
+
+  const { data, error } = await supabaseClient
+    .from("friend_requests")
+    .select("sender_id, receiver_id")
+    .eq("status", "accepted")
+    .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`);
+
+  if (error) {
+    alert("Friends Error: " + error.message);
+    return;
+  }
+
+  select.replaceChildren();
+
+  const first = document.createElement("option");
+  first.value = "";
+  first.textContent = "Choose a friend";
+  select.appendChild(first);
+
+  for (const request of data || []) {
+    const friendId = request.sender_id === user.id
+      ? request.receiver_id
+      : request.sender_id;
+
+    const { data: profile } = await supabaseClient
+      .from("profiles")
+      .select("username")
+      .eq("id", friendId)
+      .maybeSingle();
+
+    const option = document.createElement("option");
+    option.value = friendId;
+    option.textContent = "@" + (profile?.username || "Unknown");
+    select.appendChild(option);
+  }
+};
+
+window.loadDirectChat = async function () {
+  const select = document.getElementById("chat-friend");
+  const box = document.getElementById("chat-messages");
+  const friendId = select.value;
+
+  if (!friendId) {
+    box.textContent = "Select a friend to start chatting.";
+    return;
+  }
+
+  const { data: sessionData } =
+    await supabaseClient.auth.getSession();
+
+  const user = sessionData.session?.user;
+  if (!user) return;
+
+  const { data, error } = await supabaseClient
+    .from("direct_messages")
+    .select("*")
+    .or(
+      `and(sender_id.eq.${user.id},receiver_id.eq.${friendId}),and(sender_id.eq.${friendId},receiver_id.eq.${user.id})`
+    )
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    box.textContent = "Chat Error: " + error.message;
+    return;
+  }
+
+  box.replaceChildren();
+
+  if (!data || data.length === 0) {
+    box.textContent = "No messages yet. Say hello! 💜";
+    return;
+  }
+
+  for (const message of data) {
+    const item = document.createElement("p");
+    item.style.cssText =
+      "padding:10px;margin:7px;border-radius:10px;background:#211333;color:white;";
+
+    item.textContent =
+      (message.sender_id === user.id ? "You: " : "Friend: ") +
+      message.content;
+
+    box.appendChild(item);
+  }
+
+  box.scrollTop = box.scrollHeight;
+};
+
+window.sendDirectMessage = async function () {
+  const select = document.getElementById("chat-friend");
+  const input = document.getElementById("chat-message");
+
+  const friendId = select.value;
+  const content = input.value.trim();
+
+  if (!friendId) {
+    alert("Please select a friend.");
+    return;
+  }
+
+  if (!content) return;
+
+  const { data: sessionData } =
+    await supabaseClient.auth.getSession();
+
+  const user = sessionData.session?.user;
+  if (!user) return;
+
+  const { error } = await supabaseClient
+    .from("direct_messages")
+    .insert({
+      sender_id: user.id,
+      receiver_id: friendId,
+      content: content
+    });
+
+  if (error) {
+    alert("Message Error: " + error.message);
+    return;
+  }
+
+  input.value = "";
+  await window.loadDirectChat();
+};
   // PREMIKA INCOMING FRIEND REQUESTS
 window.loadFriendRequests = async function () {
   const container = document.getElementById("incoming-requests");
