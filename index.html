@@ -889,6 +889,22 @@ window.loadChatFriends = async function () {
     return;
   }
 
+  const { data: presenceData, error: presenceError } =
+    await supabaseClient
+      .from("user_presence")
+      .select("user_id, is_online");
+
+  if (presenceError) {
+    alert("Presence Error: " + presenceError.message);
+    return;
+  }
+
+  const presenceMap = new Map(
+    (presenceData || []).map(p => [p.user_id, p.is_online])
+  );
+
+  const selectedFriend = select.value;
+
   select.replaceChildren();
 
   const first = document.createElement("option");
@@ -907,10 +923,20 @@ window.loadChatFriends = async function () {
       .eq("id", friendId)
       .maybeSingle();
 
+    const isOnline = presenceMap.get(friendId) === true;
+
     const option = document.createElement("option");
     option.value = friendId;
-    option.textContent = "@" + (profile?.username || "Unknown");
+    option.textContent =
+      (isOnline ? "🟢 " : "⚪ ") +
+      "@" + (profile?.username || "Unknown") +
+      (isOnline ? " (Online)" : " (Offline)");
+
     select.appendChild(option);
+  }
+
+  if (selectedFriend) {
+    select.value = selectedFriend;
   }
 };
 
