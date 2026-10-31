@@ -516,7 +516,132 @@ alert("Supabase login function started!");
     "https://unpkg.com/@supabase/supabase-js@2"
   ], 0);
 
-})();
+// PREMİKA USERNAME SETUP
+if (!window.__premikaUsernameStarted) {
+  window.__premikaUsernameStarted = true;
+
+  function showUsernameSetup(user) {
+    if (!user || !supabaseClient) return;
+
+    supabaseClient
+      .from("profiles")
+      .select("id, username")
+      .eq("id", user.id)
+      .maybeSingle()
+      .then(({ data, error }) => {
+        if (error) {
+          console.error("Profile error:", error);
+          return;
+        }
+
+        if (data) return;
+
+        if (document.getElementById("username-setup")) return;
+
+        const box = document.createElement("div");
+        box.id = "username-setup";
+
+        box.style.cssText = `
+          position:fixed; inset:0; z-index:99999;
+          background:#10091c; display:flex;
+          align-items:center; justify-content:center;
+          padding:20px;
+        `;
+
+        box.innerHTML = `
+          <div style="
+            background:#211333; padding:25px;
+            border-radius:18px; width:100%;
+            max-width:360px; color:white;
+            text-align:center;
+          ">
+            <h2>Welcome to Premika!</h2>
+            <p>Choose your unique username</p>
+            <input id="premika-username"
+              placeholder="Example: Sunny_786"
+              maxlength="20"
+              style="
+                width:100%; box-sizing:border-box;
+                padding:14px; border-radius:10px;
+                border:1px solid #49305d;
+                background:#10091c; color:white;
+                margin:15px 0;
+              ">
+            <p id="username-message"
+              style="font-size:13px;color:#ffaaaa"></p>
+            <button id="save-premika-username"
+              style="
+                width:100%; padding:14px;
+                border:0; border-radius:10px;
+                background:#d9a7ff; color:#10091c;
+                font-weight:bold;
+              ">
+              Save Username
+            </button>
+          </div>
+        `;
+
+        document.body.appendChild(box);
+
+        document.getElementById("save-premika-username")
+          .addEventListener("click", async function () {
+            const input = document.getElementById("premika-username");
+            const message = document.getElementById("username-message");
+            const button = this;
+
+            const username = input.value.trim().toLowerCase();
+
+            if (!/^[a-z0-9_]{3,20}$/.test(username)) {
+              message.textContent =
+                "Use 3-20 letters, numbers or underscores.";
+              return;
+            }
+
+            button.disabled = true;
+            button.textContent = "Saving...";
+
+            const { error: saveError } = await supabaseClient
+              .from("profiles")
+              .insert({
+                id: user.id,
+                username: username
+              });
+
+            if (saveError) {
+              message.textContent =
+                saveError.code === "23505"
+                  ? "Username already taken. Try another."
+                  : saveError.message;
+
+              button.disabled = false;
+              button.textContent = "Save Username";
+              return;
+            }
+
+            box.remove();
+            alert("Username saved successfully!");
+          });
+      });
+  }
+
+  const usernameTimer = setInterval(async function () {
+    if (!supabaseClient) return;
+
+    clearInterval(usernameTimer);
+
+    supabaseClient.auth.onAuthStateChange(
+      function (_event, session) {
+        if (session) showUsernameSetup(session.user);
+      }
+    );
+
+    const { data } = await supabaseClient.auth.getSession();
+
+    if (data.session) {
+      showUsernameSetup(data.session.user);
+    }
+  }, 300);
+  }})();
 </script>
 
 </body>
