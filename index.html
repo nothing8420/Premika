@@ -712,14 +712,18 @@ if (!window.__premikaUsernameStarted) {
 
     supabaseClient.auth.onAuthStateChange(
   function (_event, session) {
-    if (session) {
-      showUsernameSetup(session.user);
+    updateUI(session ? session.user : null);
 
-      if (window.loadFriendRequests) {
-        window.loadFriendRequests();
-        if (window.loadFriends) {
-  window.loadFriends();
+    if (session) {
+      setTimeout(() => {
+        if (window.setMyPresence) {
+          window.setMyPresence();
         }
+      }, 1000);
+    } else {
+      if (window.presenceHeartbeat) {
+        clearInterval(window.presenceHeartbeat);
+        window.presenceHeartbeat = null;
       }
     }
   }
