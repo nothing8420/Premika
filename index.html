@@ -518,10 +518,16 @@ alert("Google Login Function Started");
         );
 
         supabaseClient.auth.onAuthStateChange(
-          function (_event, session) {
-            updateUI(session ? session.user : null);
-          }
-        );
+  function (_event, session) {
+    updateUI(session ? session.user : null);
+
+    if (session && window.setMyPresence) {
+      setTimeout(() => {
+        window.setMyPresence(true);
+      }, 0);
+    }
+  }
+);
 
       } catch (error) {
         showStatus("Supabase error: " + error.message);
