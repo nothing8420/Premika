@@ -280,6 +280,17 @@ button:disabled { opacity:.55; cursor:wait; }
         <h2>👥 Friends</h2>
         <p>Discover people and grow your circle.</p>
       </div>
+      <div class="feed-card">
+  <h3>🔍 Find Friends</h3>
+  <input
+    type="text"
+    id="friend-search"
+    placeholder="Search username..."
+    style="width:100%;padding:12px;border-radius:10px;margin:10px 0;"
+  >
+  <button onclick="searchFriends()">Search</button>
+  <div id="friend-search-results"></div>
+      </div>
       <div class="section-title"><h3>Suggested People</h3></div>
       <div class="feed-card">
         <div class="feed-head">
@@ -641,6 +652,44 @@ if (!window.__premikaUsernameStarted) {
       showUsernameSetup(data.session.user);
     }
   }, 300);
+  // PREMIKA FRIEND SEARCH
+window.searchFriends = async function () {
+  const input = document.getElementById("friend-search");
+  const results = document.getElementById("friend-search-results");
+
+  const username = input.value.trim();
+
+  if (!username) {
+    results.textContent = "Please enter a username.";
+    return;
+  }
+
+  results.textContent = "Searching...";
+
+  const { data, error } = await supabaseClient
+    .from("profiles")
+    .select("id, username")
+    .ilike("username", "%" + username + "%")
+    .limit(20);
+
+  if (error) {
+    results.textContent = "Search error: " + error.message;
+    return;
+  }
+
+  results.replaceChildren();
+
+  if (!data || data.length === 0) {
+    results.textContent = "No users found.";
+    return;
+  }
+
+  data.forEach(function (profile) {
+    const item = document.createElement("p");
+    item.textContent = "@" + profile.username;
+    results.appendChild(item);
+  });
+};
   }})();
 </script>
 
