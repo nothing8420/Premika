@@ -404,7 +404,7 @@ async function googleLogin() {
 
   try {
     showStatus("Google login connecting...");
-
+alert("Google Login Function Started");
     const { error } = await supabaseClient.auth.signInWithOAuth({
       provider: "google",
       options: {
