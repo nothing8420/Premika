@@ -397,7 +397,6 @@ button:disabled { opacity:.55; cursor:wait; }
 
   
 async function googleLogin() {
-alert("Google Login Button Working!");
   if (!supabaseClient) {
     showStatus("Supabase abhi load nahi hui. Internet check karo.");
     return;
@@ -405,14 +404,13 @@ alert("Google Login Button Working!");
 
   try {
     showStatus("Google login connecting...");
-alert("Supabase login function started!");
-    const { data, error } =
-      await supabaseClient.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: "https://nothing8420.github.io/Premika/"
-        }
-      });
+
+    const { error } = await supabaseClient.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: "https://nothing8420.github.io/Premika/"
+      }
+    });
 
     if (error) {
       throw error;
