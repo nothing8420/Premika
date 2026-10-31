@@ -761,6 +761,95 @@ data.forEach(function (profile) {
   results.appendChild(item);
 });
 };
+  // PREMIKA INCOMING FRIEND REQUESTS
+window.loadFriendRequests = async function () {
+  const container = document.getElementById("incoming-requests");
+
+  if (!container || !supabaseClient) return;
+
+  container.textContent = "Loading requests...";
+
+  const { data: sessionData } =
+    await supabaseClient.auth.getSession();
+
+  const user = sessionData.session?.user;
+
+  if (!user) {
+    container.textContent = "Please login first.";
+    return;
+  }
+
+  const { data, error } = await supabaseClient
+    .from("friend_requests")
+    .select("id, sender_id, status")
+    .eq("receiver_id", user.id)
+    .eq("status", "pending");
+
+  if (error) {
+    container.textContent = "Error: " + error.message;
+    return;
+  }
+
+  container.replaceChildren();
+
+  if (!data || data.length === 0) {
+    container.textContent = "No incoming requests.";
+    return;
+  }
+
+  for (const request of data) {
+    const { data: profile } = await supabaseClient
+      .from("profiles")
+      .select("username")
+      .eq("id", request.sender_id)
+      .maybeSingle();
+
+    const item = document.createElement("div");
+    item.style.padding = "12px";
+    item.style.margin = "8px 0";
+    item.style.background = "#211333";
+    item.style.borderRadius = "10px";
+
+    const name = document.createElement("p");
+    name.textContent = "@" + (profile?.username || "Unknown user");
+
+    const accept = document.createElement("button");
+    accept.textContent = "Accept";
+
+    const reject = document.createElement("button");
+    reject.textContent = "Reject";
+
+    async function respond(status) {
+      accept.disabled = true;
+      reject.disabled = true;
+
+      const { error } = await supabaseClient
+        .from("friend_requests")
+        .update({ status })
+        .eq("id", request.id)
+        .eq("receiver_id", user.id)
+        .eq("status", "pending");
+
+      if (error) {
+        alert("Error: " + error.message);
+        accept.disabled = false;
+        reject.disabled = false;
+        return;
+      }
+
+      item.remove();
+      if (!container.children.length) {
+        container.textContent = "No incoming requests.";
+      }
+    }
+
+    accept.onclick = () => respond("accepted");
+    reject.onclick = () => respond("rejected");
+
+    item.append(name, accept, reject);
+    container.appendChild(item);
+  }
+};
   }})();
 </script>
 
