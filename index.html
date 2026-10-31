@@ -867,7 +867,27 @@ window.loadFriends = async function () {
   }
 };
   // PREMIKA PRIVATE CHAT
+// PREMIKA ONLINE STATUS
 
+window.setMyPresence = async function (isOnline) {
+  const { data: sessionData } =
+    await supabaseClient.auth.getSession();
+
+  const user = sessionData.session?.user;
+  if (!user) return;
+
+  const { error } = await supabaseClient
+    .from("user_presence")
+    .upsert({
+      user_id: user.id,
+      is_online: isOnline,
+      last_seen: new Date().toISOString()
+    });
+
+  if (error) {
+    console.error("Presence Error:", error.message);
+  }
+};
 window.loadChatFriends = async function () {
   const select = document.getElementById("chat-friend");
   if (!select || !supabaseClient) return;
