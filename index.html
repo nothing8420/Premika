@@ -649,7 +649,7 @@ if (!window.__premikaUsernameStarted) {
     supabaseClient.auth.onAuthStateChange(
       function (_event, session) {
         if (session) showUsernameSetup(session.user);
-      }
+      }if (session) window.loadFriendRequests();
     );
 
     const { data } = await supabaseClient.auth.getSession();
