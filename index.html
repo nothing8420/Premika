@@ -960,7 +960,13 @@ window.loadChatFriends = async function () {
       .eq("id", friendId)
       .maybeSingle();
 
-    const isOnline = presenceMap.get(friendId) === true;
+const presence = (presenceData || [])
+  .find(p => p.user_id === friendId);
+
+const isOnline = presence
+  ? presence.is_online &&
+    (Date.now() - new Date(presence.last_seen).getTime() < 60000)
+  : false;
 
     const option = document.createElement("option");
     option.value = friendId;
