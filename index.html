@@ -646,10 +646,16 @@ if (!window.__premikaUsernameStarted) {
     clearInterval(usernameTimer);
 
     supabaseClient.auth.onAuthStateChange(
-      function (_event, session) {
-        if (session) showUsernameSetup(session.user);
-      }if (session) window.loadFriendRequests();
-    );
+  function (_event, session) {
+    if (session) {
+      showUsernameSetup(session.user);
+
+      if (window.loadFriendRequests) {
+        window.loadFriendRequests();
+      }
+    }
+  }
+);
 
     const { data } = await supabaseClient.auth.getSession();
 
