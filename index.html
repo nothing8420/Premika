@@ -917,10 +917,13 @@ window.loadChatFriends = async function () {
 window.loadDirectChat = async function () {
   const select = document.getElementById("chat-friend");
   const box = document.getElementById("chat-messages");
+  const typing = document.getElementById("typing-indicator");
+  const input = document.getElementById("chat-message");
   const friendId = select.value;
 
   if (!friendId) {
     box.textContent = "Select a friend to start chatting.";
+    if (typing) typing.textContent = "";
     return;
   }
 
@@ -929,37 +932,111 @@ window.loadDirectChat = async function () {
 
   const user = sessionData.session?.user;
   if (!user) return;
-const chatKey = `${user.id}:${friendId}`;
 
-if (window.directChatKey !== chatKey) {
-  if (window.directChatChannel) {
-    await supabaseClient.removeChannel(window.directChatChannel);
+  const chatKey = `${user.id}:${friendId}`;
+
+  if (window.directChatKey !== chatKey) {
+    if (window.directChatChannel) {
+      await supabaseClient.removeChannel(
+        window.directChatChannel
+      );
+    }
+
+    if (window.typingChannel) {
+      await supabaseClient.removeChannel(
+        window.typingChannel
+      );
+    }
+
+    window.directChatKey = chatKey;
+
+    window.directChatChannel = supabaseClient
+      .channel("direct-chat-" + user.id + "-" + friendId)
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "direct_messages"
+        },
+        (payload) => {
+          const msg = payload.new;
+
+          if (
+            (msg.sender_id === user.id &&
+             msg.receiver_id === friendId) ||
+            (msg.sender_id === friendId &&
+             msg.receiver_id === user.id)
+          ) {
+            window.loadDirectChat();
+          }
+        }
+      )
+      .subscribe();
+
+    window.typingChannel = supabaseClient
+      .channel("typing-" + user.id + "-" + friendId)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "typing_status",
+          filter: "friend_id=eq." + user.id
+        },
+        (payload) => {
+          const status = payload.new;
+
+          if (
+            status &&
+            status.user_id === friendId &&
+            status.friend_id === user.id
+          ) {
+            if (typing) {
+              typing.textContent = status.is_typing
+                ? "Friend is typing... 💜"
+                : "";
+            }
+          }
+        }
+      )
+      .subscribe();
   }
 
-  window.directChatKey = chatKey;
+  if (input) {
+    input.oninput = async function () {
+      const isTyping = input.value.trim().length > 0;
 
-  window.directChatChannel = supabaseClient
-    .channel("direct-chat-" + user.id + "-" + friendId)
-    .on(
-      "postgres_changes",
-      {
-        event: "INSERT",
-        schema: "public",
-        table: "direct_messages"
-      },
-      (payload) => {
-        const msg = payload.new;
+      await supabaseClient
+        .from("typing_status")
+        .upsert({
+          user_id: user.id,
+          friend_id: friendId,
+          is_typing: isTyping,
+          updated_at: new Date().toISOString()
+        }, {
+          onConflict: "user_id"
+        });
 
-        if (
-          (msg.sender_id === user.id && msg.receiver_id === friendId) ||
-          (msg.sender_id === friendId && msg.receiver_id === user.id)
-        ) {
-          window.loadDirectChat();
-        }
+      clearTimeout(window.typingTimer);
+
+      if (isTyping) {
+        window.typingTimer = setTimeout(async () => {
+          await supabaseClient
+            .from("typing_status")
+            .upsert({
+              user_id: user.id,
+              friend_id: friendId,
+              is_typing: false,
+              updated_at: new Date().toISOString()
+            }, {
+              onConflict: "user_id"
+            });
+        }, 2500);
       }
-    )
-    .subscribe();
-            }
+    };
+  }
+
   const { data, error } = await supabaseClient
     .from("direct_messages")
     .select("*")
@@ -982,6 +1059,7 @@ if (window.directChatKey !== chatKey) {
 
   for (const message of data) {
     const item = document.createElement("p");
+
     item.style.cssText =
       "padding:10px;margin:7px;border-radius:10px;background:#211333;color:white;";
 
@@ -994,7 +1072,6 @@ if (window.directChatKey !== chatKey) {
 
   box.scrollTop = box.scrollHeight;
 };
-
 window.sendDirectMessage = async function () {
   const select = document.getElementById("chat-friend");
   const input = document.getElementById("chat-message");
