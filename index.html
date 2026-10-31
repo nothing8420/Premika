@@ -683,12 +683,77 @@ window.searchFriends = async function () {
     results.textContent = "No users found.";
     return;
   }
+data.forEach(function (profile) {
+  const item = document.createElement("div");
+  item.style.padding = "12px";
+  item.style.margin = "8px 0";
+  item.style.borderRadius = "10px";
+  item.style.background = "#211333";
 
-  data.forEach(function (profile) {
-    const item = document.createElement("p");
-    item.textContent = "@" + profile.username;
-    results.appendChild(item);
-  });
+  const name = document.createElement("span");
+  name.textContent = "@" + profile.username + " ";
+
+  const button = document.createElement("button");
+  button.textContent = "Add Friend";
+
+  button.onclick = async function () {
+    button.disabled = true;
+    button.textContent = "Sending...";
+
+    const { data: sessionData } =
+      await supabaseClient.auth.getSession();
+
+    const user = sessionData.session?.user;
+
+    if (!user) {
+      button.disabled = false;
+      button.textContent = "Add Friend";
+      alert("Please login first.");
+      return;
+    }
+
+    if (user.id === profile.id) {
+      button.disabled = false;
+      button.textContent = "Add Friend";
+      alert("You cannot add yourself.");
+      return;
+    }
+
+    const { data: existing } = await supabaseClient
+      .from("friend_requests")
+      .select("id, status")
+      .or(
+        `and(sender_id.eq.${user.id},receiver_id.eq.${profile.id}),and(sender_id.eq.${profile.id},receiver_id.eq.${user.id})`
+      )
+      .limit(1);
+
+    if (existing && existing.length > 0) {
+      button.textContent = "Already Requested";
+      return;
+    }
+
+    const { error } = await supabaseClient
+      .from("friend_requests")
+      .insert({
+        sender_id: user.id,
+        receiver_id: profile.id,
+        status: "pending"
+      });
+
+    if (error) {
+      button.disabled = false;
+      button.textContent = "Add Friend";
+      alert("Error: " + error.message);
+      return;
+    }
+
+    button.textContent = "Request Sent";
+  };
+
+  item.appendChild(name);
+  item.appendChild(button);
+  results.appendChild(item);
+});
 };
   }})();
 </script>
