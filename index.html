@@ -882,16 +882,27 @@ window.setMyPresence = async function (isOnline) {
   const user = sessionData.session?.user;
   if (!user) return;
 
-  const { error } = await supabaseClient
-    .from("user_presence")
-    .upsert({
-      user_id: user.id,
-      is_online: isOnline,
-      last_seen: new Date().toISOString()
-    });
+  const updatePresence = async () => {
+    const { error } = await supabaseClient
+      .from("user_presence")
+      .upsert({
+        user_id: user.id,
+        is_online: true,
+        last_seen: new Date().toISOString()
+      });
 
-  if (error) {
-    console.error("Presence Error:", error.message);
+    if (error) {
+      console.error("Presence Error:", error.message);
+    }
+  };
+
+  await updatePresence();
+
+  if (!window.presenceHeartbeat) {
+    window.presenceHeartbeat = setInterval(
+      updatePresence,
+      20000
+    );
   }
 };
 window.loadChatFriends = async function () {
