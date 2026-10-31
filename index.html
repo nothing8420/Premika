@@ -551,6 +551,9 @@ alert("Google Login Function Started");
     });
 
     if (button) button.classList.add("selected");
+    if (id === "chat" && window.loadChatFriends) {
+  window.loadChatFriends();
+    }
   };
 
   window.demoNotice = function () {
