@@ -1104,7 +1104,16 @@ window.sendDirectMessage = async function () {
     alert("Message Error: " + error.message);
     return;
   }
-
+await supabaseClient
+  .from("typing_status")
+  .upsert({
+    user_id: user.id,
+    friend_id: friendId,
+    is_typing: false,
+    updated_at: new Date().toISOString()
+  }, {
+    onConflict: "user_id"
+  });
   input.value = "";
   await window.loadDirectChat();
 };
