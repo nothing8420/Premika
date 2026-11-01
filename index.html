@@ -586,6 +586,11 @@ window.setMyPresence = async function () {
     if (id === "chat" && window.loadChatFriends) {
   window.loadChatFriends();
     }
+    if (id === "friends") {
+  if (window.loadFriendRequests) {
+    window.loadFriendRequests();
+  }
+    }
   };
 
   window.demoNotice = function () {
