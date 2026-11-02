@@ -374,21 +374,57 @@ button:disabled { opacity:.55; cursor:wait; }
       </div>
     </section>
 
-    <section id="profile" class="page">
-      <div class="hero">
-        <h2>◉ My Profile</h2>
-        <p id="profile-email">Loading account...</p>
-      </div>
+    
+<section id="profile" class="page">
+  <div class="hero">
+    <h2>◉ My Profile</h2>
+    <p id="profile-email">Loading account...</p>
+  </div>
 
-      <div class="feed-card">
-        <strong>Premika member</strong>
-        <p>Your Google account is connected to Premika.</p>
-        <button class="secondary" id="logout-btn" type="button">
-          Log Out
-        </button>
-        <p id="profile-status" class="status" role="status"></p>
-      </div>
-    </section>
+  <div class="feed-card" style="text-align:center;">
+
+    <div id="profile-avatar"
+      style="width:85px;height:85px;margin:0 auto 12px;border-radius:50%;background:linear-gradient(135deg,#a855f7,#542477);display:flex;align-items:center;justify-content:center;font-size:35px;color:white;">
+      💜
+    </div>
+
+    <h2 id="profile-display-name">Loading Name...</h2>
+
+    <p style="color:#b9a8c9;">Premika Member</p>
+
+    <div style="background:#10091c;padding:14px;border-radius:12px;margin:15px 0;">
+      <p style="color:#b9a8c9;margin:0 0 6px;">Your Premika UID</p>
+
+      <strong id="profile-uid" style="font-size:22px;letter-spacing:3px;">
+        --------
+      </strong>
+
+      <button class="secondary" id="copy-uid-btn" type="button">
+        Copy UID
+      </button>
+    </div>
+
+    <label for="edit-display-name">Display Name</label>
+
+    <input id="edit-display-name"
+      type="text"
+      maxlength="30"
+      placeholder="Enter your display name">
+
+    <button id="save-display-name-btn" type="button">
+      Save Display Name 💜
+    </button>
+
+    <p id="name-change-status" class="status" role="status"></p>
+
+    <button class="secondary" id="logout-btn" type="button">
+      Log Out
+    </button>
+
+    <p id="profile-status" class="status" role="status"></p>
+  </div>
+</section>
+
 
   </main>
 
