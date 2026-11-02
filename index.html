@@ -1087,21 +1087,9 @@ alert("Supabase Client: " + (supabaseClient ? "Loaded" : "Not Loaded"));
       showStatus("Connection error: " + error.message);
     }
   }
-
-  startPremika();
-
-})();
-</script>
-
-  startPremika();
-
-})();
-</script>
-
-// =====================================
-// FRIEND SEARCH
-// =====================================
-
+  // =====================================
+  // FRIEND SEARCH
+  // =====================================
 async function searchFriends() {
   if (!currentUser) return;
 
@@ -1668,6 +1656,11 @@ $("back-to-chats").addEventListener(
   "click",
   closeChat
 );
+
+// START PREMIKA
+startPremika();
+
+})();
 
 </script>
 
