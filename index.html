@@ -313,42 +313,55 @@ button:disabled { opacity:.55; cursor:wait; }
       </div>
     </section>
 
-    <section id="chat" class="page">
-      <div class="hero">
-        <h2>💬 Messages</h2>
-        <p>Your conversations in one place.</p>
-      </div>
-      <div class="feed-card">
-  <h3>💜 Private Chat</h3>
-
-  <label>Select Friend</label>
-  <select id="chat-friend"
-    onchange="loadDirectChat()"
-    style="width:100%;padding:12px;margin:10px 0;border-radius:10px;">
-    <option value="">Choose a friend</option>
-  </select>
-
-  <div id="chat-messages"
-    style="height:300px;overflow-y:auto;padding:10px;background:#10091c;border-radius:10px;margin:10px 0;">
-    Select a friend to start chatting.
+    
+<section id="chat" class="page">
+  <div class="hero">
+    <h2>💬 Messages</h2>
+    <p>Your conversations in one place.</p>
   </div>
-<p id="typing-indicator"
-   style="color:#d9a7ff;font-size:13px;margin:5px;">
-</p>
-  <input
-    type="text"
-    id="chat-message"
-    placeholder="Write your message..."
-    maxlength="2000"
-    style="width:100%;padding:12px;border-radius:10px;margin:8px 0;"
-  >
 
-  <button onclick="sendDirectMessage()"
-    style="width:100%;padding:12px;">
-    Send Message 💜
-  </button>
-</div>
-    </section>
+  <div class="feed-card">
+    <h3>💜 Your Chats</h3>
+    <p style="color:#b9a8c9;font-size:13px;">
+      Friends and conversations
+    </p>
+
+    <div id="chat-friend-list">
+      <p style="color:#b9a8c9;">Loading friends...</p>
+    </div>
+
+    <select id="chat-friend"
+      onchange="loadDirectChat()"
+      style="display:none;">
+      <option value="">Choose a friend</option>
+    </select>
+  </div>
+
+  <div class="feed-card" style="margin-top:15px;">
+    <h3>💜 Private Chat</h3>
+
+    <div id="chat-messages"
+      style="height:300px;overflow-y:auto;padding:10px;background:#10091c;border-radius:10px;margin:10px 0;">
+      Select a friend to start chatting.
+    </div>
+
+    <p id="typing-indicator"
+      style="color:#d9a7ff;font-size:13px;margin:5px;">
+    </p>
+
+    <input type="text"
+      id="chat-message"
+      placeholder="Write your message..."
+      maxlength="2000"
+      style="width:100%;padding:12px;border-radius:10px;margin:8px 0;">
+
+    <button onclick="sendDirectMessage()"
+      style="width:100%;padding:12px;">
+      Send Message 💜
+    </button>
+  </div>
+</section>
+
 
     <section id="family" class="page">
       <div class="hero">
