@@ -522,16 +522,24 @@ button {
 
         <div style="text-align:center;padding:15px">
 
-          <div
-            class="avatar"
-            id="profile-avatar"
-            style="width:75px;height:75px;margin:auto;font-size:27px"
-          >P</div>
+<!-- PROFILE PICTURE UPLOAD -->
+<label for="profile-picture-input" style="cursor:pointer">
+  <div
+    class="avatar"
+    id="profile-avatar"
+    style="width:100px;height:100px;margin:auto;font-size:30px;overflow:hidden"
+  >P</div>
+  <p class="small-text" style="margin-top:8px">
+    📷 Change Profile Picture
+  </p>
+</label>
 
-          <h3 id="profile-display-name" style="margin-top:12px">
-            My Profile
-          </h3>
-
+<input
+  type="file"
+  id="profile-picture-input"
+  accept="image/*"
+  style="display:none"
+>
           <p id="profile-username" class="small-text">
             @username
           </p>
@@ -558,7 +566,23 @@ button {
         <button id="save-display-name-btn" class="primary-btn">
           Save Display Name
         </button>
+<!-- PROFILE BIO -->
+<label class="small-text" style="display:block;margin-top:18px">
+  About Me / Bio
+</label>
 
+<textarea
+  id="profile-bio"
+  class="input-field"
+  placeholder="Write something about yourself..."
+  maxlength="160"
+  rows="3"
+  style="resize:vertical"
+></textarea>
+
+<button id="save-bio-btn" class="primary-btn">
+  Save Bio
+</button>
         <hr style="border-color:var(--border);margin:18px 0">
 
         <label class="small-text">Premika UID</label>
@@ -961,7 +985,29 @@ alert("Supabase Client: " + (supabaseClient ? "Loaded" : "Not Loaded"));
       profileStatus("Save error: " + error.message);
     }
   }
+// SAVE PROFILE BIO
+async function saveProfileBio() {
+  if (!currentUser || !currentProfile) return;
 
+  const bio = $("profile-bio").value.trim();
+
+  try {
+    const { data, error } = await supabaseClient
+      .from("profiles")
+      .update({ bio: bio })
+      .eq("id", currentUser.id)
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    currentProfile = data;
+    profileStatus("Bio saved successfully!");
+
+  } catch (error) {
+    profileStatus("Bio save error: " + error.message);
+  }
+}
   // COPY UID
   async function copyUID() {
     const uid = $("profile-uid").value;
@@ -1054,6 +1100,7 @@ alert("Supabase Client: " + (supabaseClient ? "Loaded" : "Not Loaded"));
   $("logout-btn").addEventListener("click", logoutUser);
   $("save-username-btn").addEventListener("click", saveUsername);
   $("save-display-name-btn").addEventListener("click", saveDisplayName);
+  $("save-bio-btn").addEventListener("click", saveProfileBio);
   $("copy-uid-btn").addEventListener("click", copyUID);
 
   // SUPABASE STARTUP
