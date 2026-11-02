@@ -733,16 +733,7 @@ window.setMyPresence = async function () {
   window.loadChatFriends();
     }
     if (id === "friends") {
-alert("UID copy nahi ho saki. Dobara try karo.");
-    }
-  });
-  
 
-async function googleLogin() {
-  const loggedIn = Boolean(user);
-
-  authSection.classList.toggle("hidden", loggedIn);
-  mainApp.classList.toggle("hidden", !loggedIn);
     supabaseClient
       .from("profiles")
       .select("id, username")
