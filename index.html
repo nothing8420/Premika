@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,646 +11,1017 @@
 :root {
   --bg:#10091c;
   --panel:#211333;
+  --panel2:#2b1940;
   --border:#49305d;
   --accent:#d9a7ff;
-  --muted:#cbb8dd;
+  --accent2:#a855f7;
+  --text:#ffffff;
+  --muted:#b9a8c9;
+  --danger:#ff647c;
+  --success:#55d6a0;
 }
-* { box-sizing:border-box; }
-body {
+
+* {
+  box-sizing:border-box;
   margin:0;
+  padding:0;
+}
+
+body {
   background:var(--bg);
-  color:white;
+  color:var(--text);
   font-family:Arial,sans-serif;
-}
-button { font:inherit; cursor:pointer; }
-button:disabled { opacity:.55; cursor:wait; }
-
-.auth {
-  max-width:440px;
-  margin:30px auto;
-  padding:22px;
-  background:var(--panel);
-  border:1px solid #67417d;
-  border-radius:20px;
-}
-.auth h2 { margin-top:0; color:var(--accent); }
-.auth p { font-size:13px; line-height:1.6; color:var(--muted); }
-
-.primary,.secondary {
-  width:100%;
-  padding:13px;
-  border-radius:11px;
-  color:white;
-  font-weight:bold;
-}
-.primary {
-  border:0;
-  background:linear-gradient(120deg,#a64ed0,#6932b5);
-}
-.secondary {
-  margin-top:10px;
-  border:1px solid #9a64cb;
-  background:#35204f;
-}
-.status { overflow-wrap:anywhere; }
-
-.app {
-  max-width:480px;
   min-height:100vh;
-  margin:auto;
-  padding-bottom:85px;
-  background:linear-gradient(180deg,#211037,#10091c 55%);
 }
-.top {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:17px 15px;
-  background:#211333;
-  border-bottom:1px solid var(--border);
-}
-.logo { font-size:23px; font-weight:900; color:var(--accent); }
-.coins {
-  background:#38204c;
-  border-radius:22px;
-  padding:9px 12px;
-  color:#f5d2ff;
-  font-size:13px;
-}
-.content { padding:15px; }
-.hero {
-  padding:22px 16px;
-  border-radius:20px;
-  background:linear-gradient(120deg,#7435ad,#401b70,#a64ed0);
-}
-.hero h2 { margin:12px 0 6px; font-size:25px; }
-.hero p { font-size:12px; line-height:1.6; color:#efdcff; }
-.eyebrow {
-  font-size:11px;
-  letter-spacing:2px;
-  color:#f1d7ff;
-}
-.section-title {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin:23px 0 13px;
-}
-.section-title h3 { margin:0; font-size:17px; }
-.section-title small { color:#c78bfa; }
 
-.stats {
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:9px;
-  margin-top:14px;
+button,input,textarea {
+  font:inherit;
 }
-.stat {
-  background:#241735;
-  border:1px solid #412754;
-  border-radius:14px;
-  padding:13px 5px;
+
+button {
+  cursor:pointer;
+  border:none;
+}
+
+.hidden {
+  display:none !important;
+}
+
+#auth-section {
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:22px;
+  background:
+    radial-gradient(circle at top,#492267 0%,transparent 45%),
+    var(--bg);
+}
+
+.auth-card {
+  width:100%;
+  max-width:390px;
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:24px;
+  padding:30px 22px;
   text-align:center;
+  box-shadow:0 15px 50px #0006;
 }
-.stat strong {
-  display:block;
-  font-size:17px;
-  color:#e0b6ff;
-}
-.stat small { font-size:10px; color:#b9a5ca; }
 
-.rooms {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:11px;
-}
-.room {
-  min-height:120px;
-  border-radius:16px;
-  padding:13px;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-  border:1px solid #67417d;
-  background:linear-gradient(145deg,#543075,#271438);
-}
-.room:nth-child(2) { background:linear-gradient(145deg,#65306e,#291535); }
-.room:nth-child(3) { background:linear-gradient(145deg,#49318a,#21173f); }
-.room:nth-child(4) { background:linear-gradient(145deg,#753d8b,#291438); }
-.room .emoji { font-size:26px; }
-.room strong { font-size:13px; }
-.room small { font-size:11px; color:#d2b6e8; }
-
-.feed-card {
-  background:#241735;
-  border:1px solid #40254f;
-  border-radius:17px;
-  padding:15px;
+.logo {
+  font-size:32px;
+  font-weight:900;
+  letter-spacing:2px;
+  color:var(--accent);
   margin-bottom:12px;
 }
-.feed-head { display:flex; align-items:center; gap:10px; }
+
+.auth-subtitle {
+  color:var(--muted);
+  font-size:14px;
+  margin-bottom:28px;
+}
+
+.google-btn {
+  width:100%;
+  padding:15px;
+  border-radius:13px;
+  background:linear-gradient(135deg,#d9a7ff,#a855f7);
+  color:#180b25;
+  font-weight:800;
+}
+
+#auth-status {
+  color:var(--muted);
+  font-size:13px;
+  margin-top:18px;
+  min-height:18px;
+}
+
+#main-app {
+  display:none;
+  min-height:100vh;
+  padding-bottom:75px;
+}
+
+.topbar {
+  position:sticky;
+  top:0;
+  z-index:10;
+  background:#170d24;
+  border-bottom:1px solid var(--border);
+  padding:15px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.top-logo {
+  color:var(--accent);
+  font-weight:900;
+  font-size:22px;
+  letter-spacing:1px;
+}
+
+.coin-box {
+  background:var(--panel2);
+  border:1px solid var(--border);
+  padding:8px 12px;
+  border-radius:20px;
+  color:var(--accent);
+  font-size:13px;
+}
+
+.content {
+  max-width:650px;
+  margin:auto;
+  padding:18px 14px;
+}
+
+.page {
+  display:none;
+}
+
+.page.active {
+  display:block;
+}
+
+.section-title {
+  font-size:21px;
+  font-weight:800;
+  margin-bottom:15px;
+}
+
+.panel {
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:17px;
+  padding:16px;
+  margin-bottom:15px;
+}
+
+.welcome-card {
+  background:linear-gradient(135deg,#482267,#251438);
+  border:1px solid #70458d;
+  border-radius:20px;
+  padding:22px;
+  margin-bottom:18px;
+}
+
+.welcome-card h2 {
+  font-size:23px;
+  margin-bottom:8px;
+}
+
+.welcome-card p {
+  color:#e0c9f2;
+  font-size:14px;
+}
+
+.small-text {
+  color:var(--muted);
+  font-size:13px;
+}
+
+.primary-btn {
+  background:linear-gradient(135deg,#d9a7ff,#a855f7);
+  color:#190b25;
+  padding:12px 17px;
+  border-radius:11px;
+  font-weight:800;
+}
+
+.secondary-btn {
+  background:var(--panel2);
+  color:var(--accent);
+  border:1px solid var(--border);
+  padding:11px 15px;
+  border-radius:11px;
+}
+
+.danger-btn {
+  background:#512033;
+  color:#ff9bac;
+  padding:11px 15px;
+  border-radius:11px;
+}
+
+.input-field {
+  width:100%;
+  background:#170d24;
+  border:1px solid var(--border);
+  color:white;
+  padding:13px;
+  border-radius:11px;
+  outline:none;
+  margin:8px 0;
+}
+
+.input-field:focus {
+  border-color:var(--accent2);
+}
+
+.bottom-nav {
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  z-index:20;
+  display:flex;
+  justify-content:space-around;
+  background:#1a1027;
+  border-top:1px solid var(--border);
+  padding:10px 3px;
+}
+
+.nav-btn {
+  background:transparent;
+  color:var(--muted);
+  font-size:11px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  min-width:55px;
+}
+
+.nav-btn .nav-icon {
+  font-size:20px;
+}
+
+.nav-btn.active {
+  color:var(--accent);
+}
+
+.empty-state {
+  text-align:center;
+  padding:25px 10px;
+  color:var(--muted);
+  font-size:14px;
+}
+
+.user-row {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px 0;
+  border-bottom:1px solid var(--border);
+}
+
 .avatar {
   width:42px;
   height:42px;
   border-radius:50%;
-  display:grid;
-  place-items:center;
-  font-size:20px;
-  background:linear-gradient(135deg,#c26cff,#4c2384);
-  border:2px solid #e2b8ff;
-}
-.feed-head strong { font-size:13px; }
-.feed-head small {
-  display:block;
-  color:#bca6cd;
-  margin-top:4px;
-}
-.feed-card p {
-  font-size:13px;
-  line-height:1.6;
-  color:#e1d3ed;
-}
-.page { display:none; }
-.page.active { display:block; }
-
-.bottom {
-  position:fixed;
-  bottom:0;
-  left:50%;
-  transform:translateX(-50%);
-  width:min(480px,100%);
+  background:linear-gradient(135deg,#d9a7ff,#7436a8);
   display:flex;
-  justify-content:space-around;
-  background:#1a1027;
-  border-top:1px solid #422b53;
-  padding:12px 4px calc(12px + env(safe-area-inset-bottom));
-  z-index:5;
+  align-items:center;
+  justify-content:center;
+  color:#180b25;
+  font-weight:900;
+  flex-shrink:0;
 }
-.bottom button {
-  background:none;
-  border:0;
-  color:#b9a6cb;
-  font-size:11px;
-  min-width:50px;
-}
-.bottom button span {
-  display:block;
-  font-size:20px;
-  margin-bottom:5px;
-}
-.bottom button.selected { color:#d9a0ff; }
 
-.hidden { display:none !important; }
-.mini {
-  background:#35204f;
-  color:white;
-  border:1px solid #9a64cb;
-  border-radius:10px;
-  padding:9px 12px;
+.user-info {
+  flex:1;
+  min-width:0;
+}
+
+.user-info strong {
+  display:block;
+  overflow-wrap:anywhere;
+}
+
+.user-info small {
+  color:var(--muted);
+  font-size:12px;
+}
+
+@media(max-width:360px) {
+  .nav-btn {
+    min-width:45px;
+    font-size:10px;
+  }
+  .nav-btn .nav-icon {
+    font-size:18px;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<!-- GOOGLE-ONLY LOGIN -->
-<section class="auth" id="auth-section">
-  <h2>💜 Premika Login</h2>
-  <p>Welcome to your social universe. Sign in securely with Google.</p>
-  
-  <button class="primary" id="google-login-btn" type="button">
-    🌐 Continue with Google
-  </button>
+<!-- GOOGLE LOGIN -->
+<section id="auth-section">
+  <div class="auth-card">
+    <div class="logo">PREMИKA</div>
 
-  <p id="auth-status" class="status" role="status" aria-live="polite">
-    Connecting to Premika...
-  </p>
+    <p class="auth-subtitle">
+      Connect with friends and create memories.
+    </p>
+
+    <button id="google-login-btn" class="google-btn">
+      Continue with Google
+    </button>
+
+    <p id="auth-status">
+      Connecting to Premika...
+    </p>
+  </div>
 </section>
 
-<!-- MAIN APP -->
-<div class="app hidden" id="main-app">
+<!-- MAIN APPLICATION -->
+<div id="main-app">
 
-  <header class="top">
-    <div class="logo">✦ PREMИKA</div>
-    <div class="coins">🪙 <b>2,580</b></div>
+  <header class="topbar">
+    <div class="top-logo">PREMИKA</div>
+
+    <div class="coin-box">
+      🪙 <span id="coin-balance">0</span>
+    </div>
   </header>
 
   <main class="content">
 
+    <!-- HOME PAGE -->
     <section id="home" class="page active">
-      <div class="hero">
-        <div class="eyebrow">YOUR SOCIAL UNIVERSE</div>
-        <h2>Find Your People 💜</h2>
-        <p>Meet new people, join communities and create unforgettable moments.</p>
+
+      <div class="welcome-card">
+        <h2>Welcome to Premika 💜</h2>
+        <p>Your world, your friends, your memories.</p>
       </div>
 
-      <div class="stats">
-        <div class="stat"><strong>08</strong><small>Family Level</small></div>
-        <div class="stat"><strong>128</strong><small>Followers</small></div>
-        <div class="stat"><strong>12</strong><small>Online Now</small></div>
-      </div>
+      <div class="panel">
+        <h3 class="section-title">Your Profile</h3>
 
-      <div class="section-title">
-        <h3>🔥 Popular Rooms</h3>
-        <small>Explore ›</small>
-      </div>
+        <div class="user-row">
+          <div class="avatar" id="home-avatar">P</div>
 
-      <div class="rooms">
-        <div class="room"><span class="emoji">🎙️</span><strong>Midnight Lounge</strong><small>Voice room preview</small></div>
-        <div class="room"><span class="emoji">💜</span><strong>Purple Hearts</strong><small>Community</small></div>
-        <div class="room"><span class="emoji">🎵</span><strong>Music World</strong><small>Chill & talk</small></div>
-        <div class="room"><span class="emoji">👑</span><strong>Royal Club</strong><small>Community</small></div>
-      </div>
-
-      <div class="section-title">
-        <h3>✨ Community Feed</h3>
-        <small>Latest</small>
-      </div>
-
-      <div class="feed-card">
-        <div class="feed-head">
-          <div class="avatar">🌙</div>
-          <div><strong>Moonlight</strong><small>Demo member</small></div>
+          <div class="user-info">
+            <strong id="home-display-name">Welcome!</strong>
+            <small id="home-username">@username</small>
+          </div>
         </div>
-        <p>Good vibes, new friends and beautiful memories. Welcome to our purple world! 💜</p>
-      </div>
-    </section>
 
+        <p class="small-text" style="margin-top:12px">
+          Make friends and explore the Premika community.
+        </p>
+      </div>
+
+      <div class="panel">
+        <h3 class="section-title">Discover</h3>
+        <p class="small-text">
+          Find new friends and connect with people.
+        </p>
+
+        <button class="primary-btn"
+          onclick="showPage('friends')"
+          style="margin-top:14px">
+          Find Friends
+        </button>
+      </div>
+
+      <div class="panel">
+        <h3 class="section-title">My Family</h3>
+        <p class="small-text">
+          Join a family and enjoy your community together.
+        </p>
+
+        <button class="secondary-btn"
+          onclick="showPage('family')"
+          style="margin-top:14px">
+          Open Family
+        </button>
+      </div>
+
+    </section>
+    
+    <!-- FRIENDS PAGE -->
     <section id="friends" class="page">
-      <div class="hero">
-        <h2>👥 Friends</h2>
-        <p>Discover people and grow your circle.</p>
-      </div>
-      <div class="feed-card">
-  <h3>💜 My Friends</h3>
-  <div id="my-friends">
-    Loading friends...
-  </div>
-      </div>
-      <div class="feed-card">
-  <h3>🔍 Find Friends</h3>
-  <input
-    type="text"
-    id="friend-search"
-    placeholder="Search username..."
-    style="width:100%;padding:12px;border-radius:10px;margin:10px 0;"
-  >
-  <button onclick="searchFriends()">Search</button>
-  <div id="friend-search-results"></div>
-      </div>
-      <div class="feed-card">
-  <h3>📩 Friend Requests</h3>
-  <div id="incoming-requests">
-    Loading requests...
-  </div>
-      </div>
-      <div class="section-title"><h3>Suggested People</h3></div>
-      <div class="feed-card">
-        <div class="feed-head">
-          <div class="avatar">🦋</div>
-          <div><strong>Mahi</strong><small>Demo profile</small></div>
-          <button class="mini" onclick="demoNotice()">＋ Add</button>
+
+      <h2 class="section-title">Friends 👥</h2>
+
+      <div class="panel">
+        <h3>Find Friends</h3>
+
+        <input
+          id="friend-search-input"
+          class="input-field"
+          type="text"
+          placeholder="Search by username..."
+        >
+
+        <button id="friend-search-btn" class="primary-btn">
+          Search
+        </button>
+
+        <div id="friend-search-results" style="margin-top:15px">
+          <div class="empty-state">Search users by username.</div>
         </div>
       </div>
+
+      <div class="panel">
+        <h3 class="section-title">Friend Requests</h3>
+
+        <div id="incoming-requests">
+          <div class="empty-state">No incoming requests.</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3 class="section-title">My Friends</h3>
+
+        <div id="friends-list">
+          <div class="empty-state">Your friends will appear here.</div>
+        </div>
+      </div>
+
     </section>
 
-    
-<section id="chat" class="page">
-  <div class="hero">
-    <h2>💬 Messages</h2>
-    <p>Your conversations in one place.</p>
-  </div>
+    <!-- CHAT PAGE -->
+    <section id="chat" class="page">
 
-  <div class="feed-card">
-    <h3>💜 Your Chats</h3>
-    <p style="color:#b9a8c9;font-size:13px;">
-      Friends and conversations
-    </p>
+      <h2 class="section-title">Messages 💬</h2>
 
-    <div id="chat-friend-list">
-      <p style="color:#b9a8c9;">Loading friends...</p>
-    </div>
+      <div class="panel">
+        <h3 class="section-title">Your Chats</h3>
 
-    <select id="chat-friend"
-      onchange="loadDirectChat()"
-      style="display:none;">
-      <option value="">Choose a friend</option>
-    </select>
-  </div>
+        <div id="chat-friends-list">
+          <div class="empty-state">Your conversations will appear here.</div>
+        </div>
+      </div>
 
-  <div class="feed-card" style="margin-top:15px;">
-    <h3>💜 Private Chat</h3>
+      <div id="chat-window" class="panel hidden">
 
-    <div id="chat-messages"
-      style="height:300px;overflow-y:auto;padding:10px;background:#10091c;border-radius:10px;margin:10px 0;">
-      Select a friend to start chatting.
-    </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:15px">
+          <button id="back-to-chats" class="secondary-btn">←</button>
 
-    <p id="typing-indicator"
-      style="color:#d9a7ff;font-size:13px;margin:5px;">
-    </p>
-    
-    <input type="text"
-      id="chat-message"
-      placeholder="Write your message..."
-      maxlength="2000"
-      style="width:100%;padding:12px;border-radius:10px;margin:8px 0;">
+          <div>
+            <strong id="chat-friend-name">Friend</strong>
+            <p id="typing-indicator" class="small-text"></p>
+          </div>
+        </div>
 
-    <button onclick="sendDirectMessage()"
-      style="width:100%;padding:12px;">
-      Send Message 💜
-    </button>
-  </div>
-</section>
+        <div
+          id="messages-container"
+          style="height:350px;overflow-y:auto;padding:10px;background:#170d24;border-radius:12px;margin-bottom:12px"
+        >
+          <div class="empty-state">Start your conversation.</div>
+        </div>
 
+        <div style="display:flex;gap:8px">
+          <input
+            id="message-input"
+            class="input-field"
+            type="text"
+            placeholder="Write a message..."
+            style="margin:0;flex:1"
+          >
 
+          <button id="send-message-btn" class="primary-btn">
+            Send
+          </button>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- FAMILY PAGE -->
     <section id="family" class="page">
-      <div class="hero">
-        <h2>👑 My Family</h2>
-        <p>Your people. Your vibe. Your family.</p>
+
+      <h2 class="section-title">My Family 🏡</h2>
+
+      <div class="welcome-card">
+        <h2>Welcome to Family</h2>
+        <p>Connect with your family members.</p>
       </div>
-      <div class="rooms">
-        <div class="room"><span class="emoji">👑</span><strong>Family Leader</strong><small>Demo member</small></div>
-        <div class="room"><span class="emoji">🦋</span><strong>Mahi</strong><small>Demo member</small></div>
+
+      <div class="panel">
+        <h3 class="section-title">Family Community</h3>
+
+        <p class="small-text">
+          Your family information and members will appear here.
+        </p>
+
+        <div id="family-content" style="margin-top:15px">
+          <div class="empty-state">
+            No family joined yet.
+          </div>
+        </div>
       </div>
+
     </section>
 
-    
-<section id="profile" class="page">
-  <div class="hero">
-    <h2>◉ My Profile</h2>
-    <p id="profile-email">Loading account...</p>
-  </div>
+    <!-- PROFILE PAGE -->
+    <section id="profile" class="page">
 
-  <div class="feed-card" style="text-align:center;">
+      <h2 class="section-title">My Profile 👤</h2>
 
-    <div id="profile-avatar"
-      style="width:85px;height:85px;margin:0 auto 12px;border-radius:50%;background:linear-gradient(135deg,#a855f7,#542477);display:flex;align-items:center;justify-content:center;font-size:35px;color:white;">
-      💜
-    </div>
+      <div class="panel">
 
-    <h2 id="profile-display-name">Loading Name...</h2>
+        <div style="text-align:center;padding:15px">
 
-    <p style="color:#b9a8c9;">Premika Member</p>
+          <div
+            class="avatar"
+            id="profile-avatar"
+            style="width:75px;height:75px;margin:auto;font-size:27px"
+          >P</div>
 
-    <div style="background:#10091c;padding:14px;border-radius:12px;margin:15px 0;">
-      <p style="color:#b9a8c9;margin:0 0 6px;">Your Premika UID</p>
+          <h3 id="profile-display-name" style="margin-top:12px">
+            My Profile
+          </h3>
 
-      <strong id="profile-uid" style="font-size:22px;letter-spacing:3px;">
-        --------
-      </strong>
+          <p id="profile-username" class="small-text">
+            @username
+          </p>
 
-      <button class="secondary" id="copy-uid-btn" type="button">
-        Copy UID
-      </button>
-    </div>
+        </div>
 
-    <label for="edit-display-name">Display Name</label>
+        <label class="small-text">Email</label>
+        <input
+          id="profile-email"
+          class="input-field"
+          type="text"
+          readonly
+        >
 
-    <input id="edit-display-name"
-      type="text"
-      maxlength="30"
-      placeholder="Enter your display name">
+        <label class="small-text">Display Name</label>
+        <input
+          id="display-name-input"
+          class="input-field"
+          type="text"
+          placeholder="Your display name"
+          maxlength="30"
+        >
 
-    <button id="save-display-name-btn" type="button">
-      Save Display Name 💜
-    </button>
+        <button id="save-display-name-btn" class="primary-btn">
+          Save Display Name
+        </button>
 
-    <p id="name-change-status" class="status" role="status"></p>
+        <hr style="border-color:var(--border);margin:18px 0">
 
-    <button class="secondary" id="logout-btn" type="button">
-      Log Out
-    </button>
+        <label class="small-text">Premika UID</label>
 
-    <p id="profile-status" class="status" role="status"></p>
-  </div>
-</section>
+        <div style="display:flex;gap:8px">
+          <input
+            id="profile-uid"
+            class="input-field"
+            type="text"
+            readonly
+            placeholder="Your UID"
+            style="flex:1"
+          >
 
+          <button id="copy-uid-btn" class="secondary-btn">
+            Copy
+          </button>
+        </div>
+
+        <p id="profile-status" class="small-text" style="margin-top:12px">
+          Profile information
+        </p>
+
+        <button
+          id="logout-btn"
+          class="danger-btn"
+          style="width:100%;margin-top:20px"
+        >
+          Logout
+        </button>
+
+      </div>
+
+    </section>
 
   </main>
 
-  <footer class="bottom">
-    <button class="selected" onclick="showPage('home',this)"><span>⌂</span>Home</button>
-    <button onclick="showPage('friends',this)"><span>♧</span>Friends</button>
-    <button onclick="showPage('chat',this)"><span>▢</span>Chat</button>
-    <button onclick="showPage('family',this)"><span>♛</span>Family</button>
-    <button onclick="showPage('profile',this)"><span>◉</span>Profile</button>
-  </footer>
+  <!-- BOTTOM NAVIGATION -->
+  <nav class="bottom-nav">
 
+    <button class="nav-btn active" data-page="home"
+      onclick="showPage('home',this)">
+      <span class="nav-icon">⌂</span>
+      Home
+    </button>
+
+    <button class="nav-btn" data-page="friends"
+      onclick="showPage('friends',this)">
+      <span class="nav-icon">♧</span>
+      Friends
+    </button>
+
+    <button class="nav-btn" data-page="chat"
+      onclick="showPage('chat',this)">
+      <span class="nav-icon">✉</span>
+      Chat
+    </button>
+
+    <button class="nav-btn" data-page="family"
+      onclick="showPage('family',this)">
+      <span class="nav-icon">⌂</span>
+      Family
+    </button>
+
+    <button class="nav-btn" data-page="profile"
+      onclick="showPage('profile',this)">
+      <span class="nav-icon">♙</span>
+      Profile
+    </button>
+
+  </nav>
+
+</div>
+
+<!-- USERNAME SETUP -->
+<div
+  id="username-modal"
+  class="hidden"
+  style="position:fixed;inset:0;background:#000b;z-index:50;display:flex;align-items:center;justify-content:center;padding:20px"
+>
+  <div class="panel" style="width:100%;max-width:380px">
+
+    <h2 class="section-title">Choose Username</h2>
+
+    <p class="small-text">
+      Choose your unique Premika username.
+    </p>
+
+    <input
+      id="new-username"
+      class="input-field"
+      type="text"
+      placeholder="Enter username"
+      maxlength="20"
+    >
+
+    <button
+      id="save-username-btn"
+      class="primary-btn"
+      style="width:100%;margin-top:10px"
+    >
+      Continue
+    </button>
+
+    <p id="username-status" class="small-text" style="margin-top:12px"></p>
+
+  </div>
 </div>
 
 <script>
 (function () {
   "use strict";
-alert("PREMIKA JAVASCRIPT STARTED");
-  const SUPABASE_URL =
-    "https://vlpeysngfrrujvztbnqe.supabase.co";
 
-  const SUPABASE_PUBLISHABLE_KEY =
-    "sb_publishable_DNyEEOK-geIDO4oBNDDWmg_wxK-31jW";
-
-  const authSection = document.getElementById("auth-section");
-  const mainApp = document.getElementById("main-app");
-  const loginBtn = document.getElementById("google-login-btn");
-  const logoutBtn = document.getElementById("logout-btn");
-  const statusEl = document.getElementById("auth-status");
-  const profileEmail = document.getElementById("profile-email");
-  const profileStatus = document.getElementById("profile-status");
+  // SUPABASE CONNECTION
+  const SUPABASE_URL = "https://vlpeysngfrrujvztbnqe.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_DNyEEOK-geIDO4oBNDDWmg_wxK-31jW";
 
   let supabaseClient = null;
+  let currentUser = null;
+  let currentProfile = null;
+  let presenceTimer = null;
+
+  const $ = (id) => document.getElementById(id);
 
   function showStatus(message) {
-    statusEl.textContent = message;
+    const status = $("auth-status");
+    if (status) status.textContent = message;
   }
 
-async function updateUI(user) {
-
-
-  profileEmail.textContent = user.email || "Google account connected";
-
-  const { data: profile, error } = await supabaseClient
-    .from("profiles")
-    .select("public_uid, display_name")
-    .eq("id", user.id)
-    .maybeSingle();
-
-  if (error) {
-    profileStatus.textContent = "Profile Error: " + error.message;
-    return;
+  function profileStatus(message) {
+    const status = $("profile-status");
+    if (status) status.textContent = message;
   }
 
-  if (!profile) {
-    profileStatus.textContent = "Profile not found.";
-    return;
+  // LOAD SUPABASE LIBRARY
+  function loadSupabase() {
+    return new Promise((resolve, reject) => {
+      if (window.supabase) {
+        resolve();
+        return;
+      }
+
+      const script = document.createElement("script");
+      script.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
+
+      script.onload = resolve;
+      script.onerror = () => {
+        const fallback = document.createElement("script");
+        fallback.src = "https://unpkg.com/@supabase/supabase-js@2";
+        fallback.onload = resolve;
+        fallback.onerror = () => reject(
+          new Error("Supabase library load nahi hui.")
+        );
+        document.head.appendChild(fallback);
+      };
+
+      document.head.appendChild(script);
+    });
   }
 
-  document.getElementById("profile-display-name").textContent =
-    profile.display_name || "User";
-
-  document.getElementById("profile-uid").textContent =
-    profile.public_uid || "Not assigned";
-
-  document.getElementById("edit-display-name").value =
-    profile.display_name || "";
-
-  const avatar = document.getElementById("profile-avatar");
-  avatar.textContent =
-    (profile.display_name || "U").charAt(0).toUpperCase();
-}
-
-document.getElementById("copy-uid-btn")
-  .addEventListener("click", async function () {
-    const uid = document.getElementById("profile-uid").textContent;
-
-    if (!/^\d{8}$/.test(uid)) {
-      alert("UID abhi load nahi hui.");
+  // GOOGLE LOGIN
+  async function googleLogin() {
+  alert("Google Login Button Working!");
+    if (!supabaseClient) {
+      showStatus("Supabase load nahi hui. Internet check karo.");
       return;
     }
-    
+
     try {
-      await navigator.clipboard.writeText(uid);
-      alert("Premika UID copied! 💜");
-    } catch (error) {
-      alert("UID copy nahi ho saki. Dobara try karo.");
-    }
-  });
-  
+      showStatus("Google login connecting...");
+alert("Supabase Client: " + (supabaseClient ? "Loaded" : "Not Loaded"));
+      const { error } = await supabaseClient.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: "https://nothing8420.github.io/Premika/"
+        }
+      });
 
- await supabaseClient
-    .from("profiles")
-    .select("public_uid, display_name")
-    .eq("id", user.id)
-    .maybeSingle();
-
-  if (error) {
-    profileStatus.textContent = "Profile Error: " + error.message;
-    return;
-  }
-
-  if (!profile) {
-    profileStatus.textContent = "Profile not found.";
-    return;
-  }
-
-  document.getElementById("profile-display-name").textContent =
-    profile.display_name || "User";
-
-  document.getElementById("profile-uid").textContent =
-    profile.public_uid || "Not assigned";
-
-  document.getElementById("edit-display-name").value =
-    profile.display_name || "";
-
-  const avatar = document.getElementById("profile-avatar");
-  avatar.textContent =
-    (profile.display_name || "U").charAt(0).toUpperCase();
+     if (error) {
+  alert("Google Login Error: " + error.message);
+  console.log("OAuth Error:", error);
+  return;
 }
 
-  
+   showStatus("Google redirect starting...");
 
-async function googleLogin() {
-  if (!supabaseClient) {
-    showStatus("Supabase abhi load nahi hui. Internet check karo.");
-    return;
-  }
-
-  try {
-    showStatus("Google login connecting...");
-    alert("Google Login Function Started");
-    const { error } = await supabaseClient.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: "https://nothing8420.github.io/Premika/"
-      }
-    });
-
-    if (error) {
-      throw error;
+   } catch (error) {
+      alert("LOGIN ERROR: " + error.message);
+      showStatus("Login error: " + error.message);
     }
-
-  } catch (error) {
-    console.error("Google Login Error:", error);
-    showStatus("Google Login Error: " + error.message);
   }
-}
 
-
-  // Google login button is connected above.
-  // No extra login code is needed here.
-
-  async function logout() {
+  // LOGOUT
+  async function logoutUser() {
     if (!supabaseClient) return;
 
-    logoutBtn.disabled = true;
-    profileStatus.textContent = "Logging out...";
+    const button = $("logout-btn");
+    if (button) button.disabled = true;
 
     try {
-      const { error } = await supabaseClient.auth.signOut();
-
-      if (error) {
-        profileStatus.textContent = "Logout failed: " + error.message;
-        return;
+      if (presenceTimer) {
+        clearInterval(presenceTimer);
+        presenceTimer = null;
       }
 
-      profileStatus.textContent = "You are logged out.";
-      updateUI(null);
+      const { error } = await supabaseClient.auth.signOut();
+      if (error) throw error;
+
+      currentUser = null;
+      currentProfile = null;
+
+      $("main-app").style.display = "none";
+      $("auth-section").style.display = "flex";
+
+      showStatus("You are logged out.");
+
     } catch (error) {
-      profileStatus.textContent = "Logout error: " + error.message;
+      profileStatus("Logout error: " + error.message);
     } finally {
-      logoutBtn.disabled = false;
+      if (button) button.disabled = false;
     }
   }
 
-  function loadSupabase(urls, index) {
-    if (index >= urls.length) {
-      showStatus("Supabase library load nahi hui. Internet check karo.");
+  // LOAD OR CREATE PROFILE
+  async function loadProfile(user) {
+    const { data, error } = await supabaseClient
+      .from("profiles")
+      .select("*")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    if (error) throw error;
+
+    if (!data || !data.username) {
+      currentProfile = data || null;
+      showUsernameSetup();
       return;
     }
 
-    const script = document.createElement("script");
-    script.src = urls[index];
+    currentProfile = data;
+    updateProfileDisplay(user, data);
+  }
 
-    script.onload = async function () {
-      if (!window.supabase ||
-          typeof window.supabase.createClient !== "function") {
-        script.remove();
-        loadSupabase(urls, index + 1);
-        return;
+  // USERNAME SETUP
+  function showUsernameSetup() {
+    const modal = $("username-modal");
+    modal.classList.remove("hidden");
+
+    $("new-username").value =
+      currentProfile?.username || "";
+
+    $("username-status").textContent =
+      "Choose your unique username.";
+  }
+
+  async function saveUsername() {
+    if (!currentUser) return;
+
+    const username = $("new-username").value
+      .trim()
+      .toLowerCase();
+
+    if (!/^[a-z0-9_]{3,20}$/.test(username)) {
+      $("username-status").textContent =
+        "Username 3-20 characters ka hona chahiye. Letters, numbers aur _ use karo.";
+      return;
+    }
+
+    const button = $("save-username-btn");
+    button.disabled = true;
+
+    try {
+      $("username-status").textContent = "Saving username...";
+
+      let result;
+
+      if (currentProfile) {
+        result = await supabaseClient
+          .from("profiles")
+          .update({ username: username })
+          .eq("id", currentUser.id)
+          .select()
+          .single();
+      } else {
+        result = await supabaseClient
+          .from("profiles")
+          .insert({
+            id: currentUser.id,
+            username: username
+          })
+          .select()
+          .single();
       }
 
-      try {
-        supabaseClient = window.supabase.createClient(
-          SUPABASE_URL,
-          SUPABASE_PUBLISHABLE_KEY
-        );
+      if (result.error) throw result.error;
 
-        const { data, error } =
-          await supabaseClient.auth.getSession();
+      currentProfile = result.data;
 
-        if (error) throw error;
+      $("username-modal").classList.add("hidden");
 
-        updateUI(data.session ? data.session.user : null);
+      updateProfileDisplay(currentUser, currentProfile);
 
-        showStatus(
-          data.session
-            ? "Welcome back to Premika!"
-            : "Ready. Continue with Google."
-        );
+      $("username-status").textContent = "";
 
-        // PREMIKA ONLINE STATUS
+    } catch (error) {
+      $("username-status").textContent =
+        "Username save error: " + error.message;
+    } finally {
+      button.disabled = false;
+    }
+  }
 
-window.setMyPresence = async function () {
-  const { data: sessionData } =
-    await supabaseClient.auth.getSession();
+  // UPDATE PROFILE UI
+  function updateProfileDisplay(user, profile) {
+    const displayName =
+      profile.display_name ||
+      user.user_metadata?.full_name ||
+      user.email ||
+      "Premika User";
 
-  const user = sessionData.session?.user;
-  if (!user) return;
+    const username = profile.username || "username";
 
-  const updatePresence = async () => {
+    $("profile-email").value = user.email || "";
+    $("profile-display-name").textContent = displayName;
+    $("profile-username").textContent = "@" + username;
+    $("display-name-input").value = profile.display_name || "";
+
+    $("home-display-name").textContent = displayName;
+    $("home-username").textContent = "@" + username;
+
+    $("home-avatar").textContent =
+      displayName.charAt(0).toUpperCase();
+
+    $("profile-avatar").textContent =
+      displayName.charAt(0).toUpperCase();
+
+    $("profile-uid").value =
+      profile.public_uid || user.id;
+
+    profileStatus("Profile loaded successfully.");
+  }
+
+  // UPDATE MAIN UI
+  async function updateUI(user) {
+    if (!user) {
+      currentUser = null;
+      currentProfile = null;
+
+      $("main-app").style.display = "none";
+      $("auth-section").style.display = "flex";
+
+      showStatus("You are logged out.");
+      return;
+    }
+
+    currentUser = user;
+
+    $("auth-section").style.display = "none";
+    $("main-app").style.display = "block";
+
+    try {
+      await loadProfile(user);
+
+      if (currentProfile && currentProfile.username) {
+        await setMyPresence();
+      }
+
+    } catch (error) {
+      profileStatus("Profile error: " + error.message);
+    }
+  }
+
+  // SAVE DISPLAY NAME
+  async function saveDisplayName() {
+    if (!currentUser || !currentProfile) return;
+
+    const displayName = $("display-name-input").value.trim();
+
+    if (!displayName) {
+      profileStatus("Display name empty nahi ho sakta.");
+      return;
+    }
+
+    try {
+      const { data, error } = await supabaseClient
+        .from("profiles")
+        .update({ display_name: displayName })
+        .eq("id", currentUser.id)
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      currentProfile = data;
+      updateProfileDisplay(currentUser, data);
+
+      profileStatus("Display name saved!");
+
+    } catch (error) {
+      profileStatus("Save error: " + error.message);
+    }
+  }
+
+  // COPY UID
+  async function copyUID() {
+    const uid = $("profile-uid").value;
+
+    if (!uid) {
+      profileStatus("UID abhi available nahi hai.");
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(uid);
+      profileStatus("Premika UID copied!");
+    } catch (error) {
+      profileStatus("UID copy nahi ho saki.");
+    }
+  }
+
+  // PAGE NAVIGATION
+  window.showPage = function (pageId, button) {
+    document.querySelectorAll(".page").forEach(page => {
+      page.classList.remove("active");
+    });
+
+    const selectedPage = $(pageId);
+
+    if (selectedPage) {
+      selectedPage.classList.add("active");
+    }
+
+    document.querySelectorAll(".nav-btn").forEach(nav => {
+      nav.classList.remove("active");
+    });
+
+    const selectedButton =
+      button || document.querySelector(
+        '.nav-btn[data-page="' + pageId + '"]'
+      );
+
+    if (selectedButton) {
+      selectedButton.classList.add("active");
+    }
+
+    if (pageId === "friends") {
+      loadFriends();
+      loadFriendRequests();
+    }
+
+    if (pageId === "chat") {
+      loadChatFriends();
+    }
+  };
+
+  // MY ONLINE PRESENCE
+  async function setMyPresence() {
+    if (!currentUser) return;
+
     const { error } = await supabaseClient
       .from("user_presence")
       .upsert({
-        user_id: user.id,
+        user_id: currentUser.id,
         is_online: true,
         last_seen: new Date().toISOString()
       }, {
@@ -657,259 +1029,169 @@ window.setMyPresence = async function () {
       });
 
     if (error) {
-      console.error("Presence Error:", error.message);
+      console.log("Presence error:", error.message);
     }
-  };
 
-  await updatePresence();
+    if (!presenceTimer) {
+      presenceTimer = setInterval(async () => {
+        if (!currentUser) return;
 
-  if (window.presenceHeartbeat) {
-    clearInterval(window.presenceHeartbeat);
-  }
-
-  window.presenceHeartbeat = setInterval(
-    updatePresence,
-    20000
-  );
-};
-      } catch (error) {
-        showStatus("Supabase error: " + error.message);
-      }
-    };
-
-    script.onerror = function () {
-      script.remove();
-      loadSupabase(urls, index + 1);
-    };
-
-    document.head.appendChild(script);
-  }
-
-  loginBtn.addEventListener("click", googleLogin);
-  logoutBtn.addEventListener("click", logout);
-
-  window.showPage = function (id, button) {
-    document.querySelectorAll(".page").forEach(function (page) {
-      page.classList.remove("active");
-    });
-
-    const target = document.getElementById(id);
-    if (target) target.classList.add("active");
-
-    document.querySelectorAll(".bottom button").forEach(function (btn) {
-      btn.classList.remove("selected");
-    });
-    if (button) button.classList.add("selected");
-    if (id === "chat" && window.loadChatFriends) {
-  window.loadChatFriends();
-    }
-    if (id === "friends") {
-
-    supabaseClient
-      .from("profiles")
-      .select("id, username")
-      .eq("id", user.id)
-      .maybeSingle()
-      .then(({ data, error }) => {
-        if (error) {
-          console.error("Profile error:", error);
-          return;
-        }
-
-        if (data) return;
-
-        if (document.getElementById("username-setup")) return;
-
-        const box = document.createElement("div");
-        box.id = "username-setup";
-
-        box.style.cssText = `
-          position:fixed; inset:0; z-index:99999;
-          background:#10091c; display:flex;
-          align-items:center; justify-content:center;
-          padding:20px;
-        `;
-
-        box.innerHTML = `
-          <div style="
-            background:#211333; padding:25px;
-            border-radius:18px; width:100%;
-            max-width:360px; color:white;
-            text-align:center;
-          ">
-            <h2>Welcome to Premika!</h2>
-            <p>Choose your unique username</p>
-            <input id="premika-username"
-              placeholder="Example: Sunny_786"
-              maxlength="20"
-              style="
-                width:100%; box-sizing:border-box;
-                padding:14px; border-radius:10px;
-                border:1px solid #49305d;
-                background:#10091c; color:white;
-                margin:15px 0;
-              ">
-            <p id="username-message"
-              style="font-size:13px;color:#ffaaaa"></p>
-            <button id="save-premika-username"
-              style="
-                width:100%; padding:14px;
-                border:0; border-radius:10px;
-                background:#d9a7ff; color:#10091c;
-                font-weight:bold;
-              ">
-              Save Username
-            </button>
-          </div>
-        `;
-
-        document.body.appendChild(box);
-
-        document.getElementById("save-premika-username")
-          .addEventListener("click", async function () {
-            const input = document.getElementById("premika-username");
-            const message = document.getElementById("username-message");
-            const button = this;
-
-            const username = input.value.trim().toLowerCase();
-
-            if (!/^[a-z0-9_]{3,20}$/.test(username)) {
-              message.textContent =
-                "Use 3-20 letters, numbers or underscores.";
-              return;
-            }
-
-            button.disabled = true;
-            button.textContent = "Saving...";
-
-            const { error: saveError } = await supabaseClient
-              .from("profiles")
-              .insert({
-                id: user.id,
-                username: username
-              });
-
-            if (saveError) {
-              message.textContent =
-                saveError.code === "23505"
-                  ? "Username already taken. Try another."
-                  : saveError.message;
-
-              button.disabled = false;
-              button.textContent = "Save Username";
-              return;
-            }
-
-            box.remove();
-            alert("Username saved successfully!");
+        await supabaseClient
+          .from("user_presence")
+          .upsert({
+            user_id: currentUser.id,
+            is_online: true,
+            last_seen: new Date().toISOString()
+          }, {
+            onConflict: "user_id"
           });
-      });
+      }, 60000);
+    }
   }
 
-  const usernameTimer = setInterval(async function () {
-    if (!supabaseClient) return;
+  // BUTTON EVENTS
+  $("google-login-btn").addEventListener("click", googleLogin);
+  $("logout-btn").addEventListener("click", logoutUser);
+  $("save-username-btn").addEventListener("click", saveUsername);
+  $("save-display-name-btn").addEventListener("click", saveDisplayName);
+  $("copy-uid-btn").addEventListener("click", copyUID);
 
-    clearInterval(usernameTimer);
+  // SUPABASE STARTUP
+  async function startPremika() {
+    try {
+      showStatus("Loading Premika...");
 
-    supabaseClient.auth.onAuthStateChange(
-  function (_event, session) {
-    updateUI(session ? session.user : null);
+      await loadSupabase();
 
-    if (session) {
-      setTimeout(() => {
-        if (window.setMyPresence) {
-          window.setMyPresence();
+      supabaseClient = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
+      const { data, error } =
+        await supabaseClient.auth.getSession();
+
+      if (error) throw error;
+
+      await updateUI(data.session?.user || null);
+
+      supabaseClient.auth.onAuthStateChange(
+        async (event, session) => {
+          if (event === "SIGNED_IN" || event === "SIGNED_OUT") {
+            await updateUI(session?.user || null);
+          }
         }
-      }, 1000);
-    } else {
-      if (window.presenceHeartbeat) {
-        clearInterval(window.presenceHeartbeat);
-        window.presenceHeartbeat = null;
-      }
+      );
+
+    } catch (error) {
+      showStatus("Connection error: " + error.message);
     }
   }
-);
 
-    const { data } = await supabaseClient.auth.getSession();
+  startPremika();
 
-    if (data.session) {
-      showUsernameSetup(data.session.user);
-    }
-  }, 300);
-  // PREMIKA FRIEND SEARCH
-window.searchFriends = async function () {
-  const input = document.getElementById("friend-search");
-  const results = document.getElementById("friend-search-results");
+})();
+</script>
 
-  const username = input.value.trim();
+  startPremika();
 
-  if (!username) {
-    results.textContent = "Please enter a username.";
+})();
+</script>
+
+// =====================================
+// FRIEND SEARCH
+// =====================================
+
+async function searchFriends() {
+  if (!currentUser) return;
+
+  const search = $("friend-search-input").value
+    .trim()
+    .toLowerCase();
+
+  const results = $("friend-search-results");
+
+  if (search.length < 3) {
+    results.innerHTML =
+      '<div class="empty-state">At least 3 characters enter karo.</div>';
     return;
   }
 
-  results.textContent = "Searching...";
+  results.innerHTML =
+    '<div class="empty-state">Searching...</div>';
 
-  const { data, error } = await supabaseClient
-    .from("profiles")
-    .select("id, username")
-    .ilike("username", "%" + username + "%")
-    .limit(20);
+  try {
+    const { data, error } = await supabaseClient
+      .from("profiles")
+      .select("id, username, display_name, public_uid")
+      .ilike("username", "%" + search + "%")
+      .neq("id", currentUser.id)
+      .limit(20);
 
-  if (error) {
+    if (error) throw error;
+
+    if (!data || data.length === 0) {
+      results.innerHTML =
+        '<div class="empty-state">No users found.</div>';
+      return;
+    }
+
+    results.innerHTML = "";
+
+    for (const person of data) {
+      const row = document.createElement("div");
+      row.className = "user-row";
+
+      const info = document.createElement("div");
+      info.className = "user-info";
+
+      const name = document.createElement("strong");
+      name.textContent =
+        person.display_name || person.username;
+
+      const username = document.createElement("small");
+      username.textContent = "@" + person.username;
+
+      info.append(name, username);
+
+      const button = document.createElement("button");
+      button.className = "primary-btn";
+      button.textContent = "Add";
+
+      button.addEventListener("click", () => {
+        sendFriendRequest(person.id, button);
+      });
+
+      row.append(info, button);
+      results.appendChild(row);
+    }
+
+  } catch (error) {
     results.textContent = "Search error: " + error.message;
-    return;
   }
+}
 
-  results.replaceChildren();
 
-  if (!data || data.length === 0) {
-    results.textContent = "No users found.";
-    return;
-  }
-data.forEach(function (profile) {
-  const item = document.createElement("div");
-  item.style.padding = "12px";
-  item.style.margin = "8px 0";
-  item.style.borderRadius = "10px";
-  item.style.background = "#211333";
+// =====================================
+// SEND FRIEND REQUEST
+// =====================================
 
-  const name = document.createElement("span");
-  name.textContent = "@" + profile.username + " ";
+async function sendFriendRequest(receiverId, button) {
+  if (!currentUser) return;
 
-  const button = document.createElement("button");
-  button.textContent = "Add Friend";
+  button.disabled = true;
+  button.textContent = "Sending...";
 
-  button.onclick = async function () {
-    button.disabled = true;
-    button.textContent = "Sending...";
+  try {
+    const { data: existing, error: checkError } =
+      await supabaseClient
+        .from("friend_requests")
+        .select("id, status")
+        .or(
+          `and(sender_id.eq.${currentUser.id},receiver_id.eq.${receiverId}),and(sender_id.eq.${receiverId},receiver_id.eq.${currentUser.id})`
+        );
 
-    const { data: sessionData } =
-      await supabaseClient.auth.getSession();
-
-    const user = sessionData.session?.user;
-
-    if (!user) {
-      button.disabled = false;
-      button.textContent = "Add Friend";
-      alert("Please login first.");
-      return;
-    }
-    
-    if (user.id === profile.id) {
-      button.disabled = false;
-      button.textContent = "Add Friend";
-      alert("You cannot add yourself.");
-      return;
-    }
-
-    const { data: existing } = await supabaseClient
-      .from("friend_requests")
-      .select("id, status")
-      .or(
-        `and(sender_id.eq.${user.id},receiver_id.eq.${profile.id}),and(sender_id.eq.${profile.id},receiver_id.eq.${user.id})`
-      )
-      .limit(1);
+    if (checkError) throw checkError;
 
     if (existing && existing.length > 0) {
       button.textContent = "Already Requested";
@@ -919,586 +1201,474 @@ data.forEach(function (profile) {
     const { error } = await supabaseClient
       .from("friend_requests")
       .insert({
-        sender_id: user.id,
-        receiver_id: profile.id,
+        sender_id: currentUser.id,
+        receiver_id: receiverId,
         status: "pending"
       });
 
-    if (error) {
-      button.disabled = false;
-      button.textContent = "Add Friend";
-      alert("Error: " + error.message);
+    if (error) throw error;
+
+    button.textContent = "Request Sent";
+
+  } catch (error) {
+    button.textContent = "Try Again";
+    alert("Request error: " + error.message);
+  } finally {
+    button.disabled = false;
+  }
+}
+
+
+// =====================================
+// LOAD FRIEND REQUESTS
+// =====================================
+
+async function loadFriendRequests() {
+  if (!currentUser) return;
+
+  const container = $("incoming-requests");
+
+  try {
+    const { data, error } = await supabaseClient
+      .from("friend_requests")
+      .select("id, sender_id, status")
+      .eq("receiver_id", currentUser.id)
+      .eq("status", "pending");
+
+    if (error) throw error;
+
+    container.innerHTML = "";
+
+    if (!data || data.length === 0) {
+      container.innerHTML =
+        '<div class="empty-state">No incoming requests.</div>';
       return;
     }
 
-    button.textContent = "Request Sent";
-  };
+    for (const request of data) {
+      const { data: person, error: personError } =
+        await supabaseClient
+          .from("profiles")
+          .select("username, display_name")
+          .eq("id", request.sender_id)
+          .maybeSingle();
 
-  item.appendChild(name);
-  item.appendChild(button);
-  results.appendChild(item);
-});
-};
-  // PREMIKA ACCEPTED FRIENDS
-window.loadFriends = async function () {
-  const container = document.getElementById("my-friends");
+      if (personError) throw personError;
 
-  if (!container || !supabaseClient) return;
+      const row = document.createElement("div");
+      row.className = "user-row";
 
-  container.textContent = "Loading friends...";
+      const info = document.createElement("div");
+      info.className = "user-info";
 
-  const { data: sessionData } =
-    await supabaseClient.auth.getSession();
+      const name = document.createElement("strong");
+      name.textContent =
+        person?.display_name || person?.username || "Premika User";
 
-  const user = sessionData.session?.user;
+      const username = document.createElement("small");
+      username.textContent =
+        person?.username ? "@" + person.username : "";
 
-  if (!user) {
-    container.textContent = "Please login first.";
-    return;
-  }
+      info.append(name, username);
 
-  const { data, error } = await supabaseClient
-    .from("friend_requests")
-    .select("id, sender_id, receiver_id")
-    .eq("status", "accepted")
-    .or(
-      `sender_id.eq.${user.id},receiver_id.eq.${user.id}`
-    );
+      const accept = document.createElement("button");
+      accept.className = "primary-btn";
+      accept.textContent = "Accept";
 
-  if (error) {
-    container.textContent = "Error: " + error.message;
-    return;
-  }
+      const reject = document.createElement("button");
+      reject.className = "danger-btn";
+      reject.textContent = "Reject";
 
-  container.replaceChildren();
-
-  if (!data || data.length === 0) {
-    container.textContent = "No friends yet.";
-    return;
-  }
-
-  for (const request of data) {
-    const friendId =
-      request.sender_id === user.id
-        ? request.receiver_id
-        : request.sender_id;
-
-    const { data: profile, error: profileError } =
-      await supabaseClient
-        .from("profiles")
-        .select("username")
-        .eq("id", friendId)
-        .maybeSingle();
-
-    const item = document.createElement("div");
-    item.style.cssText =
-      "padding:12px;margin:8px 0;background:#211333;border-radius:10px;color:white;";
-
-    item.textContent = profileError
-      ? "Unable to load friend"
-      : "💜 @" + (profile?.username || "Unknown user");
-
-    container.appendChild(item);
-  }
-};
-  // PREMIKA PRIVATE CHAT
-// PREMIKA ONLINE STATUS
-
-window.setMyPresence = async function (isOnline) {
-  const { data: sessionData } =
-    await supabaseClient.auth.getSession();
-
-  const user = sessionData.session?.user;
-  if (!user) return;
-
-  const updatePresence = async () => {
-    const { error } = await supabaseClient
-      .from("user_presence")
-      .upsert({
-        user_id: user.id,
-        is_online: true,
-        last_seen: new Date().toISOString()
+      accept.addEventListener("click", () => {
+        respondFriendRequest(request.id, "accepted");
       });
 
-    if (error) {
-      console.error("Presence Error:", error.message);
-    }
-  };
+      reject.addEventListener("click", () => {
+        respondFriendRequest(request.id, "rejected");
+      });
 
-  await updatePresence();
-
-  if (!window.presenceHeartbeat) {
-    window.presenceHeartbeat = setInterval(
-      updatePresence,
-      20000
-    );
-  }
-};
-
-window.loadChatFriends = async function () {
-  const select = document.getElementById("chat-friend");
-  const list = document.getElementById("chat-friend-list");
-
-  if (!select || !list || !supabaseClient) return;
-
-  list.textContent = "Loading friends...";
-
-  const { data: sessionData } =
-    await supabaseClient.auth.getSession();
-
-  const user = sessionData.session?.user;
-  if (!user) {
-    list.textContent = "Please login first.";
-    return;
-  }
-
-  const { data, error } = await supabaseClient
-    .from("friend_requests")
-    .select("sender_id, receiver_id")
-    .eq("status", "accepted")
-    .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`);
-
-  if (error) {
-    list.textContent = "Friends Error: " + error.message;
-    return;
-  }
-
-  const { data: presenceData, error: presenceError } =
-    await supabaseClient
-      .from("user_presence")
-      .select("user_id, is_online, last_seen");
-
-  if (presenceError) {
-    list.textContent = "Presence Error: " + presenceError.message;
-    return;
-  }
-
-  const selectedFriend = select.value;
-  select.replaceChildren();
-  list.replaceChildren();
-
-  const first = document.createElement("option");
-  first.value = "";
-  first.textContent = "Choose a friend";
-  select.appendChild(first);
-
-  if (!data || data.length === 0) {
-    list.textContent = "No friends yet. 💜";
-    return;
-  }
-
-  for (const request of data) {
-    const friendId = request.sender_id === user.id
-      ? request.receiver_id
-      : request.sender_id;
-
-    const { data: profile } = await supabaseClient
-      .from("profiles")
-      .select("username")
-      .eq("id", friendId)
-      .maybeSingle();
-
-    const username = profile?.username || "Unknown";
-
-    const presence = (presenceData || [])
-      .find(p => p.user_id === friendId);
-
-    const isOnline = !!(
-      presence?.is_online &&
-      presence.last_seen &&
-      Date.now() - new Date(presence.last_seen).getTime() < 60000
-    );
-
-    const option = document.createElement("option");
-    option.value = friendId;
-    option.textContent = "@" + username;
-    select.appendChild(option);
-
-    const card = document.createElement("div");
-
-    card.style.cssText = `
-      display:flex;
-      align-items:center;
-      gap:12px;
-      padding:13px;
-      margin:10px 0;
-      background:#211333;
-      border:1px solid #49305d;
-      border-radius:14px;
-      cursor:pointer;
-      color:white;
-    `;
-
-    const avatar = document.createElement("div");
-    avatar.textContent = username.charAt(0).toUpperCase();
-
-    avatar.style.cssText = `
-      width:48px;
-      height:48px;
-      min-width:48px;
-      border-radius:50%;
-      background:linear-gradient(135deg,#9b59d0,#542477);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size:21px;
-      font-weight:bold;
-    `;
-
-    const info = document.createElement("div");
-    info.style.flex = "1";
-
-    const name = document.createElement("div");
-    name.textContent = "@" + username;
-    name.style.fontWeight = "bold";
-
-    const status = document.createElement("div");
-    status.textContent = isOnline ? "● Online" : "○ Offline";
-    status.style.cssText = `
-      font-size:12px;
-      margin-top:5px;
-      color:${isOnline ? "#48e58b" : "#aaa"};
-    `;
-
-    info.append(name, status);
-    card.append(avatar, info);
-
-    const arrow = document.createElement("span");
-    arrow.textContent = "›";
-    arrow.style.fontSize = "25px";
-    card.appendChild(arrow);
-
-    card.onclick = function () {
-      select.value = friendId;
-      window.loadDirectChat();
-    };
-
-    list.appendChild(card);
-  }
-
-  if (selectedFriend) {
-    select.value = selectedFriend;
-  }
-};
-
-window.loadDirectChat = async function () {
-  const select = document.getElementById("chat-friend");
-  const box = document.getElementById("chat-messages");
-  const typing = document.getElementById("typing-indicator");
-  const input = document.getElementById("chat-message");
-  const friendId = select.value;
-
-  if (!friendId) {
-    box.textContent = "Select a friend to start chatting.";
-    if (typing) typing.textContent = "";
-    return;
-  }
-
-  const { data: sessionData } =
-    await supabaseClient.auth.getSession();
-
-  const user = sessionData.session?.user;
-  if (!user) return;
-
-  const chatKey = `${user.id}:${friendId}`;
-
-  if (window.directChatKey !== chatKey) {
-    if (window.directChatChannel) {
-      await supabaseClient.removeChannel(
-        window.directChatChannel
-      );
+      row.append(info, accept, reject);
+      container.appendChild(row);
     }
 
-    if (window.typingChannel) {
-      await supabaseClient.removeChannel(
-        window.typingChannel
-      );
-    }
-
-    window.directChatKey = chatKey;
-
-    window.directChatChannel = supabaseClient
-      .channel("direct-chat-" + user.id + "-" + friendId)
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "direct_messages"
-        },
-        (payload) => {
-          const msg = payload.new;
-
-          if (
-            (msg.sender_id === user.id &&
-             msg.receiver_id === friendId) ||
-            (msg.sender_id === friendId &&
-             msg.receiver_id === user.id)
-          ) {
-            window.loadDirectChat();
-          }
-        }
-      )
-      .subscribe();
-
-    window.typingChannel = supabaseClient
-      .channel("typing-" + user.id + "-" + friendId)
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "typing_status",
-          filter: "friend_id=eq." + user.id
-        },
-        (payload) => {
-          const status = payload.new;
-
-          if (
-            status &&
-            status.user_id === friendId &&
-            status.friend_id === user.id
-          ) {
-            if (typing) {
-              typing.textContent = status.is_typing
-                ? "Friend is typing... 💜"
-                : "";
-            }
-          }
-        }
-      )
-      .subscribe();
+  } catch (error) {
+    container.textContent =
+      "Requests error: " + error.message;
   }
-
-  if (input) {
-    input.oninput = async function () {
-      const isTyping = input.value.trim().length > 0;
-
-      await supabaseClient
-        .from("typing_status")
-        .upsert({
-          user_id: user.id,
-          friend_id: friendId,
-          is_typing: isTyping,
-          updated_at: new Date().toISOString()
-        }, {
-          onConflict: "user_id"
-        });
-
-      clearTimeout(window.typingTimer);
-
-      if (isTyping) {
-        window.typingTimer = setTimeout(async () => {
-          await supabaseClient
-            .from("typing_status")
-            .upsert({
-              user_id: user.id,
-              friend_id: friendId,
-              is_typing: false,
-              updated_at: new Date().toISOString()
-            }, {
-              onConflict: "user_id"
-            });
-        }, 2500);
-      }
-    };
-  }
-
-  const { data, error } = await supabaseClient
-    .from("direct_messages")
-    .select("*")
-    .or(
-      `and(sender_id.eq.${user.id},receiver_id.eq.${friendId}),and(sender_id.eq.${friendId},receiver_id.eq.${user.id})`
-    )
-    .order("created_at", { ascending: true });
-
-  if (error) {
-    box.textContent = "Chat Error: " + error.message;
-    return;
-  }
-
-  box.replaceChildren();
-
-  if (!data || data.length === 0) {
-    box.textContent = "No messages yet. Say hello! 💜";
-    return;
-  }
-
-  
-for (const message of data) {
-  const isMine = message.sender_id === user.id;
-
-  const row = document.createElement("div");
-  row.style.cssText = `
-    display:flex;
-    justify-content:${isMine ? "flex-end" : "flex-start"};
-    width:100%;
-    margin:10px 0;
-  `;
-
-  const item = document.createElement("div");
-
-  item.style.cssText = `
-    max-width:78%;
-    padding:11px 15px;
-    border-radius:${isMine
-      ? "16px 16px 4px 16px"
-      : "16px 16px 16px 4px"};
-    background:${isMine ? "#8738c5" : "#352344"};
-    color:white;
-    font-size:14px;
-    line-height:1.5;
-    overflow-wrap:anywhere;
-    box-shadow:0 2px 8px rgba(0,0,0,0.2);
-  `;
-
-  item.textContent = message.content;
-
-  row.appendChild(item);
-  box.appendChild(row);
 }
 
-box.scrollTop = box.scrollHeight;
-  
-};
-window.sendDirectMessage = async function () {
-  const select = document.getElementById("chat-friend");
-  const input = document.getElementById("chat-message");
 
-  const friendId = select.value;
-  const content = input.value.trim();
+// =====================================
+// ACCEPT / REJECT REQUEST
+// =====================================
 
-  if (!friendId) {
-    alert("Please select a friend.");
-    return;
+async function respondFriendRequest(requestId, status) {
+  try {
+    const { error } = await supabaseClient
+      .from("friend_requests")
+      .update({ status: status })
+      .eq("id", requestId)
+      .eq("receiver_id", currentUser.id);
+
+    if (error) throw error;
+
+    await loadFriendRequests();
+    await loadFriends();
+
+  } catch (error) {
+    alert("Request update error: " + error.message);
   }
-    if (!content) return;
+}
 
-  const { data: sessionData } =
-    await supabaseClient.auth.getSession();
 
-  const user = sessionData.session?.user;
-  if (!user) return;
+// =====================================
+// LOAD ACCEPTED FRIENDS
+// =====================================
 
-  const { error } = await supabaseClient
-    .from("direct_messages")
-    .insert({
-      sender_id: user.id,
-      receiver_id: friendId,
-      content: content
-    });
+async function loadFriends() {
+  if (!currentUser) return;
 
-  if (error) {
-    alert("Message Error: " + error.message);
-    return;
-  }
-await supabaseClient
-  .from("typing_status")
-  .upsert({
-    user_id: user.id,
-    friend_id: friendId,
-    is_typing: false,
-    updated_at: new Date().toISOString()
-  }, {
-    onConflict: "user_id"
-  });
-  input.value = "";
-  await window.loadDirectChat();
-};
-  // PREMIKA INCOMING FRIEND REQUESTS
-window.loadFriendRequests = async function () {
-  const container = document.getElementById("incoming-requests");
+  const container = $("friends-list");
 
-  if (!container || !supabaseClient) return;
+  try {
+    const { data, error } = await supabaseClient
+      .from("friend_requests")
+      .select("id, sender_id, receiver_id")
+      .eq("status", "accepted")
+      .or(
+        `sender_id.eq.${currentUser.id},receiver_id.eq.${currentUser.id}`
+      );
 
-  container.textContent = "Loading requests...";
+    if (error) throw error;
 
-  const { data: sessionData } =
-    await supabaseClient.auth.getSession();
+    container.innerHTML = "";
 
-  const user = sessionData.session?.user;
-
-  if (!user) {
-    container.textContent = "Please login first.";
-    return;
-  }
-
-  const { data, error } = await supabaseClient
-    .from("friend_requests")
-    .select("id, sender_id, status")
-    .eq("receiver_id", user.id)
-    .eq("status", "pending");
-
-  if (error) {
-    container.textContent = "Error: " + error.message;
-    return;
-  }
-
-  container.replaceChildren();
-
-  if (!data || data.length === 0) {
-    container.textContent = "No incoming requests.";
-    return;
-  }
-
-  for (const request of data) {
-    const { data: profile } = await supabaseClient
-      .from("profiles")
-      .select("username")
-      .eq("id", request.sender_id)
-      .maybeSingle();
-
-    const item = document.createElement("div");
-    item.style.padding = "12px";
-    item.style.margin = "8px 0";
-    item.style.background = "#211333";
-    item.style.borderRadius = "10px";
-
-    const name = document.createElement("p");
-    name.textContent = "@" + (profile?.username || "Unknown user");
-
-    const accept = document.createElement("button");
-    accept.textContent = "Accept";
-
-    const reject = document.createElement("button");
-    reject.textContent = "Reject";
-
-    async function respond(status) {
-      accept.disabled = true;
-      reject.disabled = true;
-
-      const { error } = await supabaseClient
-        .from("friend_requests")
-        .update({ status })
-        .eq("id", request.id)
-        .eq("receiver_id", user.id)
-        .eq("status", "pending");
-
-      if (error) {
-        alert("Error: " + error.message);
-        accept.disabled = false;
-        reject.disabled = false;
-        return;
-      }
-
-      item.remove();
-      if (!container.children.length) {
-        container.textContent = "No incoming requests.";
-      }
+    if (!data || data.length === 0) {
+      container.innerHTML =
+        '<div class="empty-state">No friends yet.</div>';
+      return;
     }
 
-    accept.onclick = () => respond("accepted");
-    reject.onclick = () => respond("rejected");
+    for (const request of data) {
+      const friendId =
+        request.sender_id === currentUser.id
+          ? request.receiver_id
+          : request.sender_id;
 
-    item.append(name, accept, reject);
-    container.appendChild(item);
+      const { data: person, error: personError } =
+        await supabaseClient
+          .from("profiles")
+          .select("username, display_name")
+          .eq("id", friendId)
+          .maybeSingle();
+
+      if (personError) throw personError;
+      if (!person) continue;
+
+      const row = document.createElement("div");
+      row.className = "user-row";
+
+      const info = document.createElement("div");
+      info.className = "user-info";
+
+      const name = document.createElement("strong");
+      name.textContent =
+        person.display_name || person.username;
+
+      const username = document.createElement("small");
+      username.textContent = "@" + person.username;
+
+      info.append(name, username);
+
+      const button = document.createElement("button");
+      button.className = "secondary-btn";
+      button.textContent = "Message";
+
+      button.addEventListener("click", () => {
+        openChat(friendId, person);
+      });
+
+      row.append(info, button);
+      container.appendChild(row);
+    }
+
+  } catch (error) {
+    container.textContent =
+      "Friends error: " + error.message;
   }
-};
-      loadSupabase([
-    "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2",
-    "https://unpkg.com/@supabase/supabase-js@2"
-  ], 0);
-  }})();
+}
+
+
+// =====================================
+// LOAD CHAT FRIENDS
+// =====================================
+
+async function loadChatFriends() {
+  if (!currentUser) return;
+
+  const container = $("chat-friends-list");
+
+  try {
+    const { data, error } = await supabaseClient
+      .from("friend_requests")
+      .select("sender_id, receiver_id")
+      .eq("status", "accepted")
+      .or(
+        `sender_id.eq.${currentUser.id},receiver_id.eq.${currentUser.id}`
+      );
+
+    if (error) throw error;
+
+    container.innerHTML = "";
+
+    if (!data || data.length === 0) {
+      container.innerHTML =
+        '<div class="empty-state">Add friends to start chatting.</div>';
+      return;
+    }
+
+    for (const request of data) {
+      const friendId =
+        request.sender_id === currentUser.id
+          ? request.receiver_id
+          : request.sender_id;
+
+      const { data: person, error: personError } =
+        await supabaseClient
+          .from("profiles")
+          .select("username, display_name")
+          .eq("id", friendId)
+          .maybeSingle();
+
+      if (personError) throw personError;
+      if (!person) continue;
+
+      const row = document.createElement("div");
+      row.className = "user-row";
+
+      const info = document.createElement("div");
+      info.className = "user-info";
+
+      const name = document.createElement("strong");
+      name.textContent =
+        person.display_name || person.username;
+
+      const username = document.createElement("small");
+      username.textContent = "@" + person.username;
+
+      info.append(name, username);
+
+      const button = document.createElement("button");
+      button.className = "primary-btn";
+      button.textContent = "Chat";
+
+      button.addEventListener("click", () => {
+        openChat(friendId, person);
+      });
+
+      row.append(info, button);
+      container.appendChild(row);
+    }
+
+  } catch (error) {
+    container.textContent =
+      "Chat list error: " + error.message;
+  }
+}
+
+
+// =====================================
+// OPEN PRIVATE CHAT
+// =====================================
+
+let activeChatFriendId = null;
+let activeChatSubscription = null;
+
+async function openChat(friendId, person) {
+  activeChatFriendId = friendId;
+
+  $("chat-friends-list").parentElement.classList.add("hidden");
+  $("chat-window").classList.remove("hidden");
+
+  $("chat-friend-name").textContent =
+    person.display_name || person.username || "Friend";
+
+  await loadMessages();
+
+  if (activeChatSubscription) {
+    await supabaseClient.removeChannel(activeChatSubscription);
+  }
+
+  activeChatSubscription = supabaseClient
+    .channel("private-chat-" + currentUser.id + "-" + friendId)
+    .on(
+      "postgres_changes",
+      {
+        event: "INSERT",
+        schema: "public",
+        table: "direct_messages"
+      },
+      payload => {
+        const message = payload.new;
+
+        const isThisChat =
+          (message.sender_id === currentUser.id &&
+           message.receiver_id === activeChatFriendId) ||
+          (message.sender_id === activeChatFriendId &&
+           message.receiver_id === currentUser.id);
+
+        if (isThisChat) {
+          loadMessages();
+        }
+      }
+    )
+    .subscribe();
+}
+
+
+// =====================================
+// LOAD MESSAGES
+// =====================================
+
+async function loadMessages() {
+  if (!currentUser || !activeChatFriendId) return;
+
+  const container = $("messages-container");
+
+  try {
+    const { data, error } = await supabaseClient
+      .from("direct_messages")
+      .select("*")
+      .or(
+        `and(sender_id.eq.${currentUser.id},receiver_id.eq.${activeChatFriendId}),and(sender_id.eq.${activeChatFriendId},receiver_id.eq.${currentUser.id})`
+      )
+      .order("created_at", { ascending: true })
+      .limit(100);
+
+    if (error) throw error;
+
+    container.innerHTML = "";
+
+    if (!data || data.length === 0) {
+      container.innerHTML =
+        '<div class="empty-state">Say hello! 💜</div>';
+      return;
+    }
+
+    for (const message of data) {
+      const bubble = document.createElement("div");
+
+      bubble.style.cssText =
+        "max-width:80%;padding:10px 13px;border-radius:13px;margin:8px 0;overflow-wrap:anywhere;";
+
+      if (message.sender_id === currentUser.id) {
+        bubble.style.marginLeft = "auto";
+        bubble.style.background = "#7136a0";
+      } else {
+        bubble.style.marginRight = "auto";
+        bubble.style.background = "#352044";
+      }
+
+      bubble.textContent = message.content;
+      container.appendChild(bubble);
+    }
+
+    container.scrollTop = container.scrollHeight;
+
+  } catch (error) {
+    container.textContent =
+      "Messages error: " + error.message;
+  }
+}
+
+
+// =====================================
+// SEND MESSAGE
+// =====================================
+
+async function sendMessage() {
+  if (!currentUser || !activeChatFriendId) return;
+
+  const input = $("message-input");
+  const content = input.value.trim();
+
+  if (!content) return;
+
+  const button = $("send-message-btn");
+  button.disabled = true;
+
+  try {
+    const { error } = await supabaseClient
+      .from("direct_messages")
+      .insert({
+        sender_id: currentUser.id,
+        receiver_id: activeChatFriendId,
+        content: content
+      });
+
+    if (error) throw error;
+
+    input.value = "";
+    await loadMessages();
+
+  } catch (error) {
+    alert("Message error: " + error.message);
+  } finally {
+    button.disabled = false;
+  }
+}
+
+
+// =====================================
+// CLOSE CHAT
+// =====================================
+
+async function closeChat() {
+  activeChatFriendId = null;
+
+  if (activeChatSubscription) {
+    await supabaseClient.removeChannel(activeChatSubscription);
+    activeChatSubscription = null;
+  }
+
+  $("chat-window").classList.add("hidden");
+  $("chat-friends-list").parentElement.classList.remove("hidden");
+}
+
+
+// =====================================
+// EVENT LISTENERS
+// =====================================
+
+$("friend-search-btn").addEventListener(
+  "click",
+  searchFriends
+);
+
+$("friend-search-input").addEventListener(
+  "keydown",
+  event => {
+    if (event.key === "Enter") searchFriends();
+  }
+);
+
+$("send-message-btn").addEventListener(
+  "click",
+  sendMessage
+);
+
+$("message-input").addEventListener(
+  "keydown",
+  event => {
+    if (event.key === "Enter") sendMessage();
+  }
+);
+
+$("back-to-chats").addEventListener(
+  "click",
+  closeChat
+);
+
 </script>
 
 </body>
