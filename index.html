@@ -1242,20 +1242,42 @@ window.loadDirectChat = async function () {
     return;
   }
 
-  for (const message of data) {
-    const item = document.createElement("p");
+  
+for (const message of data) {
+  const isMine = message.sender_id === user.id;
 
-    item.style.cssText =
-      "padding:10px;margin:7px;border-radius:10px;background:#211333;color:white;";
+  const row = document.createElement("div");
+  row.style.cssText = `
+    display:flex;
+    justify-content:${isMine ? "flex-end" : "flex-start"};
+    width:100%;
+    margin:10px 0;
+  `;
 
-    item.textContent =
-      (message.sender_id === user.id ? "You: " : "Friend: ") +
-      message.content;
+  const item = document.createElement("div");
 
-    box.appendChild(item);
-  }
+  item.style.cssText = `
+    max-width:78%;
+    padding:11px 15px;
+    border-radius:${isMine
+      ? "16px 16px 4px 16px"
+      : "16px 16px 16px 4px"};
+    background:${isMine ? "#8738c5" : "#352344"};
+    color:white;
+    font-size:14px;
+    line-height:1.5;
+    overflow-wrap:anywhere;
+    box-shadow:0 2px 8px rgba(0,0,0,0.2);
+  `;
 
-  box.scrollTop = box.scrollHeight;
+  item.textContent = message.content;
+
+  row.appendChild(item);
+  box.appendChild(row);
+}
+
+box.scrollTop = box.scrollHeight;
+  
 };
 window.sendDirectMessage = async function () {
   const select = document.getElementById("chat-friend");
