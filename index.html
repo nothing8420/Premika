@@ -987,7 +987,10 @@ alert("Supabase Client: " + (supabaseClient ? "Loaded" : "Not Loaded"));
   }
 // SAVE PROFILE BIO
 async function saveProfileBio() {
-  if (!currentUser || !currentProfile) return;
+if (!currentUser || !currentProfile) {
+  alert("User profile load nahi hui!");
+  return;
+}
 
   const bio = $("profile-bio").value.trim();
 
