@@ -951,15 +951,23 @@ window.setMyPresence = async function (isOnline) {
     );
   }
 };
+
 window.loadChatFriends = async function () {
   const select = document.getElementById("chat-friend");
-  if (!select || !supabaseClient) return;
+  const list = document.getElementById("chat-friend-list");
+
+  if (!select || !list || !supabaseClient) return;
+
+  list.textContent = "Loading friends...";
 
   const { data: sessionData } =
     await supabaseClient.auth.getSession();
 
   const user = sessionData.session?.user;
-  if (!user) return;
+  if (!user) {
+    list.textContent = "Please login first.";
+    return;
+  }
 
   const { data, error } = await supabaseClient
     .from("friend_requests")
@@ -968,7 +976,7 @@ window.loadChatFriends = async function () {
     .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`);
 
   if (error) {
-    alert("Friends Error: " + error.message);
+    list.textContent = "Friends Error: " + error.message;
     return;
   }
 
@@ -978,24 +986,25 @@ window.loadChatFriends = async function () {
       .select("user_id, is_online, last_seen");
 
   if (presenceError) {
-    alert("Presence Error: " + presenceError.message);
+    list.textContent = "Presence Error: " + presenceError.message;
     return;
   }
 
-  const presenceMap = new Map(
-    (presenceData || []).map(p => [p.user_id, p.is_online])
-  );
-
   const selectedFriend = select.value;
-
   select.replaceChildren();
+  list.replaceChildren();
 
   const first = document.createElement("option");
   first.value = "";
   first.textContent = "Choose a friend";
   select.appendChild(first);
 
-  for (const request of data || []) {
+  if (!data || data.length === 0) {
+    list.textContent = "No friends yet. 💜";
+    return;
+  }
+
+  for (const request of data) {
     const friendId = request.sender_id === user.id
       ? request.receiver_id
       : request.sender_id;
@@ -1006,28 +1015,89 @@ window.loadChatFriends = async function () {
       .eq("id", friendId)
       .maybeSingle();
 
-const presence = (presenceData || [])
-  .find(p => p.user_id === friendId);
+    const username = profile?.username || "Unknown";
 
-const isOnline = presence
-  ? presence.is_online &&
-    (Date.now() - new Date(presence.last_seen).getTime() < 60000)
-  : false;
+    const presence = (presenceData || [])
+      .find(p => p.user_id === friendId);
+
+    const isOnline = !!(
+      presence?.is_online &&
+      presence.last_seen &&
+      Date.now() - new Date(presence.last_seen).getTime() < 60000
+    );
 
     const option = document.createElement("option");
     option.value = friendId;
-    option.textContent =
-      (isOnline ? "🟢 " : "⚪ ") +
-      "@" + (profile?.username || "Unknown") +
-      (isOnline ? " (Online)" : " (Offline)");
-
+    option.textContent = "@" + username;
     select.appendChild(option);
+
+    const card = document.createElement("div");
+
+    card.style.cssText = `
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding:13px;
+      margin:10px 0;
+      background:#211333;
+      border:1px solid #49305d;
+      border-radius:14px;
+      cursor:pointer;
+      color:white;
+    `;
+
+    const avatar = document.createElement("div");
+    avatar.textContent = username.charAt(0).toUpperCase();
+
+    avatar.style.cssText = `
+      width:48px;
+      height:48px;
+      min-width:48px;
+      border-radius:50%;
+      background:linear-gradient(135deg,#9b59d0,#542477);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:21px;
+      font-weight:bold;
+    `;
+
+    const info = document.createElement("div");
+    info.style.flex = "1";
+
+    const name = document.createElement("div");
+    name.textContent = "@" + username;
+    name.style.fontWeight = "bold";
+
+    const status = document.createElement("div");
+    status.textContent = isOnline ? "● Online" : "○ Offline";
+    status.style.cssText = `
+      font-size:12px;
+      margin-top:5px;
+      color:${isOnline ? "#48e58b" : "#aaa"};
+    `;
+
+    info.append(name, status);
+    card.append(avatar, info);
+
+    const arrow = document.createElement("span");
+    arrow.textContent = "›";
+    arrow.style.fontSize = "25px";
+    card.appendChild(arrow);
+
+    card.onclick = function () {
+      select.value = friendId;
+      window.loadDirectChat();
+    };
+
+    list.appendChild(card);
   }
 
   if (selectedFriend) {
     select.value = selectedFriend;
   }
 };
+
 
 window.loadDirectChat = async function () {
   const select = document.getElementById("chat-friend");
