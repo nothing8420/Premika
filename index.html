@@ -462,9 +462,52 @@ alert("PREMIKA JAVASCRIPT STARTED");
     statusEl.textContent = message;
   }
 
-  
 async function updateUI(user) {
-  document.getElementById("copy-uid-btn")
+  const loggedIn = Boolean(user);
+
+  authSection.classList.toggle("hidden", loggedIn);
+  mainApp.classList.toggle("hidden", !loggedIn);
+
+  if (!loggedIn) {
+    profileEmail.textContent = "Log in to show your account.";
+    document.getElementById("profile-display-name").textContent = "Loading Name...";
+    document.getElementById("profile-uid").textContent = "--------";
+    return;
+  }
+
+  profileEmail.textContent = user.email || "Google account connected";
+
+  const { data: profile, error } = await supabaseClient
+    .from("profiles")
+    .select("public_uid, display_name")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  if (error) {
+    profileStatus.textContent = "Profile Error: " + error.message;
+    return;
+  }
+
+  if (!profile) {
+    profileStatus.textContent = "Profile not found.";
+    return;
+  }
+
+  document.getElementById("profile-display-name").textContent =
+    profile.display_name || "User";
+
+  document.getElementById("profile-uid").textContent =
+    profile.public_uid || "Not assigned";
+
+  document.getElementById("edit-display-name").value =
+    profile.display_name || "";
+
+  const avatar = document.getElementById("profile-avatar");
+  avatar.textContent =
+    (profile.display_name || "U").charAt(0).toUpperCase();
+}
+
+document.getElementById("copy-uid-btn")
   .addEventListener("click", async function () {
     const uid = document.getElementById("profile-uid").textContent;
 
@@ -480,11 +523,7 @@ async function updateUI(user) {
       alert("UID copy nahi ho saki. Dobara try karo.");
     }
   });
-  async function updateUI(user) {
-  // Profile loading code
-}
-
-// YAHAN COPY UID CODE PASTE HOGA
+  
 
 async function googleLogin() {
   const loggedIn = Boolean(user);
@@ -694,28 +733,16 @@ window.setMyPresence = async function () {
   window.loadChatFriends();
     }
     if (id === "friends") {
-  if (window.loadFriendRequests) {
-    window.loadFriendRequests();
-  }
+alert("UID copy nahi ho saki. Dobara try karo.");
     }
-  };
+  });
+  
 
-  window.demoNotice = function () {
-    alert("This is a demo feature. Backend setup is required.");
-  };
+async function googleLogin() {
+  const loggedIn = Boolean(user);
 
-  loadSupabase([
-    "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2",
-    "https://unpkg.com/@supabase/supabase-js@2"
-  ], 0);
-
-// PREMİKA USERNAME SETUP
-if (!window.__premikaUsernameStarted) {
-  window.__premikaUsernameStarted = true;
-
-  function showUsernameSetup(user) {
-    if (!user || !supabaseClient) return;
-
+  authSection.classList.toggle("hidden", loggedIn);
+  mainApp.classList.toggle("hidden", !loggedIn);
     supabaseClient
       .from("profiles")
       .select("id, username")
