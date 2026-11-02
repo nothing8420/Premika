@@ -962,7 +962,7 @@ window.loadChatFriends = async function () {
   const { data: presenceData, error: presenceError } =
     await supabaseClient
       .from("user_presence")
-      .select("user_id, is_online");
+      .select("user_id, is_online, last_seen");
 
   if (presenceError) {
     alert("Presence Error: " + presenceError.message);
