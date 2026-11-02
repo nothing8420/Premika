@@ -216,7 +216,7 @@ button:disabled { opacity:.55; cursor:wait; }
 <section class="auth" id="auth-section">
   <h2>💜 Premika Login</h2>
   <p>Welcome to your social universe. Sign in securely with Google.</p>
-
+  
   <button class="primary" id="google-login-btn" type="button">
     🌐 Continue with Google
   </button>
@@ -348,7 +348,7 @@ button:disabled { opacity:.55; cursor:wait; }
     <p id="typing-indicator"
       style="color:#d9a7ff;font-size:13px;margin:5px;">
     </p>
-
+    
     <input type="text"
       id="chat-message"
       placeholder="Write your message..."
@@ -505,7 +505,7 @@ document.getElementById("copy-uid-btn")
       alert("UID abhi load nahi hui.");
       return;
     }
-
+    
     try {
       await navigator.clipboard.writeText(uid);
       alert("Premika UID copied! 💜");
@@ -699,7 +699,6 @@ window.setMyPresence = async function () {
     document.querySelectorAll(".bottom button").forEach(function (btn) {
       btn.classList.remove("selected");
     });
-
     if (button) button.classList.add("selected");
     if (id === "chat" && window.loadChatFriends) {
   window.loadChatFriends();
@@ -896,7 +895,7 @@ data.forEach(function (profile) {
       alert("Please login first.");
       return;
     }
-
+    
     if (user.id === profile.id) {
       button.disabled = false;
       button.textContent = "Add Friend";
@@ -1182,7 +1181,6 @@ window.loadChatFriends = async function () {
   }
 };
 
-
 window.loadDirectChat = async function () {
   const select = document.getElementById("chat-friend");
   const box = document.getElementById("chat-messages");
@@ -1374,8 +1372,7 @@ window.sendDirectMessage = async function () {
     alert("Please select a friend.");
     return;
   }
-
-  if (!content) return;
+    if (!content) return;
 
   const { data: sessionData } =
     await supabaseClient.auth.getSession();
