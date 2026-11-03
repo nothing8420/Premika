@@ -1188,7 +1188,6 @@ async function uploadProfilePicture(file) {
   }
 
   // BUTTON EVENTS
-  alert("BUTTON EVENTS REACHED");
   $("google-login-btn").addEventListener("click", googleLogin);
   $("logout-btn").addEventListener("click", logoutUser);
   $("save-username-btn").addEventListener("click", saveUsername);
@@ -1233,9 +1232,10 @@ $("profile-picture-input").addEventListener("change", function () {
       );
 
     } catch (error) {
-  alert("Startup error: " + error.message);
-  showStatus("Connection error: " + error.message);
-}
+      showStatus("Connection error: " + error.message);
+    }alert("Startup error: " + error.message);
+    
+  }
   // =====================================
   // FRIEND SEARCH
   // =====================================
@@ -1808,10 +1808,9 @@ $("back-to-chats").addEventListener(
 
 // START PREMIKA
 startPremika();
-</script>
+alert("PREMIKA JAVASCRIPT STARTED");
+})();
 
-<script>
-alert("HTML TEST WORKING");
 </script>
 
 </body>
