@@ -1095,10 +1095,11 @@ async function uploadProfilePicture(file) {
     updateProfileDisplay(currentUser, data);
 
     profileStatus("Profile picture updated!");
-
-  } catch (error) {
-    profileStatus("Upload error: " + error.message);
-  }
+alert("Profile picture updated successfully!");
+} catch (error) {
+  alert("PROFILE UPLOAD ERROR:\n" + error.message);
+  profileStatus("Upload error: " + error.message);
+ }
 }
   // COPY UID
   async function copyUID() {
