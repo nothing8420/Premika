@@ -538,8 +538,15 @@ button {
   type="file"
   id="profile-picture-input"
   accept="image/*"
-  style="display:none"
+  style="display:block;margin:10px auto"
 >
+<p
+  id="profile-bio-display"
+  class="small-text"
+  style="margin:10px auto 15px;text-align:center;max-width:280px"
+>
+  No bio added yet.
+</p>
           <p id="profile-username" class="small-text">
             @username
           </p>
@@ -908,6 +915,11 @@ alert("Supabase Client: " + (supabaseClient ? "Loaded" : "Not Loaded"));
     $("profile-email").value = user.email || "";
     $("profile-display-name").textContent = displayName;
     $("profile-username").textContent = "@" + username;
+    // SHOW PROFILE BIO
+   $("profile-bio-display").textContent =
+   profile.bio || "No bio added yet.";
+
+    $("profile-bio").value = profile.bio || "";
     $("display-name-input").value = profile.display_name || "";
 
     $("home-display-name").textContent = displayName;
@@ -916,8 +928,22 @@ alert("Supabase Client: " + (supabaseClient ? "Loaded" : "Not Loaded"));
     $("home-avatar").textContent =
       displayName.charAt(0).toUpperCase();
 
-    $("profile-avatar").textContent =
-      displayName.charAt(0).toUpperCase();
+    const avatar = $("profile-avatar");
+
+if (profile.avatar_url) {
+  avatar.innerHTML = "";
+
+  const img = document.createElement("img");
+  img.src = profile.avatar_url;
+  img.alt = "Profile picture";
+  img.style.width = "100%";
+  img.style.height = "100%";
+  img.style.objectFit = "cover";
+
+  avatar.appendChild(img);
+} else {
+  avatar.textContent = displayName.charAt(0).toUpperCase();
+}
 
     $("profile-uid").value =
       profile.public_uid || user.id;
@@ -987,10 +1013,10 @@ alert("Supabase Client: " + (supabaseClient ? "Loaded" : "Not Loaded"));
   }
 // SAVE PROFILE BIO
 async function saveProfileBio() {
-if (!currentUser || !currentProfile) {
-  alert("User profile load nahi hui!");
-  return;
-}
+  if (!currentUser || !currentProfile) {
+    alert("User profile load nahi hui!");
+    return;
+  }
 
   const bio = $("profile-bio").value.trim();
 
@@ -1005,10 +1031,73 @@ if (!currentUser || !currentProfile) {
     if (error) throw error;
 
     currentProfile = data;
+
+    $("profile-bio-display").textContent =
+      data.bio || "No bio added yet.";
+
+    $("profile-bio").value = data.bio || "";
+
     profileStatus("Bio saved successfully!");
 
   } catch (error) {
     profileStatus("Bio save error: " + error.message);
+  }
+}
+// UPLOAD PROFILE PICTURE
+async function uploadProfilePicture(file) {
+  if (!currentUser || !currentProfile) {
+    alert("Please login first!");
+    return;
+  }
+
+  if (!file || !file.type.startsWith("image/")) {
+    alert("Please select an image.");
+    return;
+  }
+
+  if (file.size > 5 * 1024 * 1024) {
+    alert("Image size 5MB se kam honi chahiye.");
+    return;
+  }
+
+  try {
+    profileStatus("Uploading picture...");
+
+    const extension = file.name.split(".").pop().toLowerCase();
+    const filePath =
+      currentUser.id + "/" + Date.now() + "." + extension;
+
+    const { error: uploadError } = await supabaseClient
+      .storage
+      .from("profile-pictures")
+      .upload(filePath, file);
+
+    if (uploadError) throw uploadError;
+
+    const { data: urlData } = supabaseClient
+      .storage
+      .from("profile-pictures")
+      .getPublicUrl(filePath);
+
+    const avatarUrl = urlData.publicUrl;
+
+    const { data, error } = await supabaseClient
+      .from("profiles")
+      .update({ avatar_url: avatarUrl })
+      .eq("id", currentUser.id)
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    currentProfile = data;
+
+    updateProfileDisplay(currentUser, data);
+
+    profileStatus("Profile picture updated!");
+
+  } catch (error) {
+    profileStatus("Upload error: " + error.message);
   }
 }
   // COPY UID
@@ -1099,11 +1188,21 @@ if (!currentUser || !currentProfile) {
   }
 
   // BUTTON EVENTS
+  alert("BUTTON EVENTS REACHED");
   $("google-login-btn").addEventListener("click", googleLogin);
   $("logout-btn").addEventListener("click", logoutUser);
   $("save-username-btn").addEventListener("click", saveUsername);
   $("save-display-name-btn").addEventListener("click", saveDisplayName);
   $("save-bio-btn").addEventListener("click", saveProfileBio);
+$("profile-picture-input").addEventListener("change", function () {
+  alert("Picture selected!");
+
+  const file = this.files[0];
+
+  if (file) {
+    uploadProfilePicture(file);
+  }
+});
   $("copy-uid-btn").addEventListener("click", copyUID);
 
   // SUPABASE STARTUP
@@ -1134,9 +1233,9 @@ if (!currentUser || !currentProfile) {
       );
 
     } catch (error) {
-      showStatus("Connection error: " + error.message);
-    }
-  }
+  alert("Startup error: " + error.message);
+  showStatus("Connection error: " + error.message);
+}
   // =====================================
   // FRIEND SEARCH
   // =====================================
@@ -1709,9 +1808,10 @@ $("back-to-chats").addEventListener(
 
 // START PREMIKA
 startPremika();
+</script>
 
-})();
-
+<script>
+alert("HTML TEST WORKING");
 </script>
 
 </body>
