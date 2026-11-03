@@ -493,83 +493,160 @@ button {
 
   <h2 class="section-title">Premika Rooms 🎙️</h2>
 
+  <!-- CREATE ROOM -->
   <div class="panel">
-    <h3 class="section-title">Create Your Room</h3>
-    <input id="new-room-name" class="input-field"
-      placeholder="Enter room name">
+    <h3>Create Your Room</h3>
+
+    <input
+      id="new-room-name"
+      class="input-field"
+      placeholder="Enter room name"
+    >
 
     <button id="create-room-btn" class="primary-btn">
       + Create Room
     </button>
   </div>
 
-  <div class="panel" id="active-room">
+  <!-- ACTIVE ROOM -->
+  <div class="panel" id="active-room" style="display:none;">
 
-    <h2 id="active-room-name">🌙 Night Friends</h2>
+    <h2 id="active-room-name">🌙 Your Room</h2>
     <p class="small-text">🎙 Voice Room · 7 Positions</p>
 
-    <div class="room-seats"
-      style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:22px 0">
-
-      <div style="grid-column:1/4;text-align:center">
-        <div class="avatar" style="margin:auto">👑</div>
-        <strong>Owner</strong>
-      </div>
-
-      <div class="user-info">🎧 Seat 1</div>
-      <div class="user-info">🎧 Seat 2</div>
-      <div class="user-info">🎧 Seat 3</div>
-      <div class="user-info">🎧 Seat 4</div>
-      <div class="user-info">🎧 Seat 5</div>
-      <div class="user-info">🎧 Seat 6</div>
-
+    <!-- OWNER -->
+    <div style="text-align:center;margin:25px 0">
+      <div class="avatar" style="margin:auto">👑</div>
+      <strong id="room-owner-name">Room Owner</strong>
     </div>
 
-    <!-- COMPACT AUDIENCE -->
-    <div class="panel">
-      <div style="display:flex;justify-content:space-between">
-        **Audience**
-        <span class="small-text">Listeners</span>
-      </div>
-      <div id="room-audience"
-        style="display:flex;gap:8px;align-items:center;margin-top:10px">
+<!-- SIX PREMIUM SEATS -->
+<div style="
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+  margin:20px 0;
+">
+
+  <div class="user-info" style="text-align:center;padding:16px 5px;border-radius:16px;background:#35234B">
+    <div style="font-size:30px">🎧</div>
+    <strong>Seat 1</strong>
+    <div class="small-text">Empty</div>
+  </div>
+
+  <div class="user-info" style="text-align:center;padding:16px 5px;border-radius:16px;background:#35234B">
+    <div style="font-size:30px">🎧</div>
+    <strong>Seat 2</strong>
+    <div class="small-text">Empty</div>
+  </div>
+
+  <div class="user-info" style="text-align:center;padding:16px 5px;border-radius:16px;background:#35234B">
+    <div style="font-size:30px">🎧</div>
+    <strong>Seat 3</strong>
+    <div class="small-text">Empty</div>
+  </div>
+
+  <div class="user-info" style="text-align:center;padding:16px 5px;border-radius:16px;background:#35234B">
+    <div style="font-size:30px">🎧</div>
+    <strong>Seat 4</strong>
+    <div class="small-text">Empty</div>
+  </div>
+
+  <div class="user-info" style="text-align:center;padding:16px 5px;border-radius:16px;background:#35234B">
+    <div style="font-size:30px">🎧</div>
+    <strong>Seat 5</strong>
+    <div class="small-text">Empty</div>
+  </div>
+
+  <div class="user-info" style="text-align:center;padding:16px 5px;border-radius:16px;background:#35234B">
+    <div style="font-size:30px">🎧</div>
+    <strong>Seat 6</strong>
+    <div class="small-text">Empty</div>
+  </div>
+
+</div>
+
+   <!-- COMPACT AUDIENCE -->
+<div class="panel" style="padding:10px;margin:8px 0">
+  <div style="
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  ">
+    <div style="display:flex;align-items:center;gap:8px">
+      <strong>👥 Audience</strong>
+      <span id="room-audience"
+        style="display:flex;gap:5px">
         <span>👤</span>
         <span>👤</span>
         <span>👤</span>
-        <span class="small-text">View all</span>
-      </div>
+      </span>
+      <span class="small-text">24</span>
     </div>
 
-    <!-- ROOM CHAT -->
-    <div class="panel">
-      <h3 class="section-title">Room Chat 💬</h3>
+    <button class="secondary-btn"
+      style="padding:6px 10px">
+      View all ›
+    </button>
+  </div>
+ </div>
+<!-- LARGE ROOM CHAT -->
+<div class="panel" style="padding:14px;margin-top:10px">
 
-      <div id="room-chat-messages"
-        style="height:300px;overflow-y:auto;padding:10px">
+  <h3>💬 Room Chat</h3>
 
-        <div class="empty-state">
-          Room messages will appear here.
-        </div>
+  <div id="room-chat-messages"
+    style="
+      height:380px;
+      overflow-y:auto;
+      padding:12px;
+      background:rgba(255,255,255,0.04);
+      border-radius:12px;
+      margin-bottom:12px;
+    ">
 
-      </div>
-
-      <div style="display:flex;gap:8px">
-        <input id="room-chat-input"
-          class="input-field"
-          placeholder="Write a message..."
-          style="flex:1;margin:0">
-
-        <button id="room-chat-send" class="primary-btn">
-          Send
-        </button>
-      </div>
+    <div class="empty-state">
+      Welcome to your room!
     </div>
 
-    <!-- VOICE CONTROLS -->
-    <div style="display:flex;justify-content:space-around;padding:15px">
-      <button id="room-mic-btn" class="secondary-btn">🎤 Mic</button>
-      <button id="room-speaker-btn" class="secondary-btn">🔊 Speaker</button>
-      <button id="room-leave-btn" class="danger-btn">Leave</button>
+  </div>
+
+  <div style="display:flex;gap:8px;align-items:center">
+
+    <input
+      id="room-chat-input"
+      class="input-field"
+      placeholder="Write a message..."
+      style="flex:1;margin:0"
+    >
+
+    <button id="room-chat-send" class="primary-btn">
+      ➤
+    </button>
+
+  </div>
+
+</div>
+
+    <!-- CONTROLS -->
+    <div style="
+      display:flex;
+      justify-content:space-around;
+      padding:15px;
+    ">
+
+      <button id="room-mic-btn" class="secondary-btn">
+        🎤 Mic
+      </button>
+
+      <button id="room-speaker-btn" class="secondary-btn">
+        🔊 Speaker
+      </button>
+
+      <button id="room-leave-btn" class="danger-btn">
+        Leave
+      </button>
+
     </div>
 
   </div>
@@ -1895,6 +1972,122 @@ $("back-to-chats").addEventListener(
   "click",
   closeChat
 );
+
+// =====================================
+// ROOM CHAT SYSTEM
+// =====================================
+
+let activeRoomId = null;
+let roomMessagesChannel = null;
+
+// LOAD ROOM MESSAGES
+async function loadRoomMessages(roomId) {
+  const box = $("room-chat-messages");
+  if (!box) return;
+
+  const { data, error } = await supabaseClient
+    .from("room_messages")
+    .select("id, user_id, content, created_at")
+    .eq("room_id", roomId)
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    alert("Chat loading error: " + error.message);
+    return;
+  }
+
+  box.innerHTML = "";
+
+  if (!data || data.length === 0) {
+    box.textContent = "No messages yet. Start chatting!";
+    return;
+  }
+
+  data.forEach(message => {
+    const item = document.createElement("div");
+    item.style.padding = "9px";
+    item.style.marginBottom = "7px";
+    item.style.borderRadius = "10px";
+    item.style.background = "rgba(255,255,255,0.07)";
+
+    const sender = document.createElement("strong");
+    sender.textContent =
+      message.user_id === currentUser.id
+        ? "You"
+        : "Member";
+
+    const content = document.createElement("div");
+    content.textContent = message.content;
+
+    item.appendChild(sender);
+    item.appendChild(content);
+    box.appendChild(item);
+  });
+
+  box.scrollTop = box.scrollHeight;
+}
+
+// OPEN ROOM CHAT
+async function openRoomChat(roomId) {
+  activeRoomId = roomId;
+
+  await loadRoomMessages(roomId);
+
+  if (roomMessagesChannel) {
+    await supabaseClient.removeChannel(roomMessagesChannel);
+  }
+
+  roomMessagesChannel = supabaseClient
+    .channel("room-chat-" + roomId)
+    .on(
+      "postgres_changes",
+      {
+        event: "INSERT",
+        schema: "public",
+        table: "room_messages",
+        filter: "room_id=eq." + roomId
+      },
+      () => loadRoomMessages(roomId)
+    )
+    .subscribe();
+}
+
+// SEND ROOM MESSAGE
+$("room-chat-send").addEventListener("click", async () => {
+  if (!currentUser || !activeRoomId) {
+    alert("Please open a room first.");
+    return;
+  }
+
+  const input = $("room-chat-input");
+  const message = input.value.trim();
+
+  if (!message) return;
+
+  const button = $("room-chat-send");
+  button.disabled = true;
+
+  try {
+    const { error } = await supabaseClient
+      .from("room_messages")
+      .insert({
+        room_id: activeRoomId,
+        user_id: currentUser.id,
+        content: message
+      });
+
+    if (error) throw error;
+
+    input.value = "";
+    await loadRoomMessages(activeRoomId);
+
+  } catch (error) {
+    alert("Message error: " + error.message);
+  } finally {
+    button.disabled = false;
+  }
+});
+
 // =====================================
 // CREATE ROOM
 // =====================================
@@ -1932,11 +2125,25 @@ $("create-room-btn").addEventListener("click", async () => {
 
     if (error) throw error;
 
-    $("active-room-name").textContent = "🌙 " + data.name;
 
-    input.value = "";
+$("active-room-name").textContent = "🌙 " + data.name;
 
-    alert("Room successfully created!");
+$("room-owner-name").textContent =
+  currentProfile?.username || "Room Owner";
+
+input.value = "";
+$("active-room").style.display = "block";
+
+$("room-chat-messages").innerHTML =
+  '<div class="empty-state">Welcome to ' +
+  data.name +
+  '!</div>';
+
+activeRoomId = data.id;
+await openRoomChat(data.id);
+
+alert("Room successfully created!");
+
 
   } catch (error) {
     alert("Room error: " + error.message);
