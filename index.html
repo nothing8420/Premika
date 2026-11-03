@@ -1239,6 +1239,7 @@ $("profile-picture-input").addEventListener("change", function () {
   // =====================================
   // FRIEND SEARCH
   // =====================================
+
 async function searchFriends() {
   if (!currentUser) return;
 
@@ -1258,16 +1259,40 @@ async function searchFriends() {
     '<div class="empty-state">Searching...</div>';
 
   try {
-    const { data, error } = await supabaseClient
+    const usernameRequest = supabaseClient
       .from("profiles")
       .select("id, username, display_name, public_uid")
       .ilike("username", "%" + search + "%")
       .neq("id", currentUser.id)
       .limit(20);
 
-    if (error) throw error;
+    const uidRequest = /^\d+$/.test(search)
+      ? supabaseClient
+          .from("profiles")
+          .select("id, username, display_name, public_uid")
+          .eq("public_uid", search)
+          .neq("id", currentUser.id)
+          .limit(20)
+      : Promise.resolve({ data: [], error: null });
 
-    if (!data || data.length === 0) {
+    const [usernameResult, uidResult] = await Promise.all([
+      usernameRequest,
+      uidRequest
+    ]);
+
+    if (usernameResult.error) throw usernameResult.error;
+    if (uidResult.error) throw uidResult.error;
+
+    const data = [
+      ...new Map(
+        [
+          ...(usernameResult.data || []),
+          ...(uidResult.data || [])
+        ].map(person => [person.id, person])
+      ).values()
+    ].slice(0, 20);
+
+    if (data.length === 0) {
       results.innerHTML =
         '<div class="empty-state">No users found.</div>';
       return;
@@ -1287,7 +1312,9 @@ async function searchFriends() {
         person.display_name || person.username;
 
       const username = document.createElement("small");
-      username.textContent = "@" + person.username;
+      username.textContent =
+        "@" + person.username +
+        (person.public_uid ? " · UID: " + person.public_uid : "");
 
       info.append(name, username);
 
