@@ -508,6 +508,15 @@ button {
     </button>
   </div>
 
+<!-- PUBLIC ROOMS LIST -->
+<div class="panel">
+  <h3>🌍 Discover Public Rooms</h3>
+
+  <div id="public-rooms-list">
+    <p class="small-text">Loading rooms...</p>
+  </div>
+</div>
+
   <!-- ACTIVE ROOM -->
   <div class="panel" id="active-room" style="display:none;">
 
@@ -2087,7 +2096,97 @@ $("room-chat-send").addEventListener("click", async () => {
     button.disabled = false;
   }
 });
+// =====================================
+// LOAD PUBLIC ROOMS
+// =====================================
 
+async function loadPublicRooms() {
+  const box = $("public-rooms-list");
+  if (!box || !currentUser) return;
+
+  box.textContent = "Loading rooms...";
+
+  try {
+    const { data, error } = await supabaseClient
+      .from("rooms")
+      .select("id, name, owner_id, created_at")
+      .eq("is_public", true)
+      .eq("status", "active")
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+
+    box.innerHTML = "";
+
+    if (!data || data.length === 0) {
+      box.textContent = "No public rooms yet.";
+      return;
+    }
+
+    data.forEach(room => {
+      const card = document.createElement("div");
+      card.className = "panel";
+      card.style.marginBottom = "12px";
+
+      const title = document.createElement("h3");
+      title.textContent = "🌙 " + room.name;
+
+      const info = document.createElement("p");
+      info.className = "small-text";
+      info.textContent = "🎙 Public Room";
+
+      const joinBtn = document.createElement("button");
+      joinBtn.className = "primary-btn";
+      joinBtn.textContent = "Join Room";
+
+      joinBtn.onclick = async () => {
+        joinBtn.disabled = true;
+        joinBtn.textContent = "Joining...";
+
+        try {
+          const { error } = await supabaseClient.rpc(
+            "join_room",
+            { _room_id: room.id }
+          );
+
+          if (error) throw error;
+
+          activeRoomId = room.id;
+          $("active-room-name").textContent = "🌙 " + room.name;
+          $("room-owner-name").textContent =
+            room.owner_id === currentUser.id
+              ? (currentProfile?.username || "Room Owner")
+              : "Room Owner";
+
+          $("active-room").style.display = "block";
+
+          await openRoomChat(room.id);
+
+          $("active-room").scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+          });
+
+          alert("You joined the room!");
+
+        } catch (error) {
+          alert("Join error: " + error.message);
+        } finally {
+          joinBtn.disabled = false;
+          joinBtn.textContent = "Join Room";
+        }
+      };
+
+      card.appendChild(title);
+      card.appendChild(info);
+      card.appendChild(joinBtn);
+      box.appendChild(card);
+    });
+
+  } catch (error) {
+    box.textContent = "Rooms loading error: " + error.message;
+  }
+}
 // =====================================
 // CREATE ROOM
 // =====================================
