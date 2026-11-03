@@ -381,18 +381,18 @@ button {
         </button>
       </div>
 
-      <div class="panel">
-        <h3 class="section-title">My Family</h3>
-        <p class="small-text">
-          Join a family and enjoy your community together.
-        </p>
+<div class="panel">
+  <h3 class="section-title">Room Suggestions</h3>
+  <p class="small-text">
+    Discover rooms, meet new people and enjoy voice chat together.
+  </p>
 
-        <button class="secondary-btn"
-          onclick="showPage('family')"
-          style="margin-top:14px">
-          Open Family
-        </button>
-      </div>
+  <button class="secondary-btn"
+    onclick="showPage('room-suggestions')"
+    style="margin-top:14px">
+    Explore Rooms
+  </button>
+</div>
 
     </section>
     
@@ -487,34 +487,31 @@ button {
 
     </section>
 
-    <!-- FAMILY PAGE -->
-    <section id="family" class="page">
 
-      <h2 class="section-title">My Family 🏡</h2>
+<!-- ROOM SUGGESTIONS PAGE -->
+<section id="room-suggestions" class="page">
 
-      <div class="welcome-card">
-        <h2>Welcome to Family</h2>
-        <p>Connect with your family members.</p>
+  <h2 class="section-title">Room Suggestions 🎙️</h2>
+
+  <div class="welcome-card">
+    <h2>Discover Rooms</h2>
+    <p>Meet new people and enjoy voice chat together.</p>
+  </div>
+
+  <div class="panel">
+    <h3 class="section-title">Available Rooms</h3>
+
+    <div id="room-suggestions-list" style="margin-top:15px">
+      <div class="empty-state">
+        No rooms available yet.
       </div>
+    </div>
+  </div>
 
-      <div class="panel">
-        <h3 class="section-title">Family Community</h3>
+</section>
 
-        <p class="small-text">
-          Your family information and members will appear here.
-        </p>
-
-        <div id="family-content" style="margin-top:15px">
-          <div class="empty-state">
-            No family joined yet.
-          </div>
-        </div>
-      </div>
-
-    </section>
-
-    <!-- PROFILE PAGE -->
-    <section id="profile" class="page">
+<!-- PROFILE PAGE -->
+<section id="profile" class="page">
 
       <h2 class="section-title">My Profile 👤</h2>
 
@@ -648,11 +645,11 @@ button {
       Chat
     </button>
 
-    <button class="nav-btn" data-page="family"
-      onclick="showPage('family',this)">
-      <span class="nav-icon">⌂</span>
-      Family
-    </button>
+<button class="nav-btn" data-page="room-suggestions"
+  onclick="showPage('room-suggestions',this)">
+  <span class="nav-icon">🎙</span>
+  Rooms
+</button>
 
     <button class="nav-btn" data-page="profile"
       onclick="showPage('profile',this)">
