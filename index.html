@@ -2213,20 +2213,45 @@ $("create-room-btn").addEventListener("click", async () => {
 
   button.disabled = true;
   button.textContent = "Creating...";
-
   try {
-    const { data, error } = await supabaseClient
-      .from("rooms")
-      .insert({
-        name: roomName,
-        owner_id: currentUser.id,
-        is_public: true,
-        status: "active"
-      })
-      .select()
-      .single();
+    const { data: existingRoom, error: checkError } =
+      await supabaseClient
+        .from("rooms")
+        .select("id")
+        .eq("owner_id", currentUser.id)
+        .limit(1);
 
-    if (error) throw error;
+    if (checkError) throw checkError;
+
+if (existingRoom && existingRoom.length > 0) {
+  alert("You can create only ONE room!");
+
+  button.disabled = false;
+  button.textContent = "+ Create Room";
+  return;
+}
+
+} catch (error) {
+  alert("Room check error: " + error.message);
+
+  button.disabled = false;
+  button.textContent = "+ Create Room";
+  return;
+}
+
+try {
+  const { data, error } = await supabaseClient
+    .from("rooms")
+    .insert({
+      name: roomName,
+      owner_id: currentUser.id,
+      is_public: true,
+      status: "active"
+    })
+    .select()
+    .single();
+
+  if (error) throw error;
 
 
 $("active-room-name").textContent = "🌙 " + data.name;
