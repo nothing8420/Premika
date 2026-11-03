@@ -1029,6 +1029,63 @@ async function saveProfileBio() {
     profileStatus("Bio save error: " + error.message);
   }
 }
+// UPLOAD PROFILE PICTURE
+async function uploadProfilePicture(file) {
+  if (!currentUser || !currentProfile) {
+    alert("Please login first!");
+    return;
+  }
+
+  if (!file || !file.type.startsWith("image/")) {
+    alert("Please select an image.");
+    return;
+  }
+
+  if (file.size > 5 * 1024 * 1024) {
+    alert("Image size 5MB se kam honi chahiye.");
+    return;
+  }
+
+  try {
+    profileStatus("Uploading picture...");
+
+    const extension = file.name.split(".").pop().toLowerCase();
+    const filePath =
+      currentUser.id + "/" + Date.now() + "." + extension;
+
+    const { error: uploadError } = await supabaseClient
+      .storage
+      .from("profile-pictures")
+      .upload(filePath, file);
+
+    if (uploadError) throw uploadError;
+
+    const { data: urlData } = supabaseClient
+      .storage
+      .from("profile-pictures")
+      .getPublicUrl(filePath);
+
+    const avatarUrl = urlData.publicUrl;
+
+    const { data, error } = await supabaseClient
+      .from("profiles")
+      .update({ avatar_url: avatarUrl })
+      .eq("id", currentUser.id)
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    currentProfile = data;
+
+    updateProfileDisplay(currentUser, data);
+
+    profileStatus("Profile picture updated!");
+
+  } catch (error) {
+    profileStatus("Upload error: " + error.message);
+  }
+}
   // COPY UID
   async function copyUID() {
     const uid = $("profile-uid").value;
@@ -1122,6 +1179,13 @@ async function saveProfileBio() {
   $("save-username-btn").addEventListener("click", saveUsername);
   $("save-display-name-btn").addEventListener("click", saveDisplayName);
   $("save-bio-btn").addEventListener("click", saveProfileBio);
+  $("profile-picture-input").addEventListener("change", function () {
+  const file = this.files[0];
+
+  if (file) {
+    uploadProfilePicture(file);
+  }
+});
   $("copy-uid-btn").addEventListener("click", copyUID);
 
   // SUPABASE STARTUP
