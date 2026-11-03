@@ -1095,11 +1095,10 @@ async function uploadProfilePicture(file) {
     updateProfileDisplay(currentUser, data);
 
     profileStatus("Profile picture updated!");
-alert("Profile picture updated successfully!");
-} catch (error) {
-  alert("PROFILE UPLOAD ERROR:\n" + error.message);
-  profileStatus("Upload error: " + error.message);
- }
+
+  } catch (error) {
+    profileStatus("Upload error: " + error.message);
+  }
 }
   // COPY UID
   async function copyUID() {
@@ -1809,10 +1808,9 @@ $("back-to-chats").addEventListener(
 
 // START PREMIKA
 startPremika();
-</script>
+alert("PREMIKA JAVASCRIPT STARTED");
+})();
 
-<script>
-alert("HTML TEST WORKING");
 </script>
 
 </body>
