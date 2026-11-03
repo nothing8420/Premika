@@ -1275,8 +1275,12 @@ async function uploadProfilePicture(file) {
     const selectedPage = $(pageId);
 
     if (selectedPage) {
-      selectedPage.classList.add("active");
-    }
+  selectedPage.classList.add("active");
+}
+
+if (pageId === "room-suggestions") {
+  loadPublicRooms();
+}
 
     document.querySelectorAll(".nav-btn").forEach(nav => {
       nav.classList.remove("active");
