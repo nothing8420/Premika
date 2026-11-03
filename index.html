@@ -493,28 +493,21 @@ button {
 
   <h2 class="section-title">Premika Rooms 🎙️</h2>
 
-  <!-- CREATE ROOM -->
   <div class="panel">
     <h3 class="section-title">Create Your Room</h3>
-
-    <input
-      id="new-room-name"
-      class="input-field"
-      placeholder="Enter room name"
-    >
+    <input id="new-room-name" class="input-field"
+      placeholder="Enter room name">
 
     <button id="create-room-btn" class="primary-btn">
       + Create Room
     </button>
   </div>
 
-  <!-- ACTIVE ROOM -->
   <div class="panel" id="active-room">
 
     <h2 id="active-room-name">🌙 Night Friends</h2>
     <p class="small-text">🎙 Voice Room · 7 Positions</p>
 
-    <!-- OWNER + 6 SEATS -->
     <div class="room-seats"
       style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:22px 0">
 
@@ -535,18 +528,15 @@ button {
     <!-- COMPACT AUDIENCE -->
     <div class="panel">
       <div style="display:flex;justify-content:space-between">
-        <strong>Audience</strong>
+        **Audience**
         <span class="small-text">Listeners</span>
       </div>
-
       <div id="room-audience"
         style="display:flex;gap:8px;align-items:center;margin-top:10px">
-
         <span>👤</span>
         <span>👤</span>
         <span>👤</span>
         <span class="small-text">View all</span>
-
       </div>
     </div>
 
@@ -564,12 +554,10 @@ button {
       </div>
 
       <div style="display:flex;gap:8px">
-        <input
-          id="room-chat-input"
+        <input id="room-chat-input"
           class="input-field"
           placeholder="Write a message..."
-          style="flex:1;margin:0"
-        >
+          style="flex:1;margin:0">
 
         <button id="room-chat-send" class="primary-btn">
           Send
@@ -579,19 +567,9 @@ button {
 
     <!-- VOICE CONTROLS -->
     <div style="display:flex;justify-content:space-around;padding:15px">
-
-      <button id="room-mic-btn" class="secondary-btn">
-        🎤 Mic
-      </button>
-
-      <button id="room-speaker-btn" class="secondary-btn">
-        🔊 Speaker
-      </button>
-
-      <button id="room-leave-btn" class="danger-btn">
-        Leave
-      </button>
-
+      <button id="room-mic-btn" class="secondary-btn">🎤 Mic</button>
+      <button id="room-speaker-btn" class="secondary-btn">🔊 Speaker</button>
+      <button id="room-leave-btn" class="danger-btn">Leave</button>
     </div>
 
   </div>
@@ -1917,7 +1895,57 @@ $("back-to-chats").addEventListener(
   "click",
   closeChat
 );
+// =====================================
+// CREATE ROOM
+// =====================================
 
+$("create-room-btn").addEventListener("click", async () => {
+
+  if (!currentUser) {
+    alert("Please login first.");
+    return;
+  }
+
+  const input = $("new-room-name");
+  const button = $("create-room-btn");
+  const roomName = input.value.trim();
+
+  if (roomName.length < 3 || roomName.length > 40) {
+    alert("Room name 3 se 40 characters ka hona chahiye.");
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = "Creating...";
+
+  try {
+    const { data, error } = await supabaseClient
+      .from("rooms")
+      .insert({
+        name: roomName,
+        owner_id: currentUser.id,
+        is_public: true,
+        status: "active"
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    $("active-room-name").textContent = "🌙 " + data.name;
+
+    input.value = "";
+
+    alert("Room successfully created!");
+
+  } catch (error) {
+    alert("Room error: " + error.message);
+
+  } finally {
+    button.disabled = false;
+    button.textContent = "+ Create Room";
+  }
+});
 // START PREMIKA
 startPremika();
 alert("PREMIKA JAVASCRIPT STARTED");
