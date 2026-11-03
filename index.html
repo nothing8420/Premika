@@ -538,7 +538,7 @@ button {
   type="file"
   id="profile-picture-input"
   accept="image/*"
-  style="display:block;margin:10px auto"
+  style="display:none"
 >
 <p
   id="profile-bio-display"
@@ -928,22 +928,8 @@ alert("Supabase Client: " + (supabaseClient ? "Loaded" : "Not Loaded"));
     $("home-avatar").textContent =
       displayName.charAt(0).toUpperCase();
 
-    const avatar = $("profile-avatar");
-
-if (profile.avatar_url) {
-  avatar.innerHTML = "";
-
-  const img = document.createElement("img");
-  img.src = profile.avatar_url;
-  img.alt = "Profile picture";
-  img.style.width = "100%";
-  img.style.height = "100%";
-  img.style.objectFit = "cover";
-
-  avatar.appendChild(img);
-} else {
-  avatar.textContent = displayName.charAt(0).toUpperCase();
-}
+    $("profile-avatar").textContent =
+      displayName.charAt(0).toUpperCase();
 
     $("profile-uid").value =
       profile.public_uid || user.id;
@@ -1188,15 +1174,12 @@ async function uploadProfilePicture(file) {
   }
 
   // BUTTON EVENTS
-  alert("BUTTON EVENTS REACHED");
   $("google-login-btn").addEventListener("click", googleLogin);
   $("logout-btn").addEventListener("click", logoutUser);
   $("save-username-btn").addEventListener("click", saveUsername);
   $("save-display-name-btn").addEventListener("click", saveDisplayName);
   $("save-bio-btn").addEventListener("click", saveProfileBio);
-$("profile-picture-input").addEventListener("change", function () {
-  alert("Picture selected!");
-
+  $("profile-picture-input").addEventListener("change", function () {
   const file = this.files[0];
 
   if (file) {
@@ -1233,9 +1216,9 @@ $("profile-picture-input").addEventListener("change", function () {
       );
 
     } catch (error) {
-  alert("Startup error: " + error.message);
-  showStatus("Connection error: " + error.message);
-}
+      showStatus("Connection error: " + error.message);
+    }
+  }
   // =====================================
   // FRIEND SEARCH
   // =====================================
@@ -1808,10 +1791,9 @@ $("back-to-chats").addEventListener(
 
 // START PREMIKA
 startPremika();
-</script>
 
-<script>
-alert("HTML TEST WORKING");
+})();
+
 </script>
 
 </body>
