@@ -943,15 +943,6 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
       <button id="refresh-public-rooms" class="secondary-btn" type="button">↻ Refresh</button>
     </div>
     <p class="small-text">Choose any public room and tap Join to enter.</p>
-    <div class="room-owner-search" style="margin:14px 0 18px">
-      <h3 class="section-title">🔎 Search User Room</h3>
-      <p class="small-text">Username search karo aur us user ka public room dekho.</p>
-      <div style="display:flex;gap:8px;align-items:center">
-        <input id="room-owner-search-input" class="input-field" type="text" placeholder="Enter username (e.g. ali786)" maxlength="40" style="margin:0;flex:1">
-        <button id="room-owner-search-btn" class="primary-btn" type="button">Search</button>
-      </div>
-      <div id="room-owner-search-results" style="margin-top:12px" aria-live="polite"><div class="empty-state">Search a username to find their room.</div></div>
-    </div>
     <div id="public-room-list" class="public-room-list"><div class="room-live-empty">Loading public rooms…</div></div>
     <p id="public-room-status" class="small-text" aria-live="polite"></p>
   </div>
@@ -1097,14 +1088,19 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
       <div id="premika-bff-pending" class="small-text" style="margin-top:10px"></div>
     </section>
 
-    <section class="wallet-preview">
-      <div class="wallet-preview-head"><div><small>PREMIKA WALLET</small><h3>Wallet & Payments</h3></div><span class="wallet-chip">DEMO</span></div>
-      <div class="wallet-balance"><small>Available balance</small><strong>PKR 0.00</strong><span>Payment services will be connected later.</span></div>
-      <div class="wallet-methods">
-        <button type="button" class="wallet-method" data-payment="JazzCash"><b>JC</b><span>JazzCash</span><small>Connect later</small></button>
-        <button type="button" class="wallet-method" data-payment="Easypaisa"><b>EP</b><span>Easypaisa</span><small>Connect later</small></button>
-        <button type="button" class="wallet-method" data-payment="Bank Transfer"><b>BK</b><span>Bank</span><small>Connect later</small></button>
-      </div><p class="wallet-note">Design preview only. No deposits or withdrawals are processed.</p>
+    <section class="wallet-preview" id="premika-wallet-purchase">
+      <div class="wallet-preview-head"><div><small>PREMIKA WALLET</small><h3>Buy Coins</h3></div><span class="wallet-chip">PAYMENT</span></div>
+      <p class="wallet-note">Package select karein, JazzCash ya Easypaisa se payment bhejein, phir Transaction ID submit karein. Admin verification ke baad coins add honge.</p>
+      <label class="small-text" for="wallet-package">Coin Package</label>
+      <select id="wallet-package" class="input-field"><option value="">Loading packages…</option></select>
+      <div class="wallet-methods" style="grid-template-columns:repeat(2,1fr);margin-top:10px">
+        <button type="button" class="wallet-method" data-wallet-provider="JazzCash"><b>JC</b><span>JazzCash</span><small>Select method</small></button>
+        <button type="button" class="wallet-method" data-wallet-provider="Easypaisa"><b>EP</b><span>Easypaisa</span><small>Select method</small></button>
+      </div>
+      <div id="wallet-payment-details" class="wallet-balance" style="display:none;margin-top:12px"><small>Send payment to</small><strong style="font-size:18px">03222469085</strong><span>Account Title: MUHAMMAD HASEEB</span><span id="wallet-selected-provider" style="margin-top:6px"></span></div>
+      <input id="wallet-transaction-id" class="input-field" placeholder="Enter Transaction ID / Reference" maxlength="100" style="margin-top:10px">
+      <button id="wallet-submit-topup" class="primary-btn" type="button" style="width:100%;margin-top:10px">Submit Payment Request</button>
+      <p id="wallet-payment-status" class="wallet-note" aria-live="polite">Payment request admin approval ke baad process hogi.</p>
     </section>
     <hr class="profile-divider">
     <p id="profile-status" class="small-text profile-status">Profile information</p>
@@ -1114,27 +1110,36 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
 
 
 <section id="admin" class="page">
-  <div class="welcome-card"><h2>Premika Admin 💜</h2><p>Manage payments, wallets and community users.</p></div>
+  <div class="welcome-card"><h2>Premika Admin 💜</h2><p>Dashboard, users aur coin payments manage karein.</p></div>
   <div class="panel">
     <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
-      <h2 class="section-title" style="margin:0">Admin Dashboard</h2>
+      <h2 class="section-title" style="margin:0">Admin Panel</h2>
       <button id="admin-refresh-btn" class="secondary-btn" type="button">↻ Refresh</button>
     </div>
-    <div class="admin-stat-grid">
-      <div class="admin-stat"><small>Pending Payments</small><strong id="admin-pending-count">—</strong></div>
-      <div class="admin-stat"><small>Registered Users</small><strong id="admin-user-count">—</strong></div>
+    <div class="admin-tabs">
+      <button class="secondary-btn" type="button" data-admin-tab="dashboard">Dashboard</button>
+      <button class="secondary-btn" type="button" data-admin-tab="users">User Management</button>
+      <button class="secondary-btn" type="button" data-admin-tab="coins">Coins Purchase Method</button>
     </div>
     <p id="admin-status" class="small-text" aria-live="polite">Loading admin data…</p>
-  </div>
-  <div class="panel">
-    <div class="admin-tabs">
-      <button class="secondary-btn" type="button" data-admin-tab="payments">Payments</button>
-      <button class="secondary-btn" type="button" data-admin-tab="users">Users</button>
-      <button class="secondary-btn" type="button" data-admin-tab="packages">Packages</button>
+    <div id="admin-dashboard-tab">
+      <h3 class="section-title">Overview</h3>
+      <div class="admin-stat-grid">
+        <div class="admin-stat"><small>Registered Users</small><strong id="admin-user-count">—</strong></div>
+        <div class="admin-stat"><small>Active Users</small><strong id="admin-active-count">—</strong></div>
+        <div class="admin-stat"><small>Blocked Users</small><strong id="admin-blocked-count">—</strong></div>
+        <div class="admin-stat"><small>Pending Payments</small><strong id="admin-pending-count">—</strong></div>
+      </div>
     </div>
-    <div id="admin-payments-tab"><h3 class="section-title">Payment Requests</h3><div id="admin-payments-list" class="empty-state">Loading requests…</div></div>
     <div id="admin-users-tab" class="admin-hidden"><h3 class="section-title">User Management</h3><input id="admin-user-search" class="input-field" placeholder="Search username or email"><div id="admin-users-list" class="empty-state">Loading users…</div></div>
-    <div id="admin-packages-tab" class="admin-hidden"><h3 class="section-title">Coin Packages</h3><div id="admin-packages-list" class="empty-state">Loading packages…</div></div>
+    <div id="admin-coins-tab" class="admin-hidden">
+      <h3 class="section-title">Payment Account Details</h3>
+      <div class="admin-user-row"><div class="admin-user-copy"><strong>JazzCash</strong><small>Account: 03222469085</small><small>Title: MUHAMMAD HASEEB</small></div></div>
+      <div class="admin-user-row"><div class="admin-user-copy"><strong>Easypaisa</strong><small>Account: 03222469085</small><small>Title: MUHAMMAD HASEEB</small></div></div>
+      <p class="wallet-note">JazzCash aur Easypaisa dono ke liye same account details use hongi.</p>
+      <h3 class="section-title" style="margin-top:18px">Pending Coin Payment Requests</h3><div id="admin-payments-list" class="empty-state">Loading requests…</div>
+      <h3 class="section-title" style="margin-top:18px">Available Coin Packages</h3><div id="admin-packages-list" class="empty-state">Loading packages…</div>
+    </div>
   </div>
 </section>
 
@@ -1607,6 +1612,7 @@ if (profile.avatar_url) {
 
     try {
       await loadProfile(user);
+      await loadWalletCoinPackages();
 
       if (currentProfile && currentProfile.username) {
         await setMyPresence();
@@ -3305,77 +3311,6 @@ async function enterPublicRoom(room) {
   }
 }
 
-// SEARCH A USERNAME AND SHOW THAT USER'S PUBLIC ROOM(S)
-async function searchRoomByUsername() {
-  const input = $("room-owner-search-input");
-  const results = $("room-owner-search-results");
-  if (!currentUser) return showToast("Please login first.");
-  const username = (input?.value || "").trim().replace(/^@/, "").toLowerCase();
-  if (username.length < 3) {
-    results.innerHTML = '<div class="empty-state">Username ke kam az kam 3 characters enter karein.</div>';
-    return;
-  }
-  results.innerHTML = '<div class="empty-state">Searching user and room...</div>';
-  try {
-    const { data: people, error: peopleError } = await supabaseClient
-      .from("profiles")
-      .select("id,username,display_name,avatar_url")
-      .ilike("username", username)
-      .limit(1);
-    if (peopleError) throw peopleError;
-    if (!people?.length) {
-      results.innerHTML = '<div class="empty-state">Is username ka koi user nahi mila.</div>';
-      return;
-    }
-    const person = people[0];
-    const { data: rooms, error: roomsError } = await supabaseClient
-      .from("rooms")
-      .select("id,name,owner_id,is_public,status")
-      .eq("owner_id", person.id)
-      .eq("is_public", true)
-      .order("created_at", { ascending: false });
-    if (roomsError) throw roomsError;
-    results.replaceChildren();
-    const heading = document.createElement("div");
-    heading.className = "small-text";
-    heading.style.marginBottom = "10px";
-    heading.textContent = "User: @" + person.username;
-    results.appendChild(heading);
-    if (!rooms?.length) {
-      const empty = document.createElement("div");
-      empty.className = "empty-state";
-      empty.textContent = "@" + person.username + " ka abhi koi public room nahi hai.";
-      results.appendChild(empty);
-      return;
-    }
-    rooms.forEach(room => {
-      const card = document.createElement("div");
-      card.className = "public-room-card";
-      const copy = document.createElement("div");
-      copy.className = "room-card-copy";
-      const name = document.createElement("strong");
-      name.textContent = "🎙️ " + (room.name || "Premika Room");
-      const meta = document.createElement("small");
-      meta.textContent = (person.display_name || person.username) + " · @" + person.username;
-      copy.append(name, meta);
-      const join = document.createElement("button");
-      join.type = "button";
-      join.className = "primary-btn join-public-room";
-      join.textContent = room.owner_id === currentUser.id ? "Open" : "Join";
-      join.addEventListener("click", () => enterPublicRoom(room));
-      card.append(copy, join);
-      results.appendChild(card);
-    });
-  } catch (error) {
-    console.error("Room username search:", error);
-    results.textContent = "Search error: " + error.message;
-  }
-}
-
-$("room-owner-search-btn")?.addEventListener("click", searchRoomByUsername);
-$("room-owner-search-input")?.addEventListener("keydown", event => {
-  if (event.key === "Enter") searchRoomByUsername();
-});
 $("refresh-public-rooms")?.addEventListener("click", loadPublicRooms);
 
 async function showMyRoom(room) {
@@ -3624,7 +3559,44 @@ window.addEventListener("beforeunload", () => {
 });
 
 
-document.querySelectorAll("[data-payment]").forEach(button=>button.addEventListener("click",()=>showToast(button.dataset.payment+" will be connected in a later update.")));
+// Coin purchase flow (payment is manually verified by an administrator)
+let walletSelectedProvider = "";
+let walletCoinPackages = [];
+async function loadWalletCoinPackages(){
+  const select=$("wallet-package"); if(!select || !supabaseClient) return;
+  try{
+    const {data,error}=await supabaseClient.from("coin_packages").select("id,title,price_pkr,coins,is_active,sort_order").eq("is_active",true).order("sort_order");
+    if(error) throw error;
+    walletCoinPackages=data||[]; select.replaceChildren();
+    if(!walletCoinPackages.length){select.add(new Option("No active packages available",""));return;}
+    select.add(new Option("Select coin package",""));
+    walletCoinPackages.forEach(pkg=>select.add(new Option(`${pkg.title} — ${pkg.coins} coins · PKR ${pkg.price_pkr}`,pkg.id)));
+  }catch(e){select.replaceChildren(new Option("Packages unavailable",""));$("wallet-payment-status").textContent="Packages load nahi huay: "+e.message;}
+}
+document.querySelectorAll("[data-wallet-provider]").forEach(button=>button.addEventListener("click",()=>{
+  walletSelectedProvider=button.dataset.walletProvider;
+  document.querySelectorAll("[data-wallet-provider]").forEach(b=>b.style.borderColor=b===button?"#e2b5ff":"#ffffff16");
+  $("wallet-payment-details").style.display="block";
+  $("wallet-selected-provider").textContent="Selected method: "+walletSelectedProvider;
+}));
+$("wallet-submit-topup")?.addEventListener("click",async()=>{
+  const packageId=$("wallet-package")?.value;
+  const transactionId=$("wallet-transaction-id")?.value.trim();
+  const status=$("wallet-payment-status");
+  if(!currentUser||!supabaseClient)return showToast("Please login first.");
+  if(!packageId)return showToast("Please select a coin package.");
+  if(!walletSelectedProvider)return showToast("JazzCash ya Easypaisa select karein.");
+  if(!transactionId)return showToast("Transaction ID enter karein.");
+  const btn=$("wallet-submit-topup");btn.disabled=true;status.textContent="Submitting payment request…";
+  try{
+    const {error}=await supabaseClient.from("topup_requests").insert({user_id:currentUser.id,package_id:packageId,provider:walletSelectedProvider,transaction_reference:transactionId,status:"pending"});
+    if(error)throw error;
+    status.textContent="Request submit ho gayi. Admin payment verify karke coins add karega.";
+    $("wallet-transaction-id").value="";showToast("Payment request submitted.");
+  }catch(e){status.textContent="Request submit nahi hui: "+e.message;showToast(e.message)}
+  finally{btn.disabled=false;}
+});
+loadWalletCoinPackages();
 $("room-live-list-toggle")?.addEventListener("click",()=>{const side=$("room-live-side");const open=side.classList.toggle("is-open");$("room-live-list-toggle").setAttribute("aria-expanded",String(open));});
 // New in-app room controls and compact room dock
 let confirmResolver=null, editorResolver=null, bgChoice=localStorage.getItem("premika-room-bg")||"purple";
@@ -3791,6 +3763,8 @@ async function loadPremikaAdmin(){
     if(packages.error) throw packages.error;
     const userRows=Array.isArray(users.data)?users.data:[];
     $("admin-user-count").textContent=String(userRows.length);
+    $("admin-active-count").textContent=String(userRows.filter(u=>!u.is_blocked).length);
+    $("admin-blocked-count").textContent=String(userRows.filter(u=>u.is_blocked).length);
     $("admin-pending-count").textContent=String((payments.data||[]).length);
     renderAdminUsers(userRows);renderAdminPayments(payments.data||[]);renderAdminPackages(packages.data||[]);
     $("admin-status").textContent="Admin data updated.";
@@ -3837,7 +3811,7 @@ function renderAdminPackages(rows){
   rows.forEach(p=>{const row=document.createElement("div");row.className="admin-user-row";const copy=document.createElement("div");copy.className="admin-user-copy";const strong=document.createElement("strong");strong.textContent=p.title+" · PKR "+p.price_pkr;const small=document.createElement("small");small.textContent=p.coins+" coins · "+(p.is_active?"Active":"Inactive");copy.append(strong,small);row.append(copy);root.append(row)});
 }
 document.querySelectorAll("[data-admin-tab]").forEach(b=>b.addEventListener("click",()=>{
-  ["payments","users","packages"].forEach(k=>$("admin-"+k+"-tab").classList.toggle("admin-hidden",b.dataset.adminTab!==k));
+  ["dashboard","users","coins"].forEach(k=>$("admin-"+k+"-tab").classList.toggle("admin-hidden",b.dataset.adminTab!==k));
 }));
 $("admin-refresh-btn")?.addEventListener("click",loadPremikaAdmin);
 $("admin-user-search")?.addEventListener("input",e=>{
