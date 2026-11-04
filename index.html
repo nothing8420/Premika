@@ -2673,9 +2673,13 @@ async function leaveVoiceRoom() {
   setVoiceStatus("You left the room");
 }
 $("room-leave-btn").addEventListener("click", async () => {
-  if (await premikaConfirm("Leave room?", "You will leave this voice room.")) {
-    await leaveVoiceRoom();
-  }
+  const confirmed = confirm("Are you sure you want to leave this room?");
+
+  if (!confirmed) return;
+
+  showToast("Leaving room...");
+
+  await leaveVoiceRoom();
 });
 
 
