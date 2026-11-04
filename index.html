@@ -222,6 +222,43 @@ button {
   border-color:var(--accent2);
 }
 
+/* PROFESSIONAL PROFILE DESIGN */
+.profile-card {
+  background:linear-gradient(155deg,#302044,#1d122b 72%);
+  border:1px solid #654580;
+  border-radius:22px;
+  padding:20px;
+  box-shadow:0 14px 34px #0005;
+}
+.profile-hero {
+  text-align:center;
+  padding:12px 8px 20px;
+}
+.profile-avatar-wrap {
+  width:112px;height:112px;margin:0 auto 13px;padding:4px;
+  border-radius:50%;background:linear-gradient(135deg,#f0caff,#963fe0);
+  box-shadow:0 0 24px #a855f755;
+}
+.profile-avatar-wrap .avatar {
+  width:100%;height:100%;border:3px solid #241432;font-size:36px;
+}
+.profile-name {
+  font-size:21px;font-weight:800;margin:4px 0 5px;overflow-wrap:anywhere;
+}
+.profile-handle {
+  display:inline-block;color:#e3baff;background:#ffffff0d;
+  border:1px solid #ffffff18;border-radius:20px;padding:6px 13px;
+  font-size:13px;margin-top:4px;
+}
+.profile-photo-label {color:#d8b4f4;font-size:12px;margin-top:11px;display:inline-block}
+.profile-divider {border:0;border-top:1px solid #ffffff18;margin:16px 0}
+.profile-field-label {display:block;color:#c6b2d8;font-size:12px;font-weight:700;margin:15px 0 5px}
+.profile-username-row {display:flex;gap:8px;align-items:center}
+.profile-username-row .input-field {margin:0;flex:1;min-width:0}
+.profile-action {width:100%;margin-top:10px}
+.profile-textarea {min-height:88px}
+.profile-status {padding:10px 12px;background:#ffffff08;border-radius:10px;min-height:36px}
+
 .bottom-nav {
   position:fixed;
   bottom:0;
@@ -296,6 +333,53 @@ button {
   color:var(--muted);
   font-size:12px;
 }
+
+
+/* PREMIKA PROFESSIONAL UI REFRESH */
+:root{--bg:#0d0816;--panel:#191126;--panel2:#241832;--border:#3b2a50;--accent:#e2b8ff;--accent2:#a855f7;--muted:#b9a9c9}
+body{background:radial-gradient(ellipse at 50% -15%,#38204e 0%,#0d0816 48%);background-attachment:fixed}
+.topbar{background:rgba(17,10,27,.92);backdrop-filter:blur(18px);box-shadow:0 8px 28px #0003}
+.content{max-width:720px;padding:20px 16px 30px}
+.section-title{letter-spacing:-.35px}
+.panel,.profile-card{background:linear-gradient(145deg,rgba(35,24,51,.97),rgba(22,15,33,.98));border:1px solid #49345f;box-shadow:0 12px 32px #0003}
+.panel{border-radius:20px;padding:18px;margin-bottom:17px}
+.welcome-card{position:relative;overflow:hidden;background:linear-gradient(120deg,#63348a,#321b4e 65%,#20122f);border:1px solid #8054a0;box-shadow:0 14px 36px #0004}
+.welcome-card:after{content:"✦";position:absolute;right:20px;top:5px;font-size:76px;color:#fff2}
+.primary-btn,.secondary-btn,.danger-btn,.google-btn{transition:transform .18s,filter .18s,box-shadow .18s}
+.primary-btn{box-shadow:0 7px 18px #a855f733}
+.primary-btn:active,.secondary-btn:active{transform:scale(.97)}
+.input-field{background:#100b19;border-color:#49345f}
+.input-field::placeholder{color:#8f7e9f}
+.user-row{gap:13px;padding:13px 5px;border-bottom:1px solid #ffffff12}
+.user-row:last-child{border-bottom:0}
+.avatar{width:48px;height:48px;border:2px solid #ffffff20;overflow:hidden;box-shadow:0 4px 14px #0003}
+.avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.user-info strong{font-size:14px}
+.user-info small{display:block;margin-top:4px}
+.bottom-nav{background:rgba(20,13,31,.96);backdrop-filter:blur(18px);border-top:1px solid #49345f;padding:11px 4px calc(10px + env(safe-area-inset-bottom));box-shadow:0 -8px 28px #0003}
+.nav-btn{font-weight:700;gap:5px}
+.nav-btn.active{color:#e7c6ff}
+.page.active{animation:pageIn .22s ease}
+@keyframes pageIn{from{opacity:.65;transform:translateY(5px)}to{opacity:1;transform:none}}
+#public-rooms-list>.panel{background:linear-gradient(135deg,#2b1a3d,#1a1126);border-color:#65427e}
+#active-room{background:radial-gradient(circle at top,#43265d,#1b1228 58%);border-color:#8054a0}
+#room-chat-messages,#messages-container{scrollbar-width:thin;scrollbar-color:#76528e transparent}
+#room-chat-input,#message-input{border-radius:24px;padding-left:17px}
+#room-chat-send{width:48px;height:46px;border-radius:50%;font-size:18px}
+.profile-card{padding:22px}
+.profile-avatar-wrap{width:124px;height:124px}
+.profile-photo-label{background:#ffffff0d;border:1px solid #ffffff20;padding:8px 13px;border-radius:20px}
+.profile-action{min-height:45px}
+.user-row .user-info{cursor:pointer}
+.user-row .user-info strong:hover{color:var(--accent)}
+.profile-view-modal{position:fixed;inset:0;z-index:80;background:#08050dcc;backdrop-filter:blur(9px);display:none;align-items:center;justify-content:center;padding:18px}
+.profile-view-card{width:100%;max-width:390px;background:linear-gradient(150deg,#302044,#171020);border:1px solid #76528e;border-radius:25px;padding:24px;box-shadow:0 24px 70px #0009;text-align:center}
+.profile-view-avatar{width:112px;height:112px;border-radius:50%;margin:0 auto 14px;border:4px solid #b875ed;background:#402754;display:grid;place-items:center;font-size:38px;font-weight:900;overflow:hidden}
+.profile-view-avatar img{width:100%;height:100%;object-fit:cover}
+.profile-view-name{font-size:22px;font-weight:900}
+.profile-view-bio{color:#c6b5d5;line-height:1.6;margin:14px 0 20px;overflow-wrap:anywhere}
+.room-seat{background:linear-gradient(145deg,#402956,#241832)!important;border:1px solid #654780;box-shadow:inset 0 1px #ffffff12}
+@media(max-width:420px){.content{padding:15px 12px 25px}.panel{padding:15px}.welcome-card{padding:20px}.profile-card{padding:17px}}
 
 @media(max-width:360px) {
   .nav-btn {
@@ -399,7 +483,7 @@ button {
     <!-- FRIENDS PAGE -->
     <section id="friends" class="page">
 
-      <h2 class="section-title">Friends 👥</h2>
+      <div class="welcome-card"><h2>Friends & Community 👥</h2><p>Find people, manage requests and grow your circle.</p></div>
 
       <div class="panel">
         <h3>Find Friends</h3>
@@ -441,7 +525,7 @@ button {
     <!-- CHAT PAGE -->
     <section id="chat" class="page">
 
-      <h2 class="section-title">Messages 💬</h2>
+      <div class="welcome-card"><h2>Your Messages 💬</h2><p>Stay connected with your friends.</p></div>
 
       <div class="panel">
         <h3 class="section-title">Your Chats</h3>
@@ -491,11 +575,12 @@ button {
 <!-- ROOM SUGGESTIONS PAGE -->
 <section id="room-suggestions" class="page">
 
-  <h2 class="section-title">Premika Rooms 🎙️</h2>
+  <div class="welcome-card room-heading"><h2>Voice Rooms 🎙️</h2><p>Join conversations, meet the community and create your own space.</p></div>
+  <h2 class="section-title">Explore Rooms</h2>
 
   <!-- CREATE ROOM -->
   <div class="panel">
-    <h3>Create Your Room</h3>
+    <h3 class="section-title">＋ Create a Room</h3><p class="small-text">Start a public space and invite the Premika community.</p>
 
     <input
       id="new-room-name"
@@ -510,7 +595,7 @@ button {
 
 <!-- PUBLIC ROOMS LIST -->
 <div class="panel">
-  <h3>🌍 Discover Public Rooms</h3>
+  <h3 class="section-title">🌍 Discover Public Rooms</h3><p class="small-text">Find an active room and join the conversation.</p>
 
   <div id="public-rooms-list">
     <p class="small-text">Loading rooms...</p>
@@ -664,115 +749,46 @@ button {
 
 <!-- PROFILE PAGE -->
 <section id="profile" class="page">
+  <h2 class="section-title">My Profile 👤</h2>
 
-      <h2 class="section-title">My Profile 👤</h2>
-
-      <div class="panel">
-
-        <div style="text-align:center;padding:15px">
-
-<!-- PROFILE PICTURE UPLOAD -->
-<label for="profile-picture-input" style="cursor:pointer">
-  <div
-    class="avatar"
-    id="profile-avatar"
-    style="width:100px;height:100px;margin:auto;font-size:30px;overflow:hidden"
-  >P</div>
-  <p class="small-text" style="margin-top:8px">
-    📷 Change Profile Picture
-  </p>
-</label>
-
-<input
-  type="file"
-  id="profile-picture-input"
-  accept="image/*"
-  style="display:block;margin:10px auto"
->
-<p
-  id="profile-bio-display"
-  class="small-text"
-  style="margin:10px auto 15px;text-align:center;max-width:280px"
->
-  No bio added yet.
-</p>
-          <p id="profile-username" class="small-text">
-            @username
-          </p>
-
+  <div class="profile-card">
+    <div class="profile-hero">
+      <label for="profile-picture-input" style="cursor:pointer">
+        <div class="profile-avatar-wrap">
+          <div class="avatar" id="profile-avatar">P</div>
         </div>
+        <span class="profile-photo-label">📷 Change Profile Picture</span>
+      </label>
+      <input type="file" id="profile-picture-input" accept="image/*" style="display:none">
+      <div id="profile-display-name" class="profile-name">Premika User</div>
+      <div id="profile-username" class="profile-handle">@username</div>
+      <p id="profile-bio-display" class="small-text" style="margin:13px auto 0;max-width:300px;line-height:1.6">No bio added yet.</p>
+    </div>
 
-        <label class="small-text">Email</label>
-        <input
-          id="profile-email"
-          class="input-field"
-          type="text"
-          readonly
-        >
+    <hr class="profile-divider">
 
-        <label class="small-text">Display Name</label>
-        <input
-          id="display-name-input"
-          class="input-field"
-          type="text"
-          placeholder="Your display name"
-          maxlength="30"
-        >
+    <label class="profile-field-label" for="profile-username-field">Username</label>
+    <div class="profile-username-row">
+      <input id="profile-username-field" class="input-field" type="text" readonly value="@username">
+      <button id="copy-username-btn" class="secondary-btn" type="button">Copy</button>
+    </div>
 
-        <button id="save-display-name-btn" class="primary-btn">
-          Save Display Name
-        </button>
-<!-- PROFILE BIO -->
-<label class="small-text" style="display:block;margin-top:18px">
-  About Me / Bio
-</label>
+    <label class="profile-field-label" for="profile-email">Email Address</label>
+    <input id="profile-email" class="input-field" type="text" readonly>
 
-<textarea
-  id="profile-bio"
-  class="input-field"
-  placeholder="Write something about yourself..."
-  maxlength="160"
-  rows="3"
-  style="resize:vertical"
-></textarea>
+    <label class="profile-field-label" for="display-name-input">Display Name</label>
+    <input id="display-name-input" class="input-field" type="text" placeholder="Your display name" maxlength="30">
+    <button id="save-display-name-btn" class="primary-btn profile-action">Save Display Name</button>
 
-<button id="save-bio-btn" class="primary-btn">
-  Save Bio
-</button>
-        <hr style="border-color:var(--border);margin:18px 0">
+    <label class="profile-field-label" for="profile-bio">About Me / Bio</label>
+    <textarea id="profile-bio" class="input-field profile-textarea" placeholder="Write something about yourself..." maxlength="160" rows="3" style="resize:vertical"></textarea>
+    <button id="save-bio-btn" class="primary-btn profile-action">Save Bio</button>
 
-        <label class="small-text">Premika UID</label>
-
-        <div style="display:flex;gap:8px">
-          <input
-            id="profile-uid"
-            class="input-field"
-            type="text"
-            readonly
-            placeholder="Your UID"
-            style="flex:1"
-          >
-
-          <button id="copy-uid-btn" class="secondary-btn">
-            Copy
-          </button>
-        </div>
-
-        <p id="profile-status" class="small-text" style="margin-top:12px">
-          Profile information
-        </p>
-
-        <button
-          id="logout-btn"
-          class="danger-btn"
-          style="width:100%;margin-top:20px"
-        >
-          Logout
-        </button>
-
-      </div>
-
-    </section>
+    <hr class="profile-divider">
+    <p id="profile-status" class="small-text profile-status">Profile information</p>
+    <button id="logout-btn" class="danger-btn profile-action" style="margin-top:18px">Logout</button>
+  </div>
+</section>
 
   </main>
 
@@ -811,6 +827,20 @@ button {
 
   </nav>
 
+</div>
+
+<!-- PUBLIC USER PROFILE VIEW -->
+<div id="user-profile-modal" class="profile-view-modal" role="dialog" aria-modal="true">
+  <div class="profile-view-card">
+    <div id="view-profile-avatar" class="profile-view-avatar">P</div>
+    <div id="view-profile-name" class="profile-view-name">Premika User</div>
+    <div id="view-profile-username" class="profile-handle">@username</div>
+    <p id="view-profile-bio" class="profile-view-bio">No bio added yet.</p>
+    <div style="display:flex;gap:9px">
+      <button id="view-profile-message" class="primary-btn" style="flex:1">Message</button>
+      <button id="close-user-profile" class="secondary-btn" style="flex:1">Close</button>
+    </div>
+  </div>
 </div>
 
 <!-- USERNAME SETUP -->
@@ -1064,6 +1094,7 @@ alert("Supabase Client: " + (supabaseClient ? "Loaded" : "Not Loaded"));
     $("profile-email").value = user.email || "";
     $("profile-display-name").textContent = displayName;
     $("profile-username").textContent = "@" + username;
+    $("profile-username-field").value = "@" + username;
     // SHOW PROFILE BIO
    $("profile-bio-display").textContent =
    profile.bio || "No bio added yet.";
@@ -1074,8 +1105,7 @@ alert("Supabase Client: " + (supabaseClient ? "Loaded" : "Not Loaded"));
     $("home-display-name").textContent = displayName;
     $("home-username").textContent = "@" + username;
 
-    $("home-avatar").textContent =
-      displayName.charAt(0).toUpperCase();
+    setAvatarElement($("home-avatar"), profile.avatar_url, displayName);
 
     const avatar = $("profile-avatar");
 
@@ -1094,9 +1124,6 @@ if (profile.avatar_url) {
   avatar.textContent = displayName.charAt(0).toUpperCase();
 }
 
-    $("profile-uid").value =
-      profile.public_uid || user.id;
- alert("Your UID: " + profile.public_uid);
     profileStatus("Profile loaded successfully.");
   }
 
@@ -1249,20 +1276,18 @@ async function uploadProfilePicture(file) {
     profileStatus("Upload error: " + error.message);
   }
 }
-  // COPY UID
-  async function copyUID() {
-    const uid = $("profile-uid").value;
-
-    if (!uid) {
-      profileStatus("UID abhi available nahi hai.");
+  // COPY USERNAME
+  async function copyUsername() {
+    const username = $("profile-username-field").value;
+    if (!username || username === "@username") {
+      profileStatus("Username abhi available nahi hai.");
       return;
     }
-
     try {
-      await navigator.clipboard.writeText(uid);
-      profileStatus("Premika UID copied!");
+      await navigator.clipboard.writeText(username);
+      profileStatus("Username copied successfully!");
     } catch (error) {
-      profileStatus("UID copy nahi ho saki.");
+      profileStatus("Username copy nahi ho saka.");
     }
   }
 
@@ -1347,15 +1372,13 @@ if (pageId === "room-suggestions") {
   $("save-display-name-btn").addEventListener("click", saveDisplayName);
   $("save-bio-btn").addEventListener("click", saveProfileBio);
 $("profile-picture-input").addEventListener("change", function () {
-  alert("Picture selected!");
-
   const file = this.files[0];
 
   if (file) {
     uploadProfilePicture(file);
   }
 });
-  $("copy-uid-btn").addEventListener("click", copyUID);
+  $("copy-username-btn").addEventListener("click", copyUsername);
 
   // SUPABASE STARTUP
   async function startPremika() {
@@ -1414,7 +1437,7 @@ async function searchFriends() {
   try {
     const usernameRequest = supabaseClient
       .from("profiles")
-      .select("id, username, display_name, public_uid")
+      .select("id, username, display_name, public_uid, avatar_url")
       .ilike("username", "%" + search + "%")
       .neq("id", currentUser.id)
       .limit(20);
@@ -1422,7 +1445,7 @@ async function searchFriends() {
     const uidRequest = /^\d+$/.test(search)
       ? supabaseClient
           .from("profiles")
-          .select("id, username, display_name, public_uid")
+          .select("id, username, display_name, public_uid, avatar_url")
           .eq("public_uid", search)
           .neq("id", currentUser.id)
           .limit(20)
@@ -1465,11 +1488,14 @@ async function searchFriends() {
         person.display_name || person.username;
 
       const username = document.createElement("small");
-      username.textContent =
-        "@" + person.username +
-        (person.public_uid ? " · UID: " + person.public_uid : "");
+      username.textContent = "@" + person.username;
 
       info.append(name, username);
+      info.addEventListener("click", () => viewUserProfile(person.id));
+      const avatar = document.createElement("div");
+      avatar.className = "avatar";
+      setAvatarElement(avatar, person.avatar_url, person.display_name || person.username);
+      row.appendChild(avatar);
 
       const button = document.createElement("button");
       button.className = "primary-btn";
@@ -1566,7 +1592,7 @@ async function loadFriendRequests() {
       const { data: person, error: personError } =
         await supabaseClient
           .from("profiles")
-          .select("username, display_name")
+          .select("id, username, display_name, avatar_url, bio")
           .eq("id", request.sender_id)
           .maybeSingle();
 
@@ -1587,6 +1613,11 @@ async function loadFriendRequests() {
         person?.username ? "@" + person.username : "";
 
       info.append(name, username);
+      info.addEventListener("click", () => viewUserProfile(request.sender_id));
+      const avatar = document.createElement("div");
+      avatar.className = "avatar";
+      setAvatarElement(avatar, person?.avatar_url, person?.display_name || person?.username);
+      row.appendChild(avatar);
 
       const accept = document.createElement("button");
       accept.className = "primary-btn";
@@ -1675,7 +1706,7 @@ async function loadFriends() {
       const { data: person, error: personError } =
         await supabaseClient
           .from("profiles")
-          .select("username, display_name")
+          .select("id, username, display_name, avatar_url, bio")
           .eq("id", friendId)
           .maybeSingle();
 
@@ -1696,6 +1727,11 @@ async function loadFriends() {
       username.textContent = "@" + person.username;
 
       info.append(name, username);
+      info.addEventListener("click", () => viewUserProfile(friendId));
+      const avatar = document.createElement("div");
+      avatar.className = "avatar";
+      setAvatarElement(avatar, person.avatar_url, person.display_name || person.username);
+      row.appendChild(avatar);
 
       const button = document.createElement("button");
       button.className = "secondary-btn";
@@ -1753,7 +1789,7 @@ async function loadChatFriends() {
       const { data: person, error: personError } =
         await supabaseClient
           .from("profiles")
-          .select("username, display_name")
+          .select("id, username, display_name, avatar_url, bio")
           .eq("id", friendId)
           .maybeSingle();
 
@@ -1774,6 +1810,11 @@ async function loadChatFriends() {
       username.textContent = "@" + person.username;
 
       info.append(name, username);
+      info.addEventListener("click", () => viewUserProfile(friendId));
+      const avatar = document.createElement("div");
+      avatar.className = "avatar";
+      setAvatarElement(avatar, person.avatar_url, person.display_name || person.username);
+      row.appendChild(avatar);
 
       const button = document.createElement("button");
       button.className = "primary-btn";
@@ -2129,11 +2170,13 @@ async function loadPublicRooms() {
 
     data.forEach(room => {
       const card = document.createElement("div");
-      card.className = "panel";
+      card.className = "panel room-suggestion-card";
       card.style.marginBottom = "12px";
+      card.style.padding = "18px";
 
       const title = document.createElement("h3");
       title.textContent = "🌙 " + room.name;
+      title.style.marginBottom = "8px";
 
       const info = document.createElement("p");
       info.className = "small-text";
@@ -2142,6 +2185,7 @@ async function loadPublicRooms() {
       const joinBtn = document.createElement("button");
       joinBtn.className = "primary-btn";
       joinBtn.textContent = "Join Room";
+      joinBtn.style.marginTop = "13px";
 
       joinBtn.onclick = async () => {
         joinBtn.disabled = true;
