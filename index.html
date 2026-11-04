@@ -447,6 +447,25 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
 @media(max-width:480px){.content{padding:16px 12px 105px}.panel{padding:15px;border-radius:18px}.welcome-card{padding:21px 18px;border-radius:20px}.welcome-card h2{font-size:21px}.profile-card{padding:17px}.bottom-nav{gap:0}.nav-btn{min-width:0;flex:1;font-size:10px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
 
+
+/* PREMIUM VOICE ROOM LAYOUT */
+.premium-room{position:relative;overflow:hidden;padding:18px!important;border:1px solid #a65ce777!important;border-radius:26px!important;background:radial-gradient(ellipse at 50% 0%,#52236e 0%,#261434 42%,#110b1c 100%)!important;box-shadow:0 18px 48px #0008,inset 0 1px #ffffff18!important}
+.premium-room:before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(130deg,#d78cff0d,transparent 45%,#a855f70d)}
+.room-topline,.room-title-row,.room-stats-row,.room-audience-bar,.room-chat-heading,.room-chat-compose{position:relative;z-index:1}
+.room-topline{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.room-live-pill,.room-seat-count{font-size:10px;font-weight:900;letter-spacing:1px;padding:7px 11px;border-radius:20px;background:#ffffff0d;border:1px solid #ffffff20;color:#efd8ff}
+.room-live-pill{color:#ffb4df;border-color:#f15bb955}.live-dot,.chat-live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#ff4f9a;box-shadow:0 0 10px #ff4f9a;margin-right:6px}
+.room-title-row{display:flex;align-items:center;gap:12px;padding:13px;border-radius:19px;background:#ffffff0a;border:1px solid #ffffff15}
+.room-cover{width:48px;height:48px;flex:none;display:grid;place-items:center;border-radius:15px;background:linear-gradient(145deg,#a64de0,#43205f);font-size:25px;box-shadow:0 0 20px #bb63ed55}
+.room-title-copy{min-width:0;flex:1}.room-title-copy h2{font-size:19px;overflow-wrap:anywhere}.room-title-copy p{font-size:11px;color:#c7afd8;margin-top:5px}.room-menu-mark{width:34px;height:34px;display:grid;place-items:center;border-radius:50%;border:1px solid #a65ce777;color:#f1d5ff;letter-spacing:2px}
+.room-stats-row{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:13px 0 8px}.room-stats-row span{font-size:10px;padding:7px 10px;border-radius:20px;background:#160d22;border:1px solid #ffffff16;color:#d7c1e7}.room-stats-row .room-stat-live{color:#ffb7e2;border-color:#d64eaa66}
+.room-stage{position:relative;display:flex;flex-direction:column;align-items:center;padding:25px 10px 20px;overflow:hidden}.room-stage-glow{position:absolute;width:190px;height:150px;top:12px;border-radius:50%;background:#b12cff25;filter:blur(35px)}.room-host-avatar{position:relative;width:104px;height:104px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#d68cff,#6d26a5 55%,#261239);border:3px solid #e6b6ff;box-shadow:0 0 0 7px #bd5bfa22,0 0 32px #b84bff99;font-size:43px}.room-host-avatar span{filter:drop-shadow(0 3px 6px #0008)}.room-host-name{position:relative;font-size:17px;margin-top:13px}.room-host-label{position:relative;margin-top:7px;padding:6px 13px;border-radius:20px;background:linear-gradient(100deg,#9b36d5,#56218b);color:#ffe5ff;font-size:10px;font-weight:900;letter-spacing:.8px;box-shadow:0 5px 15px #9b36d544}
+.room-seats-grid{position:relative;z-index:1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:8px 0 17px}.room-seat.premium-seat{min-height:120px!important;padding:13px 5px!important;align-items:center;text-align:center;border-radius:20px!important;background:linear-gradient(155deg,#38204e,#1b1229)!important;border:1px solid #a45cc655!important;box-shadow:inset 0 1px #ffffff12,0 8px 20px #0003!important;color:#f5eaff}.seat-avatar{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;border:1px dashed #c17be6;background:#ffffff0a;color:#e7baff;font-size:25px;margin-bottom:5px}.premium-seat strong{font-size:12px}.premium-seat span{font-size:10px;color:#bca8ce}
+.room-audience-bar{display:flex;align-items:center;gap:10px;padding:13px;border-radius:18px;border:1px solid #a65ce766;background:linear-gradient(100deg,#311b43,#1b1227);margin:5px 0 15px}.audience-icon-stack{display:flex}.audience-icon-stack span{width:28px;height:28px;margin-right:-7px;border-radius:50%;display:grid;place-items:center;background:#56336b;border:2px solid #2a1838;font-size:13px}.audience-copy{display:flex;flex-direction:column;flex:1;margin-left:5px}.audience-copy strong{font-size:13px}.audience-copy small{font-size:10px;color:#bca8ce;margin-top:2px}.audience-count{font-size:12px;font-weight:800;color:#edceff}.audience-chevron{font-size:24px;color:#d7a3f5}
+.room-control-bar{position:relative;z-index:1;display:flex;justify-content:space-between;gap:5px;margin:16px 0;padding:12px 4px;border-top:1px solid #ffffff12;border-bottom:1px solid #ffffff12}.room-control-btn{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:6px;padding:9px 2px;background:transparent;color:#f0dcff;border-radius:13px}.room-control-btn span{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#49275f,#241431);border:1px solid #a65ce766;font-size:18px}.room-control-btn small{font-size:9px;color:#c9b4d9;white-space:nowrap}.room-leave-control span{border-color:#e85b8277;background:#4b1d35}
+.room-chat-panel{position:relative;z-index:1;padding:14px;border-radius:21px;background:#100a19aa;border:1px solid #ffffff18}.room-chat-heading{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}.room-chat-heading strong{display:block;font-size:15px}.room-chat-heading small{display:block;color:#bca8ce;font-size:10px;margin-top:4px}.chat-live-dot{margin:0;background:#9dffcb;box-shadow:0 0 9px #62e9a4}.premium-room-messages{height:245px;overflow-y:auto;padding:10px;border-radius:15px;background:#0b0711;border:1px solid #ffffff0b;margin-bottom:11px;scrollbar-width:thin;scrollbar-color:#79518e transparent}.premium-room-messages>div:not(.empty-state){padding:11px 12px!important;margin-bottom:9px!important;border-radius:15px!important;background:linear-gradient(120deg,#382148,#21152f)!important;border:1px solid #ffffff0c}.premium-room-messages strong{display:block;color:#e8c5ff;font-size:12px;margin-bottom:4px}.premium-room-messages div div{font-size:13px;line-height:1.5;overflow-wrap:anywhere}.room-chat-compose{display:flex;align-items:center;gap:9px}.room-chat-compose .input-field{flex:1;min-width:0;margin:0;border-radius:24px;padding:12px 15px}.room-chat-compose #room-chat-send{width:45px;height:45px;flex:none;border-radius:50%;padding:0;font-size:17px}
+@media(max-width:380px){.premium-room{padding:13px!important}.room-seats-grid{gap:8px}.room-seat.premium-seat{min-height:108px!important}.room-control-btn span{width:35px;height:35px}.room-control-btn small{font-size:8px}}
+
 </style>
 </head>
 
@@ -659,149 +678,70 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
   </div>
 </div>
 
-  <!-- ACTIVE ROOM -->
-  <div class="panel" id="active-room" style="display:none;">
-
-    <h2 id="active-room-name">🌙 Your Room</h2>
-    <p class="small-text">🎙 Voice Room · 7 Positions</p>
-
-    <!-- OWNER -->
-    <div style="text-align:center;margin:25px 0">
-      <div class="avatar" style="margin:auto">👑</div>
-      <strong id="room-owner-name">Room Owner</strong>
+  <!-- ACTIVE ROOM: PREMIUM VOICE LOUNGE -->
+  <div class="panel premium-room" id="active-room" style="display:none;">
+    <div class="room-topline">
+      <div class="room-live-pill"><span class="live-dot"></span> LIVE NOW</div>
+      <span class="room-seat-count">🎙 7 POSITIONS</span>
     </div>
 
-<!-- SIX PREMIUM SEATS -->
-<div style="
-  display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:12px;
-  margin:20px 0;
-">
-
-  <div class="user-info" style="text-align:center;padding:16px 5px;border-radius:16px;background:#35234B">
-    <div style="font-size:30px">🎧</div>
-    <strong>Seat 1</strong>
-    <div class="small-text">Empty</div>
-  </div>
-
-  <div class="user-info" style="text-align:center;padding:16px 5px;border-radius:16px;background:#35234B">
-    <div style="font-size:30px">🎧</div>
-    <strong>Seat 2</strong>
-    <div class="small-text">Empty</div>
-  </div>
-
-  <div class="user-info" style="text-align:center;padding:16px 5px;border-radius:16px;background:#35234B">
-    <div style="font-size:30px">🎧</div>
-    <strong>Seat 3</strong>
-    <div class="small-text">Empty</div>
-  </div>
-
-  <div class="user-info" style="text-align:center;padding:16px 5px;border-radius:16px;background:#35234B">
-    <div style="font-size:30px">🎧</div>
-    <strong>Seat 4</strong>
-    <div class="small-text">Empty</div>
-  </div>
-
-  <div class="user-info" style="text-align:center;padding:16px 5px;border-radius:16px;background:#35234B">
-    <div style="font-size:30px">🎧</div>
-    <strong>Seat 5</strong>
-    <div class="small-text">Empty</div>
-  </div>
-
-  <div class="user-info" style="text-align:center;padding:16px 5px;border-radius:16px;background:#35234B">
-    <div style="font-size:30px">🎧</div>
-    <strong>Seat 6</strong>
-    <div class="small-text">Empty</div>
-  </div>
-
-</div>
-
-   <!-- COMPACT AUDIENCE -->
-<div class="panel" style="padding:10px;margin:8px 0">
-  <div style="
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-  ">
-    <div style="display:flex;align-items:center;gap:8px">
-      <strong>👥 Audience</strong>
-      <span id="room-audience"
-        style="display:flex;gap:5px">
-        <span>👤</span>
-        <span>👤</span>
-        <span>👤</span>
-      </span>
-      <span class="small-text">24</span>
+    <div class="room-title-row">
+      <div class="room-cover">💜</div>
+      <div class="room-title-copy">
+        <h2 id="active-room-name">🌙 Your Room</h2>
+        <p>Welcome in — connect, talk & enjoy</p>
+      </div>
+      <div class="room-menu-mark">•••</div>
     </div>
 
-    <button class="secondary-btn"
-      style="padding:6px 10px">
-      View all ›
-    </button>
-  </div>
- </div>
-<!-- LARGE ROOM CHAT -->
-<div class="panel" style="padding:14px;margin-top:10px">
-
-  <h3>💬 Room Chat</h3>
-
-  <div id="room-chat-messages"
-    style="
-      height:380px;
-      overflow-y:auto;
-      padding:12px;
-      background:rgba(255,255,255,0.04);
-      border-radius:12px;
-      margin-bottom:12px;
-    ">
-
-    <div class="empty-state">
-      Welcome to your room!
+    <div class="room-stats-row">
+      <span class="room-stat-live">〽 Live Room</span>
+      <span class="room-stat">👥 Community</span>
+      <span class="room-stat">✦ Public</span>
     </div>
 
-  </div>
-
-  <div style="display:flex;gap:8px;align-items:center">
-
-    <input
-      id="room-chat-input"
-      class="input-field"
-      placeholder="Write a message..."
-      style="flex:1;margin:0"
-    >
-
-    <button id="room-chat-send" class="primary-btn">
-      ➤
-    </button>
-
-  </div>
-
-</div>
-
-    <!-- CONTROLS -->
-    <div style="
-      display:flex;
-      justify-content:space-around;
-      padding:15px;
-    ">
-
-      <button id="room-mic-btn" class="secondary-btn">
-        🎤 Mic
-      </button>
-
-      <button id="room-speaker-btn" class="secondary-btn">
-        🔊 Speaker
-      </button>
-
-      <button id="room-leave-btn" class="danger-btn">
-        Leave
-      </button>
-
+    <div class="room-stage">
+      <div class="room-stage-glow"></div>
+      <div class="room-host-avatar" aria-hidden="true"><span>👑</span></div>
+      <strong id="room-owner-name" class="room-host-name">Room Owner</strong>
+      <span class="room-host-label">♛ ROOM HOST</span>
     </div>
 
-  </div>
+    <div class="room-seats-grid" aria-label="Voice seats">
+      <div class="room-seat premium-seat"><div class="seat-avatar">＋</div><strong>Seat 1</strong><span>Tap to join</span></div>
+      <div class="room-seat premium-seat"><div class="seat-avatar">＋</div><strong>Seat 2</strong><span>Tap to join</span></div>
+      <div class="room-seat premium-seat"><div class="seat-avatar">＋</div><strong>Seat 3</strong><span>Tap to join</span></div>
+      <div class="room-seat premium-seat"><div class="seat-avatar">＋</div><strong>Seat 4</strong><span>Tap to join</span></div>
+      <div class="room-seat premium-seat"><div class="seat-avatar">＋</div><strong>Seat 5</strong><span>Tap to join</span></div>
+      <div class="room-seat premium-seat"><div class="seat-avatar">＋</div><strong>Seat 6</strong><span>Tap to join</span></div>
+    </div>
 
+    <div class="room-audience-bar">
+      <div class="audience-icon-stack"><span>👤</span><span>👤</span><span>👤</span></div>
+      <div class="audience-copy"><strong>Audience</strong><small>Listening together</small></div>
+      <span id="room-audience" class="audience-count"><span>24</span></span>
+      <span class="audience-chevron">›</span>
+    </div>
+
+    <div class="room-control-bar">
+      <button id="room-mic-btn" class="room-control-btn" type="button"><span>🎤</span><small>Mic</small></button>
+      <button id="room-speaker-btn" class="room-control-btn" type="button"><span>🔊</span><small>Audio</small></button>
+      <button class="room-control-btn" type="button"><span>✋</span><small>Raise hand</small></button>
+      <button class="room-control-btn" type="button"><span>♧</span><small>Invite</small></button>
+      <button id="room-leave-btn" class="room-control-btn room-leave-control" type="button"><span>↗</span><small>Leave</small></button>
+    </div>
+
+    <div class="room-chat-panel">
+      <div class="room-chat-heading"><div><strong>💬 Room Chat</strong><small>Say hello to everyone</small></div><span class="chat-live-dot"></span></div>
+      <div id="room-chat-messages" class="premium-room-messages">
+        <div class="empty-state">Welcome to your room!</div>
+      </div>
+      <div class="room-chat-compose">
+        <input id="room-chat-input" class="input-field" placeholder="Write a message..." autocomplete="off">
+        <button id="room-chat-send" class="primary-btn" type="button" aria-label="Send message">➤</button>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- PROFILE PAGE -->
