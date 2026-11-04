@@ -2245,7 +2245,15 @@ async function loadMessages() {
 // =====================================
 
 async function sendMessage() {
-  if (!currentUser || !activeChatFriendId) return;
+  if (!currentUser) {
+  showToast("Please login again.");
+  return;
+}
+
+if (!activeChatFriendId) {
+  showToast("Please open a friend's chat first.");
+  return;
+}
 
   const input = $("message-input");
   const content = input.value.trim();
