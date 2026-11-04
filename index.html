@@ -619,6 +619,19 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
 .public-room-card strong{overflow-wrap:anywhere}
 .public-room-card small{opacity:.72}
 .public-room-card .join-public-room{flex:0 0 auto;min-width:74px}
+
+/* PREMIKA ADMIN PANEL */
+.admin-stat-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}
+.admin-stat{padding:14px;border:1px solid #ffffff18;border-radius:15px;background:#ffffff08}
+.admin-stat small{display:block;color:#c6afd8;font-size:11px}
+.admin-stat strong{display:block;font-size:22px;margin-top:6px;color:#edceff}
+.admin-user-row,.admin-payment-row{padding:13px 0;border-bottom:1px solid #ffffff14;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.admin-user-copy{flex:1;min-width:130px}.admin-user-copy strong{display:block;font-size:13px;overflow-wrap:anywhere}.admin-user-copy small{display:block;color:#bca8ce;font-size:10px;margin-top:4px;overflow-wrap:anywhere}
+.admin-actions{display:flex;gap:6px;flex-wrap:wrap}.admin-actions button{font-size:10px;padding:8px 10px}
+.admin-tabs{display:flex;gap:7px;overflow:auto;margin:12px 0}
+.admin-tabs button{white-space:nowrap}
+.admin-hidden{display:none!important}
+
 </style>
 </head>
 
@@ -949,6 +962,32 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
   </div>
 </section>
 
+
+<section id="admin" class="page">
+  <div class="welcome-card"><h2>Premika Admin 💜</h2><p>Manage payments, wallets and community users.</p></div>
+  <div class="panel">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+      <h2 class="section-title" style="margin:0">Admin Dashboard</h2>
+      <button id="admin-refresh-btn" class="secondary-btn" type="button">↻ Refresh</button>
+    </div>
+    <div class="admin-stat-grid">
+      <div class="admin-stat"><small>Pending Payments</small><strong id="admin-pending-count">—</strong></div>
+      <div class="admin-stat"><small>Registered Users</small><strong id="admin-user-count">—</strong></div>
+    </div>
+    <p id="admin-status" class="small-text" aria-live="polite">Loading admin data…</p>
+  </div>
+  <div class="panel">
+    <div class="admin-tabs">
+      <button class="secondary-btn" type="button" data-admin-tab="payments">Payments</button>
+      <button class="secondary-btn" type="button" data-admin-tab="users">Users</button>
+      <button class="secondary-btn" type="button" data-admin-tab="packages">Packages</button>
+    </div>
+    <div id="admin-payments-tab"><h3 class="section-title">Payment Requests</h3><div id="admin-payments-list" class="empty-state">Loading requests…</div></div>
+    <div id="admin-users-tab" class="admin-hidden"><h3 class="section-title">User Management</h3><input id="admin-user-search" class="input-field" placeholder="Search username or email"><div id="admin-users-list" class="empty-state">Loading users…</div></div>
+    <div id="admin-packages-tab" class="admin-hidden"><h3 class="section-title">Coin Packages</h3><div id="admin-packages-list" class="empty-state">Loading packages…</div></div>
+  </div>
+</section>
+
   </main>
 
   <!-- BOTTOM NAVIGATION -->
@@ -977,6 +1016,11 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
   <span class="nav-icon">🎙</span>
   My Room
 </button>
+
+    <button class="nav-btn admin-hidden" id="admin-nav-btn" data-page="admin" onclick="showPage('admin',this)">
+      <span class="nav-icon">🛡</span>
+      Admin
+    </button>
 
     <button class="nav-btn" data-page="profile"
       onclick="showPage('profile',this)">
@@ -1377,6 +1421,22 @@ if (profile.avatar_url) {
 
     currentUser = user;
 
+    try {
+      const blockedCheck = await supabaseClient.rpc("premika_user_is_blocked");
+      if (blockedCheck.error) throw blockedCheck.error;
+      if (blockedCheck.data === true) {
+        await supabaseClient.auth.signOut();
+        currentUser = null;
+        currentProfile = null;
+        $("main-app").style.display = "none";
+        $("auth-section").style.display = "flex";
+        showStatus("Your Premika account has been restricted. Contact support.");
+        return;
+      }
+    } catch (controlError) {
+      console.warn("User restriction check:", controlError.message);
+    }
+
     $("auth-section").style.display = "none";
     $("main-app").style.display = "block";
 
@@ -1386,6 +1446,7 @@ if (profile.avatar_url) {
       if (currentProfile && currentProfile.username) {
         await setMyPresence();
         await openRoomInviteFromUrl();
+        await initializePremikaAdmin();
       }
 
     } catch (error) {
@@ -3277,6 +3338,91 @@ $("premika-mini-room").addEventListener("click",e=>{if(e.target.id!=="mini-room-
 
 $("premika-confirm").addEventListener("click",e=>{if(e.target===$("premika-confirm"))finishConfirm(false)});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){["premika-room-settings","premika-editor"].forEach(id=>$(id).classList.add("hidden"));finishConfirm(false)}});
+
+
+// ===== PREMIKA ADMIN PANEL =====
+let premikaIsAdmin = false;
+async function initializePremikaAdmin(){
+  if(!currentUser || !supabaseClient) return;
+  try{
+    const {data,error}=await supabaseClient.rpc("is_premika_admin");
+    if(error) throw error;
+    premikaIsAdmin = data === true;
+    $("admin-nav-btn")?.classList.toggle("admin-hidden",!premikaIsAdmin);
+    if(premikaIsAdmin) await loadPremikaAdmin();
+  }catch(e){
+    premikaIsAdmin=false;
+    $("admin-nav-btn")?.classList.add("admin-hidden");
+    console.warn("Admin check:",e.message);
+  }
+}
+async function loadPremikaAdmin(){
+  if(!premikaIsAdmin) return showToast("Admin access required.");
+  $("admin-status").textContent="Refreshing admin data…";
+  try{
+    const [users,payments,packages]=await Promise.all([
+      supabaseClient.rpc("premika_admin_list_users"),
+      supabaseClient.from("topup_requests").select("id,user_id,package_id,provider,transaction_reference,receipt_path,status,created_at").eq("status","pending").order("created_at",{ascending:false}),
+      supabaseClient.from("coin_packages").select("id,title,price_pkr,coins,is_active,sort_order").order("sort_order")
+    ]);
+    if(users.error) throw users.error;
+    if(payments.error) throw payments.error;
+    if(packages.error) throw packages.error;
+    const userRows=Array.isArray(users.data)?users.data:[];
+    $("admin-user-count").textContent=String(userRows.length);
+    $("admin-pending-count").textContent=String((payments.data||[]).length);
+    renderAdminUsers(userRows);renderAdminPayments(payments.data||[]);renderAdminPackages(packages.data||[]);
+    $("admin-status").textContent="Admin data updated.";
+  }catch(e){$("admin-status").textContent="Admin SQL setup required: "+e.message;showToast("Admin data error: "+e.message)}
+}
+function renderAdminUsers(rows){
+  const root=$("admin-users-list");root.replaceChildren();
+  if(!rows.length){root.textContent="No users found.";return;}
+  rows.forEach(u=>{
+    const row=document.createElement("div");row.className="admin-user-row";
+    const copy=document.createElement("div");copy.className="admin-user-copy";
+    const strong=document.createElement("strong");strong.textContent=u.username?("@"+u.username):"Premika User";
+    const small=document.createElement("small");small.textContent=(u.email||u.user_id)+" · "+(u.is_blocked?"Blocked":"Active")+" · "+(u.balance??0)+" coins";
+    copy.append(strong,small);
+    const actions=document.createElement("div");actions.className="admin-actions";
+    const block=document.createElement("button");block.className=u.is_blocked?"secondary-btn":"danger-btn";block.textContent=u.is_blocked?"Unblock":"Block";
+    block.addEventListener("click",async()=>{if(!await premikaConfirm(u.is_blocked?"Unblock user?":"Block user?","This changes this user's access to Premika."))return;try{const {error}=await supabaseClient.rpc("premika_admin_set_user_blocked",{p_user_id:u.user_id,p_blocked:!u.is_blocked});if(error)throw error;showToast("User status updated.");await loadPremikaAdmin()}catch(e){showToast(e.message)}});
+    const coins=document.createElement("button");coins.className="secondary-btn";coins.textContent="Coins ±";
+    coins.addEventListener("click",async()=>{const value=await premikaEditText("Adjust wallet coins","Example: 500 or -100","");if(!value)return;const amount=Number(value);if(!Number.isSafeInteger(amount)||amount===0)return showToast("Enter a valid non-zero whole number.");try{const {error}=await supabaseClient.rpc("premika_admin_adjust_coins",{p_user_id:u.user_id,p_amount:amount,p_description:"Admin wallet adjustment"});if(error)throw error;showToast("Wallet updated.");await loadPremikaAdmin()}catch(e){showToast(e.message)}});
+    actions.append(block,coins);row.append(copy,actions);root.append(row);
+  });
+}
+function renderAdminPayments(rows){
+  const root=$("admin-payments-list");root.replaceChildren();
+  if(!rows.length){root.textContent="No pending payment requests.";return;}
+  rows.forEach(r=>{
+    const row=document.createElement("div");row.className="admin-payment-row";
+    const copy=document.createElement("div");copy.className="admin-user-copy";
+    const strong=document.createElement("strong");strong.textContent=(r.provider||"").toUpperCase()+" · "+r.package_id;
+    const small=document.createElement("small");small.textContent="User: "+r.user_id+" · Ref: "+r.transaction_reference;
+    copy.append(strong,small);
+    const actions=document.createElement("div");actions.className="admin-actions";
+    [["Approve","approve_premika_topup"],["Reject","reject_premika_topup"]].forEach(([label,fn])=>{
+      const b=document.createElement("button");b.className=label==="Approve"?"primary-btn":"danger-btn";b.textContent=label;
+      b.addEventListener("click",async()=>{if(!await premikaConfirm(label+" payment?","Request "+r.id))return;try{const {data,error}=await supabaseClient.rpc(fn,{p_request_id:r.id});if(error)throw error;showToast(data||"Request updated.");await loadPremikaAdmin()}catch(e){showToast(e.message)}});
+      actions.append(b);
+    });
+    row.append(copy,actions);root.append(row);
+  });
+}
+function renderAdminPackages(rows){
+  const root=$("admin-packages-list");root.replaceChildren();
+  if(!rows.length){root.textContent="No packages found.";return;}
+  rows.forEach(p=>{const row=document.createElement("div");row.className="admin-user-row";const copy=document.createElement("div");copy.className="admin-user-copy";const strong=document.createElement("strong");strong.textContent=p.title+" · PKR "+p.price_pkr;const small=document.createElement("small");small.textContent=p.coins+" coins · "+(p.is_active?"Active":"Inactive");copy.append(strong,small);row.append(copy);root.append(row)});
+}
+document.querySelectorAll("[data-admin-tab]").forEach(b=>b.addEventListener("click",()=>{
+  ["payments","users","packages"].forEach(k=>$("admin-"+k+"-tab").classList.toggle("admin-hidden",b.dataset.adminTab!==k));
+}));
+$("admin-refresh-btn")?.addEventListener("click",loadPremikaAdmin);
+$("admin-user-search")?.addEventListener("input",e=>{
+  const q=e.target.value.trim().toLowerCase();
+  document.querySelectorAll("#admin-users-list .admin-user-row").forEach(row=>row.classList.toggle("admin-hidden",!row.textContent.toLowerCase().includes(q)));
+});
 
 // START PREMIKA
 startPremika();
