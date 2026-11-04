@@ -943,6 +943,15 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
       <button id="refresh-public-rooms" class="secondary-btn" type="button">↻ Refresh</button>
     </div>
     <p class="small-text">Choose any public room and tap Join to enter.</p>
+    <div class="room-owner-search" style="margin:14px 0 18px">
+      <h3 class="section-title">🔎 Search User Room</h3>
+      <p class="small-text">Username search karo aur us user ka public room dekho.</p>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input id="room-owner-search-input" class="input-field" type="text" placeholder="Enter username (e.g. ali786)" maxlength="40" style="margin:0;flex:1">
+        <button id="room-owner-search-btn" class="primary-btn" type="button">Search</button>
+      </div>
+      <div id="room-owner-search-results" style="margin-top:12px" aria-live="polite"><div class="empty-state">Search a username to find their room.</div></div>
+    </div>
     <div id="public-room-list" class="public-room-list"><div class="room-live-empty">Loading public rooms…</div></div>
     <p id="public-room-status" class="small-text" aria-live="polite"></p>
   </div>
@@ -3296,6 +3305,77 @@ async function enterPublicRoom(room) {
   }
 }
 
+// SEARCH A USERNAME AND SHOW THAT USER'S PUBLIC ROOM(S)
+async function searchRoomByUsername() {
+  const input = $("room-owner-search-input");
+  const results = $("room-owner-search-results");
+  if (!currentUser) return showToast("Please login first.");
+  const username = (input?.value || "").trim().replace(/^@/, "").toLowerCase();
+  if (username.length < 3) {
+    results.innerHTML = '<div class="empty-state">Username ke kam az kam 3 characters enter karein.</div>';
+    return;
+  }
+  results.innerHTML = '<div class="empty-state">Searching user and room...</div>';
+  try {
+    const { data: people, error: peopleError } = await supabaseClient
+      .from("profiles")
+      .select("id,username,display_name,avatar_url")
+      .ilike("username", username)
+      .limit(1);
+    if (peopleError) throw peopleError;
+    if (!people?.length) {
+      results.innerHTML = '<div class="empty-state">Is username ka koi user nahi mila.</div>';
+      return;
+    }
+    const person = people[0];
+    const { data: rooms, error: roomsError } = await supabaseClient
+      .from("rooms")
+      .select("id,name,owner_id,is_public,status")
+      .eq("owner_id", person.id)
+      .eq("is_public", true)
+      .order("created_at", { ascending: false });
+    if (roomsError) throw roomsError;
+    results.replaceChildren();
+    const heading = document.createElement("div");
+    heading.className = "small-text";
+    heading.style.marginBottom = "10px";
+    heading.textContent = "User: @" + person.username;
+    results.appendChild(heading);
+    if (!rooms?.length) {
+      const empty = document.createElement("div");
+      empty.className = "empty-state";
+      empty.textContent = "@" + person.username + " ka abhi koi public room nahi hai.";
+      results.appendChild(empty);
+      return;
+    }
+    rooms.forEach(room => {
+      const card = document.createElement("div");
+      card.className = "public-room-card";
+      const copy = document.createElement("div");
+      copy.className = "room-card-copy";
+      const name = document.createElement("strong");
+      name.textContent = "🎙️ " + (room.name || "Premika Room");
+      const meta = document.createElement("small");
+      meta.textContent = (person.display_name || person.username) + " · @" + person.username;
+      copy.append(name, meta);
+      const join = document.createElement("button");
+      join.type = "button";
+      join.className = "primary-btn join-public-room";
+      join.textContent = room.owner_id === currentUser.id ? "Open" : "Join";
+      join.addEventListener("click", () => enterPublicRoom(room));
+      card.append(copy, join);
+      results.appendChild(card);
+    });
+  } catch (error) {
+    console.error("Room username search:", error);
+    results.textContent = "Search error: " + error.message;
+  }
+}
+
+$("room-owner-search-btn")?.addEventListener("click", searchRoomByUsername);
+$("room-owner-search-input")?.addEventListener("keydown", event => {
+  if (event.key === "Enter") searchRoomByUsername();
+});
 $("refresh-public-rooms")?.addEventListener("click", loadPublicRooms);
 
 async function showMyRoom(room) {
