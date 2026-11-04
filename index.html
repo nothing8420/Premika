@@ -466,6 +466,28 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
 .room-chat-panel{position:relative;z-index:1;padding:14px;border-radius:21px;background:#100a19aa;border:1px solid #ffffff18}.room-chat-heading{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}.room-chat-heading strong{display:block;font-size:15px}.room-chat-heading small{display:block;color:#bca8ce;font-size:10px;margin-top:4px}.chat-live-dot{margin:0;background:#9dffcb;box-shadow:0 0 9px #62e9a4}.premium-room-messages{height:245px;overflow-y:auto;padding:10px;border-radius:15px;background:#0b0711;border:1px solid #ffffff0b;margin-bottom:11px;scrollbar-width:thin;scrollbar-color:#79518e transparent}.premium-room-messages>div:not(.empty-state){padding:11px 12px!important;margin-bottom:9px!important;border-radius:15px!important;background:linear-gradient(120deg,#382148,#21152f)!important;border:1px solid #ffffff0c}.premium-room-messages strong{display:block;color:#e8c5ff;font-size:12px;margin-bottom:4px}.premium-room-messages div div{font-size:13px;line-height:1.5;overflow-wrap:anywhere}.room-chat-compose{display:flex;align-items:center;gap:9px}.room-chat-compose .input-field{flex:1;min-width:0;margin:0;border-radius:24px;padding:12px 15px}.room-chat-compose #room-chat-send{width:45px;height:45px;flex:none;border-radius:50%;padding:0;font-size:17px}
 @media(max-width:380px){.premium-room{padding:13px!important}.room-seats-grid{gap:8px}.room-seat.premium-seat{min-height:108px!important}.room-control-btn span{width:35px;height:35px}.room-control-btn small{font-size:8px}}
 
+
+/* MOBILE ROOM AND CHAT LAYOUT */
+.friend-presence{display:block!important;margin-top:4px;font-size:11px!important;font-weight:700}
+.friend-presence.is-online{color:#62e2ad!important}.friend-presence.is-offline{color:#a99ab7!important}
+.room-seats-grid{gap:8px!important;margin:5px 0 10px!important}
+.room-seat.premium-seat{min-height:78px!important;padding:7px 4px!important;border-radius:14px!important}
+.seat-avatar{width:38px!important;height:38px!important;font-size:19px!important;margin-bottom:2px!important}
+.premium-seat strong{font-size:11px!important}.premium-seat span{font-size:9px!important}
+.room-stage{padding:12px 8px 10px!important}.room-host-avatar{width:76px!important;height:76px!important;font-size:32px!important}
+.room-host-name{font-size:14px!important;margin-top:8px!important}.room-host-label{margin-top:5px!important;padding:5px 10px!important}
+.room-control-bar{margin:9px 0!important;padding:8px 2px!important}
+.room-control-btn{padding:5px 1px!important;gap:4px!important}
+.room-control-btn span{width:34px!important;height:34px!important;font-size:16px!important}
+.premium-room{padding:12px!important}
+.room-chat-panel{padding:10px!important;display:flex;flex-direction:column;min-height:0}
+.premium-room-messages{height:clamp(125px,22vh,190px)!important;min-height:125px;overflow-y:auto;overscroll-behavior:contain}
+.room-chat-compose{position:sticky;bottom:0;background:#100a19;padding-top:5px}
+.chat-window-open{position:fixed!important;z-index:30;left:0;right:0;top:65px;bottom:calc(66px + env(safe-area-inset-bottom));margin:0!important;border-radius:18px 18px 0 0!important;display:flex!important;flex-direction:column;overflow:hidden;padding:12px!important}
+.chat-window-open #messages-container{height:auto!important;flex:1;min-height:0;overflow-y:auto!important;overscroll-behavior:contain}
+.chat-window-open>div:last-child{flex:none;background:#191126;padding-top:7px}
+@media(max-width:480px){.room-seats-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}.room-seat.premium-seat{min-height:72px!important}.room-chat-heading{margin-bottom:7px!important}.room-chat-compose .input-field{padding:10px 13px!important}#room-chat-send{width:40px!important;height:40px!important}}
+
 </style>
 </head>
 
@@ -541,18 +563,7 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
         </button>
       </div>
 
-<div class="panel">
-  <h3 class="section-title">Room Suggestions</h3>
-  <p class="small-text">
-    Discover rooms, meet new people and enjoy voice chat together.
-  </p>
 
-  <button class="secondary-btn"
-    onclick="showPage('room-suggestions')"
-    style="margin-top:14px">
-    Explore Rooms
-  </button>
-</div>
 
     </section>
     
@@ -673,20 +684,11 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
     </div>
   </div>
 
-<!-- PUBLIC ROOMS LIST -->
-<div class="panel">
-  <h3 class="section-title">🌍 Discover Public Rooms</h3><p class="small-text">Find an active room and join the conversation.</p>
-
-  <div id="public-rooms-list">
-    <p class="small-text">Loading rooms...</p>
-  </div>
-</div>
-
-  <!-- ACTIVE ROOM: PREMIUM VOICE LOUNGE -->
+<!-- ACTIVE ROOM: PREMIUM VOICE LOUNGE -->
   <div class="panel premium-room" id="active-room" style="display:none;">
     <div class="room-topline">
       <div class="room-live-pill"><span class="live-dot"></span> LIVE NOW</div>
-      <span class="room-seat-count">🎙 7 POSITIONS</span>
+      <span class="room-seat-count">🎙 6 SEATS</span>
     </div>
 
     <div class="room-title-row">
@@ -720,18 +722,11 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
       <div class="room-seat premium-seat"><div class="seat-avatar">＋</div><strong>Seat 6</strong><span>Tap to join</span></div>
     </div>
 
-    <div class="room-audience-bar">
-      <div class="audience-icon-stack"><span>👤</span><span>👤</span><span>👤</span></div>
-      <div class="audience-copy"><strong>Audience</strong><small>Listening together</small></div>
-      <span id="room-audience" class="audience-count"><span>24</span></span>
-      <span class="audience-chevron">›</span>
-    </div>
-
     <div class="room-control-bar">
       <button id="room-mic-btn" class="room-control-btn" type="button"><span>🎤</span><small>Mic</small></button>
       <button id="room-speaker-btn" class="room-control-btn" type="button"><span>🔊</span><small>Audio</small></button>
       <button class="room-control-btn" type="button"><span>✋</span><small>Raise hand</small></button>
-      <button class="room-control-btn" type="button"><span>♧</span><small>Invite</small></button>
+      <button id="room-invite-btn" class="room-control-btn" type="button"><span>♧</span><small>Invite</small></button>
       <button id="room-leave-btn" class="room-control-btn room-leave-control" type="button"><span>↗</span><small>Leave</small></button>
     </div>
 
@@ -817,7 +812,7 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
 <button class="nav-btn" data-page="room-suggestions"
   onclick="showPage('room-suggestions',this)">
   <span class="nav-icon">🎙</span>
-  Rooms
+  My Room
 </button>
 
     <button class="nav-btn" data-page="profile"
@@ -975,6 +970,11 @@ alert("Supabase Client: " + (supabaseClient ? "Loaded" : "Not Loaded"));
         presenceTimer = null;
       }
 
+      if (currentUser) {
+        await supabaseClient.from("user_presence").upsert({
+          user_id: currentUser.id, is_online: false, last_seen: new Date().toISOString()
+        }, { onConflict: "user_id" });
+      }
       const { error } = await supabaseClient.auth.signOut();
       if (error) throw error;
 
@@ -1178,6 +1178,7 @@ if (profile.avatar_url) {
 
       if (currentProfile && currentProfile.username) {
         await setMyPresence();
+        await openRoomInviteFromUrl();
       }
 
     } catch (error) {
@@ -1332,7 +1333,8 @@ async function uploadProfilePicture(file) {
 }
 
 if (pageId === "room-suggestions") {
-  loadPublicRooms();
+  loadMyRoom().then(room => { if (room) showMyRoom(room); })
+    .catch(error => console.error("My room load error:", error));
 }
 
     document.querySelectorAll(".nav-btn").forEach(nav => {
@@ -1493,8 +1495,12 @@ async function searchFriends() {
 
       const username = document.createElement("small");
       username.textContent = "@" + person.username;
-
-      info.append(name, username);
+      const { data: presence } = await supabaseClient.from("user_presence")
+        .select("is_online,last_seen").eq("user_id", friendId).maybeSingle();
+      const status = document.createElement("small");
+      status.className = "friend-presence " + (presence?.is_online ? "is-online" : "is-offline");
+      status.textContent = presence?.is_online ? "● Online" : "● Offline";
+      info.append(name, username, status);
       info.addEventListener("click", () => viewUserProfile(person.id));
       const avatar = document.createElement("div");
       avatar.className = "avatar";
@@ -1729,8 +1735,12 @@ async function loadFriends() {
 
       const username = document.createElement("small");
       username.textContent = "@" + person.username;
-
-      info.append(name, username);
+      const { data: presence } = await supabaseClient.from("user_presence")
+        .select("is_online,last_seen").eq("user_id", friendId).maybeSingle();
+      const status = document.createElement("small");
+      status.className = "friend-presence " + (presence?.is_online ? "is-online" : "is-offline");
+      status.textContent = presence?.is_online ? "● Online" : "● Offline";
+      info.append(name, username, status);
       info.addEventListener("click", () => viewUserProfile(friendId));
       const avatar = document.createElement("div");
       avatar.className = "avatar";
@@ -1901,6 +1911,7 @@ async function openChat(friendId, person) {
 
   $("chat-friends-list").parentElement.classList.add("hidden");
   $("chat-window").classList.remove("hidden");
+  $("chat-window").classList.add("chat-window-open");
 
   $("chat-friend-name").textContent =
     person.display_name || person.username || "Friend";
@@ -2044,6 +2055,7 @@ async function closeChat() {
   }
 
   $("chat-window").classList.add("hidden");
+  $("chat-window").classList.remove("chat-window-open");
   $("chat-friends-list").parentElement.classList.remove("hidden");
 }
 
@@ -2271,7 +2283,7 @@ $("rename-room-btn").addEventListener("click", async () => {
     if (activeRoomId === data.id) {
       $("active-room-name").textContent = "🌙 " + data.name;
     }
-    await loadPublicRooms();
+    await showMyRoom(data);
     alert("Room name updated successfully!");
   } catch (error) {
     $("rename-room-status").textContent = "Rename error: " + error.message;
@@ -2287,96 +2299,19 @@ $("rename-room-btn").addEventListener("click", async () => {
 // =====================================
 
 async function loadPublicRooms() {
-  const box = $("public-rooms-list");
-  if (!box || !currentUser) return;
-
-  box.textContent = "Loading rooms...";
-
-  try {
-    const { data, error } = await supabaseClient
-      .from("rooms")
-      .select("id, name, owner_id, created_at")
-      .eq("is_public", true)
-      .eq("status", "active")
-      .order("created_at", { ascending: false });
-
-    if (error) throw error;
-
-    await loadMyRoom();
-    box.innerHTML = "";
-
-    if (!data || data.length === 0) {
-      box.textContent = "No public rooms yet.";
-      return;
-    }
-
-    data.forEach(room => {
-      const card = document.createElement("div");
-      card.className = "panel room-suggestion-card";
-      card.style.marginBottom = "12px";
-      card.style.padding = "18px";
-
-      const title = document.createElement("h3");
-      title.textContent = "🌙 " + room.name;
-      title.style.marginBottom = "8px";
-
-      const info = document.createElement("p");
-      info.className = "small-text";
-      info.textContent = "🎙 Public Room";
-
-      const joinBtn = document.createElement("button");
-      joinBtn.className = "primary-btn";
-      joinBtn.textContent = "Join Room";
-      joinBtn.style.marginTop = "13px";
-
-      joinBtn.onclick = async () => {
-        joinBtn.disabled = true;
-        joinBtn.textContent = "Joining...";
-
-        try {
-          const { error } = await supabaseClient.rpc(
-            "join_room",
-            { _room_id: room.id }
-          );
-
-          if (error) throw error;
-
-          activeRoomId = room.id;
-          $("active-room-name").textContent = "🌙 " + room.name;
-          $("room-owner-name").textContent =
-            room.owner_id === currentUser.id
-              ? (currentProfile?.username || "Room Owner")
-              : "Room Owner";
-
-          $("active-room").style.display = "block";
-
-          await openRoomChat(room.id);
-
-          $("active-room").scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-          });
-
-          alert("You joined the room!");
-
-        } catch (error) {
-          alert("Join error: " + error.message);
-        } finally {
-          joinBtn.disabled = false;
-          joinBtn.textContent = "Join Room";
-        }
-      };
-
-      card.appendChild(title);
-      card.appendChild(info);
-      card.appendChild(joinBtn);
-      box.appendChild(card);
-    });
-
-  } catch (error) {
-    box.textContent = "Rooms loading error: " + error.message;
-  }
+  const room = await loadMyRoom();
+  if (room) await showMyRoom(room);
 }
+
+async function showMyRoom(room) {
+  if (!room || !currentUser) return;
+  activeRoomId = room.id;
+  $("active-room-name").textContent = "🌙 " + room.name;
+  $("room-owner-name").textContent = currentProfile?.display_name || currentProfile?.username || "Room Owner";
+  $("active-room").style.display = "block";
+  await openRoomChat(room.id);
+}
+
 // =====================================
 // CREATE ROOM
 // =====================================
@@ -2431,7 +2366,7 @@ try {
     .insert({
       name: roomName,
       owner_id: currentUser.id,
-      is_public: true,
+      is_public: false,
       status: "active"
     })
     .select()
@@ -2469,6 +2404,56 @@ alert("Room successfully created! Ab aap sirf room ka naam change kar sakte hain
     button.textContent = "+ Create Room";
   }
 });
+
+
+// SEND PRIVATE ROOM INVITE THROUGH PREMIKA CHAT
+$("room-invite-btn").addEventListener("click", async () => {
+  if (!activeRoomId || !currentUser) return alert("Pehle apna room open karein.");
+  const targetUsername = prompt("Jis friend ko room invite bhejna hai uska username likhein (without @):");
+  if (!targetUsername) return;
+  try {
+    const {data: friend,error: findError} = await supabaseClient.from("profiles")
+      .select("id,username").ilike("username",targetUsername.trim().replace(/^@/,"")).maybeSingle();
+    if (findError) throw findError;
+    if (!friend) throw new Error("Is username ka user nahi mila.");
+    if (friend.id === currentUser.id) throw new Error("Apne aap ko invite nahi bhej sakte.");
+    const url = new URL(window.location.href);
+    url.searchParams.set("room",activeRoomId);
+    const inviteText = "🎙️ Aap ko mere Premika room mein invite kiya gaya hai! Join karne ke liye link open karein: " + url.toString();
+    const {error: sendError} = await supabaseClient.from("direct_messages").insert({
+      sender_id:currentUser.id, receiver_id:friend.id, content:inviteText
+    });
+    if (sendError) throw sendError;
+    alert("Room invitation @" + friend.username + " ko personal chat mein send ho gaya.");
+  } catch(e) { alert("Invite send error: " + e.message); }
+});
+
+async function openRoomInviteFromUrl() {
+  const roomId = new URLSearchParams(location.search).get("room");
+  if (!roomId || !currentUser) return;
+  try {
+    const {data: room,error} = await supabaseClient.from("rooms")
+      .select("id,name,owner_id").eq("id",roomId).maybeSingle();
+    if (error) throw error;
+    if (!room) throw new Error("Room invite nahi mila.");
+    if (room.owner_id !== currentUser.id) {
+      const {error: joinError} = await supabaseClient.rpc("join_room",{_room_id:room.id});
+      if (joinError) throw joinError;
+    }
+    window.showPage("room-suggestions");
+    await showMyRoom(room);
+    history.replaceState({}, "", location.pathname);
+  } catch(e) { alert("Room invite error: "+e.message); }
+}
+
+window.addEventListener("beforeunload", () => {
+  if (currentUser && supabaseClient) {
+    supabaseClient.from("user_presence").upsert({
+      user_id:currentUser.id,is_online:false,last_seen:new Date().toISOString()
+    },{onConflict:"user_id"});
+  }
+});
+
 // START PREMIKA
 startPremika();
 })();
