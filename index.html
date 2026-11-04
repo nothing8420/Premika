@@ -609,6 +609,23 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
 
 
 /* HARD FIX: detached room menu must override all earlier mobile absolute-position rules */
+
+/* FAMILY SYSTEM */
+.family-code{display:inline-flex;align-items:center;gap:8px;background:#170d24;border:1px dashed #9d68c2;color:#e5c8ff;padding:10px 13px;border-radius:12px;font-weight:800;letter-spacing:2px;margin:10px 0}
+.family-member{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid #ffffff14}
+.family-member:last-child{border-bottom:0}
+.family-member-info{flex:1;min-width:0}
+.family-member-info strong,.family-member-info small{display:block;overflow-wrap:anywhere}
+.family-member-info small{color:var(--muted);margin-top:3px}
+.family-role{font-size:10px;color:#e2bdff;border:1px solid #8054a1;border-radius:20px;padding:4px 8px}
+.family-chat-box{height:270px;overflow-y:auto;background:#170d24;border:1px solid var(--border);border-radius:13px;padding:11px;margin:12px 0}
+.family-message{margin:8px 0;padding:9px 11px;background:#302044;border-radius:12px;max-width:90%;overflow-wrap:anywhere}
+.family-message.mine{margin-left:auto;background:#58317a}
+.family-message small{display:block;color:#d4b9e8;font-size:10px;margin-bottom:4px}
+.family-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.family-actions button{font-size:12px;padding:9px 11px}
+@media(max-width:480px){.bottom-nav .nav-btn{min-width:0;flex:1;font-size:9px}.bottom-nav .nav-icon{font-size:18px}}
+
 </style>
 </head>
 
@@ -875,6 +892,44 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
   </div>
 </div>
 
+
+<!-- FAMILY PAGE -->
+<section id="family" class="page">
+  <div class="welcome-card"><h2>My Family 💜</h2><p>Create your own family or join one with a family code.</p></div>
+  <div class="panel" id="family-create-panel">
+    <h3 class="section-title">＋ Create a Family</h3>
+    <input id="family-name-input" class="input-field" maxlength="35" placeholder="Family name (3–35 characters)">
+    <textarea id="family-description-input" class="input-field" maxlength="180" rows="2" placeholder="Short family description (optional)"></textarea>
+    <button id="family-create-btn" class="primary-btn">Create Family</button>
+  </div>
+  <div class="panel" id="family-join-panel">
+    <h3 class="section-title">Join a Family</h3>
+    <p class="small-text">Enter the invite code shared by a family member.</p>
+    <input id="family-code-input" class="input-field" maxlength="10" placeholder="Enter family code">
+    <button id="family-join-btn" class="secondary-btn">Join Family</button>
+  </div>
+  <div class="panel" id="my-family-panel" style="display:none">
+    <h3 class="section-title">Your Family</h3>
+    <h2 id="my-family-name" style="margin:5px 0 7px">Family</h2>
+    <p id="my-family-description" class="small-text"></p>
+    <div class="family-code">CODE: <span id="my-family-code">--------</span></div>
+    <button id="family-copy-code" class="secondary-btn" type="button">Copy Invite Code</button>
+    <div class="family-actions" id="family-owner-actions"></div>
+    <hr class="profile-divider">
+    <h3>Members <span id="family-member-count" class="small-text"></span></h3>
+    <div id="family-members-list"><div class="empty-state">Loading members...</div></div>
+  </div>
+  <div class="panel" id="family-chat-panel" style="display:none">
+    <h3 class="section-title">Family Chat 💬</h3>
+    <div id="family-chat-messages" class="family-chat-box"><div class="empty-state">No messages yet.</div></div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <input id="family-message-input" class="input-field" maxlength="1000" placeholder="Message your family..." style="margin:0;flex:1">
+      <button id="family-send-message" class="primary-btn" type="button">Send</button>
+    </div>
+    <button id="family-refresh-btn" class="secondary-btn" style="margin-top:10px" type="button">Refresh Chat</button>
+  </div>
+</section>
+
 <!-- PROFILE PAGE -->
 <section id="profile" class="page">
   <div class="profile-page-heading"><h2 class="section-title">My Profile 👤</h2></div>
@@ -950,6 +1005,11 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
       <span class="nav-icon">✉</span>
       Chat
     </button>
+
+<button class="nav-btn" data-page="family" onclick="showPage('family',this)">
+  <span class="nav-icon">👨‍👩‍👧‍👦</span>
+  Family
+</button>
 
 <button class="nav-btn" data-page="room-suggestions"
   onclick="showPage('room-suggestions',this)">
@@ -1543,6 +1603,10 @@ if (pageId === "room-suggestions") {
 
     if (pageId === "chat") {
       loadChatFriends();
+    }
+
+    if (pageId === "family") {
+      loadMyFamily();
     }
   };
 
@@ -3144,6 +3208,234 @@ $("premika-mini-room").addEventListener("click",e=>{if(e.target.id!=="mini-room-
 
 $("premika-confirm").addEventListener("click",e=>{if(e.target===$("premika-confirm"))finishConfirm(false)});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){["premika-room-settings","premika-editor"].forEach(id=>$(id).classList.add("hidden"));finishConfirm(false)}});
+
+
+// =====================================
+// FAMILY SYSTEM (Supabase RPC + RLS)
+// =====================================
+let myFamilyRecord = null;
+let familyMembersCache = [];
+
+function familyNode(tag, className, value) {
+  const el = document.createElement(tag);
+  if (className) el.className = className;
+  if (value !== undefined) el.textContent = value;
+  return el;
+}
+
+async function loadMyFamily() {
+  if (!currentUser || !supabaseClient) return;
+  const createPanel = $("family-create-panel");
+  const joinPanel = $("family-join-panel");
+  const familyPanel = $("my-family-panel");
+  const chatPanel = $("family-chat-panel");
+  try {
+    const { data: membership, error: memberError } = await supabaseClient
+      .from("family_members").select("family_id,role")
+      .eq("user_id", currentUser.id).maybeSingle();
+    if (memberError) throw memberError;
+    if (!membership) {
+      myFamilyRecord = null;
+      createPanel.style.display = "block";
+      joinPanel.style.display = "block";
+      familyPanel.style.display = "none";
+      chatPanel.style.display = "none";
+      return;
+    }
+    const { data: family, error: familyError } = await supabaseClient
+      .from("family_groups").select("id,name,description,family_code,owner_id")
+      .eq("id", membership.family_id).single();
+    if (familyError) throw familyError;
+    myFamilyRecord = {...family, my_role:membership.role};
+    createPanel.style.display = "none";
+    joinPanel.style.display = "none";
+    familyPanel.style.display = "block";
+    chatPanel.style.display = "block";
+    $("my-family-name").textContent = family.name;
+    $("my-family-description").textContent = family.description || "A Premika family.";
+    $("my-family-code").textContent = family.family_code;
+    await loadFamilyMembers();
+    await loadFamilyMessages();
+  } catch (error) {
+    console.error("Family load error:", error);
+    showToast("Family load error: " + error.message);
+  }
+}
+
+async function loadFamilyMembers() {
+  if (!myFamilyRecord) return;
+  const list = $("family-members-list");
+  list.replaceChildren(familyNode("div","empty-state","Loading members..."));
+  const {data: members, error} = await supabaseClient.from("family_members")
+    .select("user_id,role,joined_at").eq("family_id",myFamilyRecord.id)
+    .order("joined_at",{ascending:true});
+  if (error) throw error;
+  familyMembersCache = members || [];
+  $("family-member-count").textContent = "("+familyMembersCache.length+")";
+  list.replaceChildren();
+  const userIds = familyMembersCache.map(m=>m.user_id);
+  let profiles = [];
+  if (userIds.length) {
+    const result = await supabaseClient.from("profiles")
+      .select("id,username").in("id",userIds);
+    if (!result.error) profiles = result.data || [];
+  }
+  const profileMap = new Map(profiles.map(p=>[p.id,p.username || "Premika user"]));
+  const myRole = myFamilyRecord.my_role;
+  const actions = $("family-owner-actions");
+  actions.replaceChildren();
+  if (myRole === "owner") {
+    const rename = familyNode("button","secondary-btn","Rename Family");
+    rename.type="button";
+    rename.onclick=async()=>{
+      const name=prompt("Enter new family name",myFamilyRecord.name);
+      if(name===null)return;
+      const clean=name.trim();
+      if(clean.length<3||clean.length>35)return showToast("Name must be 3–35 characters.");
+      const {error:updateError}=await supabaseClient.from("family_groups")
+        .update({name:clean}).eq("id",myFamilyRecord.id);
+      if(updateError)return showToast(updateError.message);
+      myFamilyRecord.name=clean;$("my-family-name").textContent=clean;showToast("Family renamed.");
+    };
+    const del = familyNode("button","danger-btn","Delete Family");
+    del.type="button";
+    del.onclick=async()=>{
+      if(!confirm("Delete this family and its family chat permanently?"))return;
+      const {error:deleteError}=await supabaseClient.rpc("delete_family");
+      if(deleteError)return showToast(deleteError.message);
+      myFamilyRecord=null;showToast("Family deleted.");await loadMyFamily();
+    };
+    actions.append(rename,del);
+  } else if (myRole === "admin") {
+    const leave = familyNode("button","danger-btn","Leave Family");
+    leave.type="button";leave.onclick=leaveFamily;
+    actions.append(leave);
+  } else {
+    const leave = familyNode("button","danger-btn","Leave Family");
+    leave.type="button";leave.onclick=leaveFamily;actions.append(leave);
+  }
+  familyMembersCache.forEach(member=>{
+    const row=familyNode("div","family-member");
+    const avatar=familyNode("div","avatar",(profileMap.get(member.user_id)||"P").charAt(0).toUpperCase());
+    const info=familyNode("div","family-member-info");
+    info.append(familyNode("strong","",profileMap.get(member.user_id)||"Premika user"));
+    info.append(familyNode("small","",member.user_id===currentUser.id?"You":"Family member"));
+    const role=familyNode("span","family-role",member.role.toUpperCase());
+    row.append(avatar,info,role);
+    if(myRole==="owner" && member.user_id!==currentUser.id){
+      const manage=familyNode("button","secondary-btn",member.role==="admin"?"Remove Admin":"Make Admin");
+      manage.type="button";
+      manage.onclick=async()=>{
+        if(member.role==="admin"){
+          if(!confirm("Remove this member's admin role?"))return;
+          const {error:e}=await supabaseClient.rpc("set_family_member_role",{p_member_id:member.user_id,p_role:"member"});
+          if(e)return showToast(e.message);
+        } else {
+          if(!confirm("Make this member a family admin?"))return;
+          const {error:e}=await supabaseClient.rpc("set_family_member_role",{p_member_id:member.user_id,p_role:"admin"});
+          if(e)return showToast(e.message);
+        }
+        await loadFamilyMembers();
+      };
+      const kick=familyNode("button","danger-btn","Remove");kick.type="button";
+      kick.onclick=async()=>{
+        if(!confirm("Remove this person from your family?"))return;
+        const {error:e}=await supabaseClient.rpc("remove_family_member",{p_member_id:member.user_id});
+        if(e)return showToast(e.message);
+        await loadFamilyMembers();showToast("Member removed.");
+      };
+      row.append(manage,kick);
+    } else if(myRole==="admin" && member.role==="member"){
+      const kick=familyNode("button","danger-btn","Remove");kick.type="button";
+      kick.onclick=async()=>{
+        if(!confirm("Remove this member from the family?"))return;
+        const {error:e}=await supabaseClient.rpc("remove_family_member",{p_member_id:member.user_id});
+        if(e)return showToast(e.message);
+        await loadFamilyMembers();
+      };
+      row.append(kick);
+    }
+    list.append(row);
+  });
+}
+
+async function loadFamilyMessages() {
+  if (!myFamilyRecord) return;
+  const box=$("family-chat-messages");
+  const {data:messages,error}=await supabaseClient.from("family_messages")
+    .select("id,user_id,content,created_at").eq("family_id",myFamilyRecord.id)
+    .order("created_at",{ascending:true}).limit(100);
+  if(error)throw error;
+  const ids=[...new Set((messages||[]).map(m=>m.user_id))];
+  let profiles=[];
+  if(ids.length){const r=await supabaseClient.from("profiles").select("id,username").in("id",ids);if(!r.error)profiles=r.data||[];}
+  const names=new Map(profiles.map(p=>[p.id,p.username||"Member"]));
+  box.replaceChildren();
+  if(!messages?.length){box.append(familyNode("div","empty-state","No messages yet. Say hello to your family!"));return;}
+  messages.forEach(message=>{
+    const item=familyNode("div","family-message"+(message.user_id===currentUser.id?" mine":""));
+    const meta=familyNode("small","",(names.get(message.user_id)||"Member")+" · "+new Date(message.created_at).toLocaleString());
+    const body=familyNode("div","",message.content);
+    item.append(meta,body);box.append(item);
+  });
+  box.scrollTop=box.scrollHeight;
+}
+
+async function createFamily() {
+  const name=$("family-name-input").value.trim();
+  const description=$("family-description-input").value.trim();
+  if(name.length<3||name.length>35)return showToast("Family name must be 3–35 characters.");
+  const btn=$("family-create-btn");btn.disabled=true;btn.textContent="Creating...";
+  try{
+    const {data,error}=await supabaseClient.rpc("create_family",{p_name:name,p_description:description||null});
+    if(error)throw error;
+    $("family-name-input").value="";$("family-description-input").value="";
+    showToast("Family created! Share its invite code.");await loadMyFamily();
+  }catch(e){showToast("Create family error: "+e.message);}
+  finally{btn.disabled=false;btn.textContent="Create Family";}
+}
+
+async function joinFamily() {
+  const code=$("family-code-input").value.trim().toUpperCase();
+  if(!/^[A-Z0-9]{6,10}$/.test(code))return showToast("Enter a valid family invite code.");
+  const btn=$("family-join-btn");btn.disabled=true;btn.textContent="Joining...";
+  try{
+    const {error}=await supabaseClient.rpc("join_family",{p_code:code});
+    if(error)throw error;
+    $("family-code-input").value="";showToast("You joined the family!");await loadMyFamily();
+  }catch(e){showToast("Join family error: "+e.message);}
+  finally{btn.disabled=false;btn.textContent="Join Family";}
+}
+
+async function leaveFamily(){
+  if(!confirm("Leave this family? You will need an invite code to join again."))return;
+  const {error}=await supabaseClient.rpc("leave_family");
+  if(error)return showToast(error.message);
+  showToast("You left the family.");await loadMyFamily();
+}
+
+async function sendFamilyMessage(){
+  if(!myFamilyRecord)return;
+  const input=$("family-message-input");const content=input.value.trim();
+  if(!content)return;
+  const {error}=await supabaseClient.from("family_messages").insert({
+    family_id:myFamilyRecord.id,user_id:currentUser.id,content
+  });
+  if(error)return showToast("Message error: "+error.message);
+  input.value="";await loadFamilyMessages();
+}
+
+$("family-create-btn").addEventListener("click",createFamily);
+$("family-join-btn").addEventListener("click",joinFamily);
+$("family-send-message").addEventListener("click",sendFamilyMessage);
+$("family-message-input").addEventListener("keydown",e=>{if(e.key==="Enter")sendFamilyMessage()});
+$("family-refresh-btn").addEventListener("click",()=>loadFamilyMessages().catch(e=>showToast(e.message)));
+$("family-copy-code").addEventListener("click",async()=>{
+  if(!myFamilyRecord)return;
+  try{await navigator.clipboard.writeText(myFamilyRecord.family_code);showToast("Invite code copied.");}
+  catch(e){showToast("Your family code is: "+myFamilyRecord.family_code);}
+});
+
 
 // START PREMIKA
 startPremika();
