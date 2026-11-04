@@ -625,6 +625,23 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
   .room-seats-grid{gap:7px!important}
 }
 
+
+/* HARD FIX: detached room menu must override all earlier mobile absolute-position rules */
+body > #room-menu.room-menu-detached{
+  position:fixed!important;
+  display:flex!important;
+  flex-direction:column!important;
+  left:var(--room-menu-left,16px)!important;
+  right:auto!important;
+  top:var(--room-menu-top,90px)!important;
+  width:var(--room-menu-width,285px)!important;
+  max-width:calc(100vw - 32px)!important;
+  max-height:min(68dvh,520px)!important;
+  overflow-y:auto!important;
+  z-index:10000!important;
+  margin:0!important;
+}
+
 </style>
 </head>
 
@@ -3033,13 +3050,6 @@ showToast("Room successfully created! Ab aap sirf room ka naam change kar sakte 
 // SEND PRIVATE ROOM INVITE THROUGH PREMIKA CHAT
 $("room-invite-btn").addEventListener("click", openRoomPrivateInbox);
 
-// Room menu click handling is installed in the updated menu controller.
-document.addEventListener("click", event => {
-  if (!event.target.closest(".room-menu-wrap")) {
-    $("room-menu")?.classList.add("hidden");
-    $("room-menu-toggle")?.setAttribute("aria-expanded","false");
-  }
-});
 if ($("room-rename-owner-btn")) $("room-rename-owner-btn").addEventListener("click", async () => {
   if (!currentUser || !activeRoomId) return;
   if (roomRecord?.owner_id !== currentUser.id) return showToast("Sirf room owner room rename kar sakta hai.");
@@ -3178,7 +3188,7 @@ function closeEditor(){if(editorResolver?.cancel)editorResolver.cancel();editorR
 document.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.close==="premika-editor")closeEditor();else $(b.dataset.close).classList.add("hidden")}));
 function applyBg(){const el=$("active-room");if(!el)return;el.style.background=bgChoice==="purple"?"":({aurora:"radial-gradient(ellipse at 50% 0%,#24506a,#211434 52%,#100b1b)",rose:"radial-gradient(ellipse at 50% 0%,#6a2855,#29142f 52%,#100b1b)",midnight:"radial-gradient(ellipse at 50% 0%,#273b70,#1d1738 52%,#0a0b18)"}[bgChoice]||"")}
 function openBgEditor(){openEditor("Room Background",'<p class="small-text">Choose a background for this device.</p><div class="room-background-options"><button class="room-background-choice" data-bg="purple">Purple Glow</button><button class="room-background-choice" data-bg="aurora">Aurora</button><button class="room-background-choice" data-bg="rose">Rose Galaxy</button><button class="room-background-choice" data-bg="midnight">Midnight</button></div>',()=>{const chosen=$("editor-body").querySelector(".selected")?.dataset.bg;if(chosen){bgChoice=chosen;localStorage.setItem("premika-room-bg",chosen);applyBg()} });$("editor-body").querySelectorAll("[data-bg]").forEach(b=>{if(b.dataset.bg===bgChoice)b.classList.add("selected");b.onclick=()=>{$("editor-body").querySelectorAll("[data-bg]").forEach(x=>x.classList.remove("selected"));b.classList.add("selected")}})}
-$("room-menu").addEventListener("click",async e=>{const b=e.target.closest("[data-room-action]");if(!b)return;const a=b.dataset.roomAction;$("room-menu").classList.add("hidden");if(a==="settings"){$("premika-room-settings").classList.remove("hidden");$("settings-rename-open").style.display=roomRecord?.owner_id===currentUser?.id?"inline-flex":"none"}if(a==="background")openBgEditor();if(a==="mode"){if(roomRecord?.owner_id!==currentUser?.id)return showToast("Only the room owner can change room mode.");const v=!roomRecord.is_public;if(!await premikaConfirm("Change room mode?",v?"Make this room public?":"Make this room private?"))return;const {data,error}=await supabaseClient.from("rooms").update({is_public:v}).eq("id",activeRoomId).eq("owner_id",currentUser.id).select("id,name,owner_id,is_public").single();if(error)showToast(error.message);else{roomRecord=data;showToast(v?"Room is now public.":"Room is now private.")}}if(a==="tasks")showToast("Room activities will be available in a future update.");if(a==="sound")showToast("Sound effects are not connected yet.");if(a==="speaker")$("room-speaker-btn").click();if(a==="hand")$("room-raise-hand-btn").click();if(a==="invite")openRoomPrivateInbox();if(a==="notice")openEditor("Room Announcement",'<textarea id="editor-notice" class="input-field" rows="3" maxlength="180" placeholder="Welcome to our room...">'+(localStorage.getItem("premika-room-notice")||"")+'</textarea>',()=>localStorage.setItem("premika-room-notice",$("editor-notice").value.trim()));if(a==="cleanup"){if(roomRecord?.owner_id!==currentUser?.id)return showToast("Only the room owner can clear room messages.");if(await premikaConfirm("Clear room messages?","This action cannot be undone.")){const {error}=await supabaseClient.from("room_messages").delete().eq("room_id",activeRoomId);if(error)showToast(error.message);else await loadRoomMessages(activeRoomId)}}if(a==="lock")showToast("Room lock needs a server-side access policy before it can securely block new members.");if(a==="minimize")window.showPage("home");if(a==="share"){const u=location.origin+location.pathname+"?room="+activeRoomId;try{await navigator.clipboard.writeText(u);showToast("Room link copied.")}catch(_){showToast(u)}}if(a==="exit"&&await premikaConfirm("Exit room?","You will leave this voice room.")){await leaveVoiceRoom()}});
+$("room-menu").addEventListener("click",async e=>{const b=e.target.closest("[data-room-action]");if(!b)return;const a=b.dataset.roomAction;closeRoomMenu();if(a==="settings"){$("premika-room-settings").classList.remove("hidden");$("settings-rename-open").style.display=roomRecord?.owner_id===currentUser?.id?"inline-flex":"none"}if(a==="background")openBgEditor();if(a==="mode"){if(roomRecord?.owner_id!==currentUser?.id)return showToast("Only the room owner can change room mode.");const v=!roomRecord.is_public;if(!await premikaConfirm("Change room mode?",v?"Make this room public?":"Make this room private?"))return;const {data,error}=await supabaseClient.from("rooms").update({is_public:v}).eq("id",activeRoomId).eq("owner_id",currentUser.id).select("id,name,owner_id,is_public").single();if(error)showToast(error.message);else{roomRecord=data;showToast(v?"Room is now public.":"Room is now private.")}}if(a==="tasks")showToast("Room activities will be available in a future update.");if(a==="sound")showToast("Sound effects are not connected yet.");if(a==="speaker")$("room-speaker-btn").click();if(a==="hand")$("room-raise-hand-btn").click();if(a==="invite")openRoomPrivateInbox();if(a==="notice")openEditor("Room Announcement",'<textarea id="editor-notice" class="input-field" rows="3" maxlength="180" placeholder="Welcome to our room...">'+(localStorage.getItem("premika-room-notice")||"")+'</textarea>',()=>localStorage.setItem("premika-room-notice",$("editor-notice").value.trim()));if(a==="cleanup"){if(roomRecord?.owner_id!==currentUser?.id)return showToast("Only the room owner can clear room messages.");if(await premikaConfirm("Clear room messages?","This action cannot be undone.")){const {error}=await supabaseClient.from("room_messages").delete().eq("room_id",activeRoomId);if(error)showToast(error.message);else await loadRoomMessages(activeRoomId)}}if(a==="lock")showToast("Room lock needs a server-side access policy before it can securely block new members.");if(a==="minimize")window.showPage("home");if(a==="share"){const u=location.origin+location.pathname+"?room="+activeRoomId;try{await navigator.clipboard.writeText(u);showToast("Room link copied.")}catch(_){showToast(u)}}if(a==="exit"&&await premikaConfirm("Exit room?","You will leave this voice room.")){await leaveVoiceRoom()}});
 $("settings-rename-open").addEventListener("click",async()=>{const n=await premikaEditText("Rename Room","Enter a room name",roomRecord?.name||"");if(!n)return;if(n.length<3||n.length>40)return showToast("Room name must be 3–40 characters.");const {data,error}=await supabaseClient.from("rooms").update({name:n}).eq("id",activeRoomId).eq("owner_id",currentUser.id).select("id,name,owner_id,is_public").single();if(error)return showToast(error.message);roomRecord=data;$("active-room-name").textContent="🌙 "+n;$("premika-room-settings").classList.add("hidden");showToast("Room name updated.")});
 $("settings-background-open").addEventListener("click",openBgEditor);
 $("settings-notice-open").addEventListener("click",()=>openEditor("Room Announcement",'<textarea id="editor-notice" class="input-field" rows="3" maxlength="180" placeholder="Welcome to our room...">'+(localStorage.getItem("premika-room-notice")||"")+'</textarea>',()=>localStorage.setItem("premika-room-notice",$("editor-notice").value.trim())));
@@ -3189,8 +3199,11 @@ const roomMenuElement = $("room-menu");
 const roomMenuHome = roomMenuElement.parentElement;
 function closeRoomMenu(){
   roomMenuElement.classList.add("hidden");
+  roomMenuElement.classList.remove("room-menu-detached");
   roomMenuHome.appendChild(roomMenuElement);
-  roomMenuElement.style.cssText = "";
+  roomMenuElement.style.removeProperty("--room-menu-left");
+  roomMenuElement.style.removeProperty("--room-menu-top");
+  roomMenuElement.style.removeProperty("--room-menu-width");
   $("room-menu-toggle").setAttribute("aria-expanded","false");
 }
 $("room-menu-toggle").addEventListener("click",e=>{
@@ -3199,36 +3212,25 @@ $("room-menu-toggle").addEventListener("click",e=>{
     closeRoomMenu();
     return;
   }
-  // Move the menu outside the room card so mobile overflow cannot clip it.
   document.body.appendChild(roomMenuElement);
   roomMenuElement.classList.remove("hidden");
+  roomMenuElement.classList.add("room-menu-detached");
   const anchor = $("room-menu-toggle").getBoundingClientRect();
-  const menuWidth = Math.min(300, window.innerWidth - 32);
-  const left = Math.max(16, Math.min(anchor.right - menuWidth, window.innerWidth - menuWidth - 16));
-  const top = Math.max(12, Math.min(anchor.bottom + 8, window.innerHeight - 180));
-  roomMenuElement.style.cssText = [
-    "position:fixed",
-    "display:flex",
-    "flex-direction:column",
-    "left:"+left+"px",
-    "right:auto",
-    "top:"+top+"px",
-    "width:"+menuWidth+"px",
-    "max-height:min(68dvh,520px)",
-    "overflow-y:auto",
-    "z-index:10000",
-    "box-shadow:0 0 0 100vmax rgba(0,0,0,.58),0 18px 50px #000e"
-  ].join(";");
+  const width = Math.min(300, window.innerWidth - 32);
+  const left = Math.max(16, Math.min(anchor.right - width, window.innerWidth - width - 16));
+  const estimatedHeight = Math.min(window.innerHeight * 0.68, 520);
+  const top = Math.max(12, Math.min(anchor.bottom + 8, window.innerHeight - estimatedHeight - 12));
+  roomMenuElement.style.setProperty("--room-menu-left",left+"px");
+  roomMenuElement.style.setProperty("--room-menu-top",top+"px");
+  roomMenuElement.style.setProperty("--room-menu-width",width+"px");
   $("room-menu-toggle").setAttribute("aria-expanded","true");
 });
 document.addEventListener("click",e=>{
-  if(e.target.closest("#room-menu")){
-    if(roomMenuElement.classList.contains("hidden")) closeRoomMenu();
-    return;
-  }
+  if(e.target.closest("#room-menu")) return;
   if(!e.target.closest(".room-menu-wrap")) closeRoomMenu();
 });
 window.addEventListener("resize",()=>{if(!roomMenuElement.classList.contains("hidden"))closeRoomMenu()});
+
 $("premika-confirm").addEventListener("click",e=>{if(e.target===$("premika-confirm"))finishConfirm(false)});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){["premika-room-settings","premika-editor"].forEach(id=>$(id).classList.add("hidden"));finishConfirm(false);closeRoomMenu()}});
 
