@@ -828,6 +828,11 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
           style="margin-top:14px">
           Find Friends
         </button>
+        <div class="room-suggestions-home" style="margin-top:18px;padding-top:16px;border-top:1px solid #ffffff18">
+          <h3 class="section-title">🎙️ Room Suggestions</h3>
+          <p class="small-text">Discover public Premika rooms and join any room you like — even if you have not created your own room.</p>
+          <button class="primary-btn" type="button" onclick="showPage('discover-rooms');" style="margin-top:12px;width:100%">Explore All Rooms</button>
+        </div>
       </div>
 
 
@@ -926,23 +931,23 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
     </section>
 
 
-<!-- ROOM SUGGESTIONS PAGE -->
-<section id="room-suggestions" class="page">
-
-  <div class="welcome-card room-heading"><h2>Voice Rooms 🎙️</h2><p>Join conversations, meet the community and create your own space.</p></div>
+<!-- DISCOVER ALL PUBLIC PREMIKA ROOMS -->
+<section id="discover-rooms" class="page">
+  <div class="welcome-card room-heading"><h2>Room Suggestions 🎙️</h2><p>Explore public Premika rooms and join any room you like. You do not need to create your own room first.</p></div>
   <h2 class="section-title">Explore Rooms</h2>
   <div class="panel" id="public-room-directory">
     <div class="room-directory-head">
-      <h3 class="section-title">🌍 Public Rooms</h3>
+      <h3 class="section-title">🌍 All Public Rooms</h3>
       <button id="refresh-public-rooms" class="secondary-btn" type="button">↻ Refresh</button>
     </div>
     <p class="small-text">Choose any public room and tap Join to enter.</p>
-    <div id="public-room-list" class="public-room-list">
-      <div class="room-live-empty">Loading public rooms…</div>
-    </div>
+    <div id="public-room-list" class="public-room-list"><div class="room-live-empty">Loading public rooms…</div></div>
     <p id="public-room-status" class="small-text" aria-live="polite"></p>
   </div>
+</section>
 
+<!-- MY ROOM PAGE: ONLY PERSONAL ROOM / CREATE ROOM -->
+<section id="room-suggestions" class="page">
   <!-- ROOM MANAGEMENT: CREATE ONCE, THEN RENAME -->
   <div class="panel" id="room-manager-panel">
     <div id="create-room-form">
@@ -1732,9 +1737,12 @@ async function uploadProfilePicture(file) {
   selectedPage.classList.add("active");
 }
 
+if (pageId === "discover-rooms") {
+  loadPublicRooms().catch(error => console.error("Public room list error:", error));
+}
 if (pageId === "room-suggestions") {
-  loadMyRoom().then(room => { if (room) showMyRoom(room); })
-    .catch(error => console.error("My room load error:", error));
+  // My Room page only loads the signed-in user's own room; public discovery lives on Home.
+  loadMyRoom().catch(error => console.error("My room load error:", error));
 }
 
     document.querySelectorAll(".nav-btn").forEach(nav => {
@@ -2211,7 +2219,12 @@ async function viewUserProfile(userId, options = {}) {
           addFriendBtn.style.display = person.id === currentUser.id ? "none" : "inline-flex";
           addFriendBtn.onclick = () => sendFriendRequest(person.id, addFriendBtn);
         }
-        const canKick = !!options.roomSeat && !!activeRoomId && roomRecord?.owner_id === currentUser.id && person.id !== currentUser.id;
+        let isRoomAdmin = false;
+        if (activeRoomId && roomRecord?.owner_id !== currentUser.id) {
+          const { data: adminFlag, error: adminCheckError } = await supabaseClient.rpc("is_room_admin", { _room_id: activeRoomId });
+          if (!adminCheckError) isRoomAdmin = adminFlag === true;
+        }
+        const canKick = !!options.roomSeat && !!activeRoomId && (roomRecord?.owner_id === currentUser.id || isRoomAdmin) && person.id !== currentUser.id && person.id !== roomRecord?.owner_id;
         if (moreBtn) moreBtn.style.display = canKick ? "inline-flex" : "none";
         if (moreBtn) moreBtn.onclick = () => moreMenu?.classList.toggle("hidden");
         if (kickBtn) {
@@ -2633,7 +2646,8 @@ function renderRoomSeats() {
         const avatar = document.createElement("div"); avatar.className = "room-live-avatar";
         setAvatarElement(avatar, person.avatar_url, person.display_name || person.username || "Member");
         const info = document.createElement("div"); info.className = "room-live-person-info";
-        const name = document.createElement("strong"); name.textContent = person.display_name || person.username || "Member";
+        const name = document.createElement("strong"); name.textContent = (person.display_name || person.username || "Member") + (roomAdminIds.has(person.user_id) ? " ★" : "");
+        if (roomAdminIds.has(person.user_id)) name.title = "Room Administrator";
         const seat = document.createElement("small"); seat.textContent = (Number(person.seat) === 0 ? "Owner Seat" : "Seat " + Number(person.seat)) + (person.raised_hand ? " · ✋ Hand raised" : " · Live");
         info.append(name,seat); item.append(avatar,info);
         if (person.user_id === currentUser?.id) { const you=document.createElement("em"); you.textContent="YOU"; item.appendChild(you); }
@@ -2653,7 +2667,8 @@ function renderRoomSeats() {
     const status = button.querySelector("span:not(.seat-avatar)");
     if (person) {
       setAvatarElement(avatar, person.avatar_url, person.display_name || person.username || "Member");
-      title.textContent = person.display_name || person.username || "Member";
+      title.textContent = (person.display_name || person.username || "Member") + (roomAdminIds.has(person.user_id) ? " ★" : "");
+      if (roomAdminIds.has(person.user_id)) title.title = "Room Administrator";
       status.textContent = mine ? "You are sitting · Tap profile" : (person.raised_hand ? "✋ Raised hand · Tap profile" : "Occupied · Tap profile");
     } else {
       avatar.textContent = "＋";
@@ -2788,6 +2803,7 @@ let liveKitRoom = null;
 let micEnabled = false;
 let speakerEnabled = true;
 let roomRecord = null;
+let roomAdminIds = new Set();
 
 function setVoiceStatus(message) {
   const el = $("room-voice-status");
@@ -3227,9 +3243,8 @@ async function loadPublicRooms() {
     if (status) status.textContent = "Room list error: " + error.message;
     console.error("Public room directory:", error);
   }
-  const ownRoom = await loadMyRoom();
-  if (ownRoom && activeRoomId === ownRoom.id) await showMyRoom(ownRoom);
 }
+
 
 async function enterPublicRoom(room) {
   if (!currentUser) return showToast("Please login first.");
@@ -3255,6 +3270,7 @@ async function showMyRoom(room) {
   if (!room || !currentUser) return;
   roomRecord = room;
   activeRoomId = room.id;
+  await loadRoomAdminIds(room.id);
   await connectRoomSeats(room.id);
   if (room.owner_id === currentUser.id && myRoomSeat === null) {
     await joinRoomSeat(0);
@@ -3520,14 +3536,43 @@ $("settings-seats-open")?.addEventListener("click",()=>{
   $("premika-room-settings").classList.add("hidden");$("premika-seat-settings").classList.remove("hidden");
 });
 $("settings-leave-room")?.addEventListener("click",async()=>{if(await premikaConfirm("Leave Room?","You will disconnect from this room.")){ $("premika-room-settings").classList.add("hidden"); await leaveVoiceRoom(); }});
-$("settings-admin-open")?.addEventListener("click",async()=>{
-  if(!currentUser || !activeRoomId) return showToast("Pehle room open karein.");
-  if(roomRecord?.owner_id !== currentUser.id) return showToast("Sirf room owner administrator settings chala sakta hai.");
-  const {data:members,error}=await supabaseClient.from("profiles").select("id,username,display_name").neq("id",currentUser.id).order("username").limit(100);
-  if(error) return showToast("Admin list load nahi hui: "+error.message);
-  const options=(members||[]).map(m=>`<option value="${m.id}">${(m.display_name||m.username||"User").replace(/[<>]/g,"") } (@${(m.username||"").replace(/[<>]/g,"")})</option>`).join("");
-  openEditor("Room Administrator",`<p class="small-text">Admin star assign karne ke liye pehle Supabase room_admins table aur RLS SQL install karna zaroori hai.</p><select id="room-admin-member" class="input-field"><option value="">Select a member</option>${options}</select><p class="settings-footnote">Database setup ke baghair kisi ko admin banana secure nahi hoga.</p>`,()=>{throw new Error("Supabase room_admins table/RLS SQL setup required before assigning an admin.")});
+async function loadRoomAdminIds(roomId) {
+  roomAdminIds = new Set();
+  if (!roomId || !supabaseClient) return;
+  const { data, error } = await supabaseClient.from("room_admins").select("user_id").eq("room_id", roomId);
+  if (error) { console.warn("Room admin list:", error.message); return; }
+  roomAdminIds = new Set((data || []).map(row => row.user_id));
+  renderRoomSeats();
+}
+
+$("settings-admin-open")?.addEventListener("click", async () => {
+  if (!currentUser || !activeRoomId) return showToast("Pehle room open karein.");
+  if (roomRecord?.owner_id !== currentUser.id) return showToast("Sirf room owner administrators manage kar sakta hai.");
+  const { data: members, error } = await supabaseClient.from("profiles")
+    .select("id,username,display_name").neq("id", currentUser.id).order("username").limit(100);
+  if (error) return showToast("Members load nahi huay: " + error.message);
+  const options = (members || []).map(m => `<option value="${m.id}">${String(m.display_name || m.username || "User").replace(/[<>]/g, "")} (@${String(m.username || "").replace(/[<>]/g, "")})</option>`).join("");
+  const adminRows = (members || []).filter(m => roomAdminIds.has(m.id)).map(m => `<div class="settings-row"><span><strong>${String(m.display_name || m.username || "User").replace(/[<>]/g, "")} ★</strong><small>@${String(m.username || "").replace(/[<>]/g, "")}</small></span><button type="button" class="settings-action room-admin-remove" data-user-id="${m.id}">Remove</button></div>`).join("");
+  openEditor("Room Administrators", `<p class="small-text">Select a member and assign administrator access. Admins get a ★ star in the room.</p><select id="room-admin-member" class="input-field"><option value="">Select a member</option>${options}</select><div style="margin-top:14px"><strong>Current Administrators</strong><div id="room-admin-current">${adminRows || '<p class="small-text">No administrators assigned yet.</p>'}</div></div>`, async () => {
+    const userId = $("room-admin-member").value;
+    if (!userId) throw new Error("Pehle member select karein.");
+    const { error: rpcError } = await supabaseClient.rpc("manage_room_admin", { _room_id: activeRoomId, _user_id: userId, _action: "add" });
+    if (rpcError) throw new Error("Admin assign nahi hua: " + rpcError.message + ". Pehle SQL setup run karein.");
+    await loadRoomAdminIds(activeRoomId);
+    showToast("Administrator assign ho gaya ★");
+    $("settings-admin-open")?.click();
+  });
+  $("room-admin-current")?.querySelectorAll(".room-admin-remove").forEach(btn => btn.addEventListener("click", async () => {
+    const userId = btn.dataset.userId;
+    if (!(await premikaConfirm("Remove Administrator?", "Is member ka Admin star aur permissions remove ho jayengi."))) return;
+    const { error: rpcError } = await supabaseClient.rpc("manage_room_admin", { _room_id: activeRoomId, _user_id: userId, _action: "remove" });
+    if (rpcError) return showToast("Admin remove nahi hua: " + rpcError.message);
+    await loadRoomAdminIds(activeRoomId);
+    closeEditor();
+    showToast("Administrator remove kar diya gaya.");
+  }));
 });
+
 $("settings-rename-open").addEventListener("click",async()=>{const n=await premikaEditText("Rename Room","Enter a room name",roomRecord?.name||"");if(!n)return;if(n.length<3||n.length>40)return showToast("Room name must be 3–40 characters.");const {data,error}=await supabaseClient.from("rooms").update({name:n}).eq("id",activeRoomId).eq("owner_id",currentUser.id).select("id,name,owner_id,is_public").single();if(error)return showToast(error.message);roomRecord=data;$("active-room-name").textContent="🌙 "+n;$("premika-room-settings").classList.add("hidden");showToast("Room name updated.")});
 $("settings-background-open").addEventListener("click",openBgEditor);
 $("settings-notice-open").addEventListener("click",()=>openEditor("Room Announcement",'<textarea id="editor-notice" class="input-field" rows="3" maxlength="180" placeholder="Welcome to our room...">'+(localStorage.getItem("premika-room-notice")||"")+'</textarea>',()=>localStorage.setItem("premika-room-notice",$("editor-notice").value.trim())));
