@@ -3185,10 +3185,52 @@ $("settings-notice-open").addEventListener("click",()=>openEditor("Room Announce
 $("room-avatar-file").addEventListener("change",e=>{const f=e.target.files?.[0];if(!f)return;if(!f.type.startsWith("image/")||f.size>2*1024*1024)return showToast("Choose an image under 2 MB.");const r=new FileReader();r.onload=()=>{const img=document.createElement("img");img.src=r.result;img.alt="Room avatar";img.style="width:100%;height:100%;object-fit:cover;border-radius:14px";$("active-room").querySelector(".room-cover").replaceChildren(img);localStorage.setItem("premika-room-avatar",r.result);showToast("Room avatar preview saved on this device.")};r.readAsDataURL(f)});
 const baseShowPage=window.showPage;window.showPage=function(id,btn){baseShowPage(id,btn);const dock=$("premika-mini-room");dock.classList.toggle("hidden",!activeRoomId||id==="room-suggestions")};
 $("premika-mini-room").addEventListener("click",e=>{if(e.target.id!=="mini-room-leave")window.showPage("room-suggestions")});$("mini-room-leave").addEventListener("click",async e=>{e.stopPropagation();if(await premikaConfirm("Leave room?","You will disconnect from this room."))await leaveVoiceRoom()});
-$("room-menu-toggle").addEventListener("click",e=>{e.stopPropagation();const m=$("room-menu");m.classList.toggle("hidden");$("room-menu-toggle").setAttribute("aria-expanded",String(!m.classList.contains("hidden")))});
-document.addEventListener("click",e=>{if(!e.target.closest(".room-menu-wrap"))$("room-menu")?.classList.add("hidden")});
+const roomMenuElement = $("room-menu");
+const roomMenuHome = roomMenuElement.parentElement;
+function closeRoomMenu(){
+  roomMenuElement.classList.add("hidden");
+  roomMenuHome.appendChild(roomMenuElement);
+  roomMenuElement.style.cssText = "";
+  $("room-menu-toggle").setAttribute("aria-expanded","false");
+}
+$("room-menu-toggle").addEventListener("click",e=>{
+  e.stopPropagation();
+  if(!roomMenuElement.classList.contains("hidden")){
+    closeRoomMenu();
+    return;
+  }
+  // Move the menu outside the room card so mobile overflow cannot clip it.
+  document.body.appendChild(roomMenuElement);
+  roomMenuElement.classList.remove("hidden");
+  const anchor = $("room-menu-toggle").getBoundingClientRect();
+  const menuWidth = Math.min(300, window.innerWidth - 32);
+  const left = Math.max(16, Math.min(anchor.right - menuWidth, window.innerWidth - menuWidth - 16));
+  const top = Math.max(12, Math.min(anchor.bottom + 8, window.innerHeight - 180));
+  roomMenuElement.style.cssText = [
+    "position:fixed",
+    "display:flex",
+    "flex-direction:column",
+    "left:"+left+"px",
+    "right:auto",
+    "top:"+top+"px",
+    "width:"+menuWidth+"px",
+    "max-height:min(68dvh,520px)",
+    "overflow-y:auto",
+    "z-index:10000",
+    "box-shadow:0 0 0 100vmax rgba(0,0,0,.58),0 18px 50px #000e"
+  ].join(";");
+  $("room-menu-toggle").setAttribute("aria-expanded","true");
+});
+document.addEventListener("click",e=>{
+  if(e.target.closest("#room-menu")){
+    if(roomMenuElement.classList.contains("hidden")) closeRoomMenu();
+    return;
+  }
+  if(!e.target.closest(".room-menu-wrap")) closeRoomMenu();
+});
+window.addEventListener("resize",()=>{if(!roomMenuElement.classList.contains("hidden"))closeRoomMenu()});
 $("premika-confirm").addEventListener("click",e=>{if(e.target===$("premika-confirm"))finishConfirm(false)});
-document.addEventListener("keydown",e=>{if(e.key==="Escape"){["premika-room-settings","premika-editor"].forEach(id=>$(id).classList.add("hidden"));finishConfirm(false);$("room-menu")?.classList.add("hidden")}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){["premika-room-settings","premika-editor"].forEach(id=>$(id).classList.add("hidden"));finishConfirm(false);closeRoomMenu()}});
 
 // START PREMIKA
 startPremika();
