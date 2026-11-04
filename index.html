@@ -541,7 +541,7 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
 .room-inbox-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
 .room-inbox-head strong{display:block;font-size:18px}.room-inbox-head small{color:#bca8ce;font-size:11px}
 .room-inbox-friend{display:flex;align-items:center;gap:10px;padding:10px 4px;border-bottom:1px solid #ffffff12}
-.room-inbox-friend .user-info{flex:1;min-width:0}.room-inbox-friend .user-info strong{display:block}.room-inbox-friend .user-info small{color:#bca8ce}
+.room-inbox-friend .user-info{flex:1;min-width:0}.room-inbox-friend .user-info strong{display:block}.room-inbox-friend .user-info small{color:#bca8ce}.room-inbox-friend .secondary-btn{padding:9px 10px;border:1px solid #a875c7;border-radius:10px;color:#f4e7ff;background:#39234c;font-size:12px}
 .chat-header-person{display:flex;align-items:center;gap:9px;min-width:0;flex:1}
 .chat-clear-btn{margin-left:auto}
 #chat-window.chat-window-open .chat-header-person .avatar{width:38px;height:38px}
@@ -966,6 +966,25 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
 
   const $ = (id) => document.getElementById(id);
 
+  function showToast(message) {
+    let toast = $("premika-toast");
+    if (!toast) {
+      toast = document.createElement("div");
+      toast.id = "premika-toast";
+      toast.setAttribute("role", "status");
+      toast.style.cssText = "position:fixed;left:50%;bottom:calc(82px + env(safe-area-inset-bottom));transform:translate(-50%,18px);opacity:0;pointer-events:none;z-index:9999;max-width:calc(100vw - 32px);padding:12px 17px;border:1px solid #a875c7;border-radius:14px;background:#241532;color:#fff;font:13px/1.45 Arial,sans-serif;box-shadow:0 12px 35px #0009;text-align:center;transition:opacity .2s,transform .2s";
+      document.body.appendChild(toast);
+    }
+    toast.textContent = String(message || "");
+    toast.style.opacity = "1";
+    toast.style.transform = "translate(-50%,0)";
+    clearTimeout(toast._hideTimer);
+    toast._hideTimer = setTimeout(() => {
+      toast.style.opacity = "0";
+      toast.style.transform = "translate(-50%,18px)";
+    }, 2800);
+  }
+
   function showStatus(message) {
     const status = $("auth-status");
     if (status) status.textContent = message;
@@ -1004,7 +1023,7 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
 
   // GOOGLE LOGIN
   async function googleLogin() {
-  alert("Google Login Button Working!");
+  showToast("Google Login Button Working!");
     if (!supabaseClient) {
       showStatus("Supabase load nahi hui. Internet check karo.");
       return;
@@ -1012,7 +1031,7 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
 
     try {
       showStatus("Google login connecting...");
-alert("Supabase Client: " + (supabaseClient ? "Loaded" : "Not Loaded"));
+console.info("Supabase client:", supabaseClient ? "loaded" : "not loaded");
       const { error } = await supabaseClient.auth.signInWithOAuth({
         provider: "google",
         options: {
@@ -1021,7 +1040,7 @@ alert("Supabase Client: " + (supabaseClient ? "Loaded" : "Not Loaded"));
       });
 
      if (error) {
-  alert("Google Login Error: " + error.message);
+  showToast("Google Login Error: " + error.message);
   console.log("OAuth Error:", error);
   return;
 }
@@ -1029,7 +1048,7 @@ alert("Supabase Client: " + (supabaseClient ? "Loaded" : "Not Loaded"));
    showStatus("Google redirect starting...");
 
    } catch (error) {
-      alert("LOGIN ERROR: " + error.message);
+      showToast("LOGIN ERROR: " + error.message);
       showStatus("Login error: " + error.message);
     }
   }
@@ -1296,7 +1315,7 @@ if (profile.avatar_url) {
 // SAVE PROFILE BIO
 async function saveProfileBio() {
   if (!currentUser || !currentProfile) {
-    alert("User profile load nahi hui!");
+    showToast("User profile load nahi hui!");
     return;
   }
 
@@ -1328,17 +1347,17 @@ async function saveProfileBio() {
 // UPLOAD PROFILE PICTURE
 async function uploadProfilePicture(file) {
   if (!currentUser || !currentProfile) {
-    alert("Please login first!");
+    showToast("Please login first!");
     return;
   }
 
   if (!file || !file.type.startsWith("image/")) {
-    alert("Please select an image.");
+    showToast("Please select an image.");
     return;
   }
 
   if (file.size > 5 * 1024 * 1024) {
-    alert("Image size 5MB se kam honi chahiye.");
+    showToast("Image size 5MB se kam honi chahiye.");
     return;
   }
 
@@ -1642,7 +1661,7 @@ async function sendFriendRequest(receiverId, button) {
 
   } catch (error) {
     button.textContent = "Try Again";
-    alert("Request error: " + error.message);
+    showToast("Request error: " + error.message);
   } finally {
     button.disabled = false;
   }
@@ -1751,7 +1770,7 @@ async function respondFriendRequest(requestId, status) {
     await loadFriends();
 
   } catch (error) {
-    alert("Request update error: " + error.message);
+    showToast("Request update error: " + error.message);
   }
 }
 
@@ -1864,7 +1883,7 @@ async function viewUserProfile(userId) {
         if (error) throw error;
 
         if (!person) {
-            alert("User profile not found.");
+            showToast("User profile not found.");
             return;
         }
 
@@ -1890,7 +1909,7 @@ async function viewUserProfile(userId) {
         };
 
     } catch (error) {
-        alert("Profile error: " + error.message);
+        showToast("Profile error: " + error.message);
     }
 }
 // =====================================
@@ -2151,7 +2170,7 @@ async function sendMessage() {
     await loadMessages();
 
   } catch (error) {
-    alert("Message error: " + error.message);
+    showToast("Message error: " + error.message);
   } finally {
     button.disabled = false;
   }
@@ -2168,7 +2187,7 @@ async function clearPrivateChat() {
     if (error) throw error;
     await loadMessages();
   } catch (error) {
-    alert("Chat clear nahi ho saki. Supabase DELETE policy check karein: " + error.message);
+    showToast("Chat clear nahi ho saki. Supabase DELETE policy check karein: " + error.message);
   }
 }
 $("clear-private-chat-btn").addEventListener("click", clearPrivateChat);
@@ -2283,13 +2302,13 @@ function renderRoomSeats() {
 
 async function joinRoomSeat(seatNo) {
   if (!currentUser || !activeRoomId || !roomSeatsChannel) {
-    alert("Room connection abhi ready nahi. Dobara room open karein.");
+    showToast("Room connection abhi ready nahi. Dobara room open karein.");
     return;
   }
   const state = roomSeatsChannel.presenceState();
   const occupied = Object.values(state).flat().find(p => Number(p.seat) === seatNo);
   if (occupied && occupied.user_id !== currentUser.id) {
-    alert("Yeh seat pehle se occupied hai.");
+    showToast("Yeh seat pehle se occupied hai.");
     return;
   }
   try {
@@ -2306,7 +2325,7 @@ async function joinRoomSeat(seatNo) {
     $("room-raise-hand-btn")?.classList.remove("active");
     renderRoomSeats();
   } catch (error) {
-    alert("Seat join error: " + error.message);
+    showToast("Seat join error: " + error.message);
   }
 }
 
@@ -2436,7 +2455,7 @@ async function toggleRoomMic() {
     micEnabled = false;
     button.classList.remove("active");
     setVoiceStatus("Voice error: " + error.message);
-    alert("Mic error: " + error.message);
+    showToast("Mic error: " + error.message);
   } finally {
     button.disabled = false;
   }
@@ -2490,7 +2509,7 @@ $("room-leave-btn").addEventListener("click", async () => {
 let myHandRaised = false;
 $("room-raise-hand-btn").addEventListener("click", async () => {
   if (!roomSeatsChannel || !myRoomSeat) {
-    alert("Pehle kisi seat par baithain, phir hand raise kar sakte hain.");
+    showToast("Pehle kisi seat par baithain, phir hand raise kar sakte hain.");
     return;
   }
   myHandRaised = !myHandRaised;
@@ -2509,7 +2528,7 @@ $("room-raise-hand-btn").addEventListener("click", async () => {
     renderRoomSeats();
   } catch (error) {
     myHandRaised = !myHandRaised;
-    alert("Raise hand error: " + error.message);
+    showToast("Raise hand error: " + error.message);
   }
 });
 
@@ -2604,7 +2623,7 @@ async function openRoomChat(roomId) {
 // SEND ROOM MESSAGE
 async function sendRoomMessage() {
   if (!currentUser || !activeRoomId) {
-    alert("Please open a room first.");
+    showToast("Please open a room first.");
     return;
   }
 
@@ -2631,7 +2650,7 @@ async function sendRoomMessage() {
     await loadRoomMessages(activeRoomId);
 
   } catch (error) {
-    alert("Message error: " + error.message);
+    showToast("Message error: " + error.message);
   } finally {
     button.disabled = false;
   }
@@ -2678,7 +2697,7 @@ async function loadMyRoom() {
 
 $("rename-room-btn").addEventListener("click", async () => {
   if (!currentUser) {
-    alert("Please login first.");
+    showToast("Please login first.");
     return;
   }
 
@@ -2689,11 +2708,11 @@ $("rename-room-btn").addEventListener("click", async () => {
   const newName = input.value.trim();
 
   if (!roomId) {
-    alert("Your room could not be found. Please refresh the Rooms page.");
+    showToast("Your room could not be found. Please refresh the Rooms page.");
     return;
   }
   if (newName.length < 3 || newName.length > 40) {
-    alert("Room name 3 se 40 characters ka hona chahiye.");
+    showToast("Room name 3 se 40 characters ka hona chahiye.");
     return;
   }
 
@@ -2718,10 +2737,10 @@ $("rename-room-btn").addEventListener("click", async () => {
       $("active-room-name").textContent = "🌙 " + data.name;
     }
     await showMyRoom(data);
-    alert("Room name updated successfully!");
+    showToast("Room name updated successfully!");
   } catch (error) {
     $("rename-room-status").textContent = "Rename error: " + error.message;
-    alert("Rename error: " + error.message);
+    showToast("Rename error: " + error.message);
   } finally {
     button.disabled = false;
     button.textContent = "Save Room Name";
@@ -2742,6 +2761,11 @@ async function showMyRoom(room) {
   roomRecord = room;
   activeRoomId = room.id;
   await connectRoomSeats(room.id);
+  if (room.owner_id === currentUser.id && !myRoomSeat) {
+    const occupiedSeats = new Set(Object.values(roomSeatsChannel?.presenceState?.() || {}).flat().map(p => Number(p.seat)));
+    const freeSeat = [1,2,3,4,5,6].find(n => !occupiedSeats.has(n));
+    if (freeSeat) await joinRoomSeat(freeSeat);
+  }
   $("active-room-name").textContent = "🌙 " + room.name;
   $("room-owner-name").textContent = currentProfile?.display_name || currentProfile?.username || "Room Owner";
   const isOwner = room.owner_id === currentUser.id;
@@ -2758,7 +2782,7 @@ async function showMyRoom(room) {
 $("create-room-btn").addEventListener("click", async () => {
 
   if (!currentUser) {
-    alert("Please login first.");
+    showToast("Please login first.");
     return;
   }
 
@@ -2767,7 +2791,7 @@ $("create-room-btn").addEventListener("click", async () => {
   const roomName = input.value.trim();
 
   if (roomName.length < 3 || roomName.length > 40) {
-    alert("Room name 3 se 40 characters ka hona chahiye.");
+    showToast("Room name 3 se 40 characters ka hona chahiye.");
     return;
   }
 
@@ -2785,14 +2809,14 @@ $("create-room-btn").addEventListener("click", async () => {
 
 if (existingRoom && existingRoom.length > 0) {
   showRoomManager(existingRoom[0]);
-  alert("Aapka room pehle se bana hua hai. Ab aap sirf uska naam change kar sakte hain.");
+  showToast("Aapka room pehle se bana hua hai. Ab aap sirf uska naam change kar sakte hain.");
   button.disabled = false;
   button.textContent = "+ Create Room";
   return;
 }
 
 } catch (error) {
-  alert("Room check error: " + error.message);
+  showToast("Room check error: " + error.message);
 
   button.disabled = false;
   button.textContent = "+ Create Room";
@@ -2832,11 +2856,11 @@ await openRoomChat(data.id);
 showRoomManager(data);
 await loadPublicRooms();
 
-alert("Room successfully created! Ab aap sirf room ka naam change kar sakte hain.");
+showToast("Room successfully created! Ab aap sirf room ka naam change kar sakte hain.");
 
 
   } catch (error) {
-    alert("Room error: " + error.message);
+    showToast("Room error: " + error.message);
 
   } finally {
     button.disabled = false;
@@ -2846,26 +2870,7 @@ alert("Room successfully created! Ab aap sirf room ka naam change kar sakte hain
 
 
 // SEND PRIVATE ROOM INVITE THROUGH PREMIKA CHAT
-$("room-invite-btn").addEventListener("click", async () => {
-  if (!activeRoomId || !currentUser) return alert("Pehle apna room open karein.");
-  const targetUsername = prompt("Jis friend ko room invite bhejna hai uska username likhein (without @):");
-  if (!targetUsername) return;
-  try {
-    const {data: friend,error: findError} = await supabaseClient.from("profiles")
-      .select("id,username").ilike("username",targetUsername.trim().replace(/^@/,"")).maybeSingle();
-    if (findError) throw findError;
-    if (!friend) throw new Error("Is username ka user nahi mila.");
-    if (friend.id === currentUser.id) throw new Error("Apne aap ko invite nahi bhej sakte.");
-    const url = new URL(window.location.href);
-    url.searchParams.set("room",activeRoomId);
-    const inviteText = "🎙️ Aap ko mere Premika room mein invite kiya gaya hai! Join karne ke liye link open karein: " + url.toString();
-    const {error: sendError} = await supabaseClient.from("direct_messages").insert({
-      sender_id:currentUser.id, receiver_id:friend.id, content:inviteText
-    });
-    if (sendError) throw sendError;
-    alert("Room invitation @" + friend.username + " ko personal chat mein send ho gaya.");
-  } catch(e) { alert("Invite send error: " + e.message); }
-});
+$("room-invite-btn").addEventListener("click", openRoomPrivateInbox);
 
 // THREE-DOT ROOM MENU
 $("room-menu-toggle").addEventListener("click", () => {
@@ -2881,7 +2886,7 @@ document.addEventListener("click", event => {
 });
 $("room-rename-owner-btn").addEventListener("click", async () => {
   if (!currentUser || !activeRoomId) return;
-  if (roomRecord?.owner_id !== currentUser.id) return alert("Sirf room owner room rename kar sakta hai.");
+  if (roomRecord?.owner_id !== currentUser.id) return showToast("Sirf room owner room rename kar sakta hai.");
   const nextName = prompt("New room name:", roomRecord.name || "");
   if (!nextName || nextName.trim().length < 3 || nextName.trim().length > 40) return;
   try {
@@ -2892,18 +2897,42 @@ $("room-rename-owner-btn").addEventListener("click", async () => {
     $("active-room-name").textContent = "🌙 " + data.name;
     $("rename-room-name").value = data.name;
     setVoiceStatus("Room name updated");
-  } catch(e) { alert("Rename error: " + e.message); }
+  } catch(e) { showToast("Rename error: " + e.message); }
 });
 $("room-clear-owner-btn").addEventListener("click", async () => {
   if (!currentUser || !activeRoomId) return;
-  if (roomRecord?.owner_id !== currentUser.id) return alert("Sirf room owner room chat clear kar sakta hai.");
+  if (roomRecord?.owner_id !== currentUser.id) return showToast("Sirf room owner room chat clear kar sakta hai.");
   if (!confirm("Room chat ke tamam messages delete kar dein? Yeh action undo nahi hoga.")) return;
   try {
     const {error} = await supabaseClient.from("room_messages").delete().eq("room_id",activeRoomId);
     if (error) throw error;
     await loadRoomMessages(activeRoomId);
-  } catch(e) { alert("Clear chat error: " + e.message + " — Supabase DELETE policy check karein."); }
+  } catch(e) { showToast("Clear chat error: " + e.message + " — Supabase DELETE policy check karein."); }
 });
+
+// SEND ROOM INVITE TO A SELECTED FRIEND
+async function sendRoomInvite(person) {
+  if (!activeRoomId || !currentUser) return showToast("Pehle apna room open karein.");
+  if (!person || !person.id || person.id === currentUser.id) return;
+  try {
+    const url = new URL(window.location.href);
+    url.search = "";
+    url.hash = "";
+    url.searchParams.set("room", activeRoomId);
+    const inviteText = "🎙️ Room invitation: " + (roomRecord?.name || "Premika Voice Room") +
+      "\nJoin karne ke liye is link ko open karein (Premika mein login hona zaroori hai): " + url.toString();
+    const { error } = await supabaseClient.from("direct_messages").insert({
+      sender_id: currentUser.id,
+      receiver_id: person.id,
+      content: inviteText
+    });
+    if (error) throw error;
+    showToast("Room invite @" + (person.username || "friend") + " ko bhej diya gaya.");
+  } catch (error) {
+    console.error("Room invite failed:", error);
+    showToast("Invite send nahi hua. Chat permissions check karein.");
+  }
+}
 
 // PRIVATE INBOX FROM ROOM
 async function openRoomPrivateInbox() {
@@ -2930,12 +2959,19 @@ async function openRoomPrivateInbox() {
       const name = document.createElement("strong"); name.textContent = person.display_name || person.username;
       const handle = document.createElement("small"); handle.textContent = "@" + person.username;
       info.append(name,handle);
+      const actions = document.createElement("div");
+      actions.style.cssText = "display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end";
       const button = document.createElement("button"); button.className = "primary-btn"; button.textContent = "Message";
       button.addEventListener("click", async () => {
         overlay.classList.add("hidden");
         await openChat(person.id,person);
       });
-      row.append(avatar,info,button); list.appendChild(row);
+      const inviteButton = document.createElement("button");
+      inviteButton.className = "secondary-btn";
+      inviteButton.textContent = "Invite room";
+      inviteButton.addEventListener("click", () => sendRoomInvite(person));
+      actions.append(button, inviteButton);
+      row.append(avatar,info,actions); list.appendChild(row);
     });
   } catch(e) { list.textContent = "Inbox error: " + e.message; }
 }
@@ -2960,7 +2996,7 @@ async function openRoomInviteFromUrl() {
     window.showPage("room-suggestions");
     await showMyRoom(room);
     history.replaceState({}, "", location.pathname);
-  } catch(e) { alert("Room invite error: "+e.message); }
+  } catch(e) { showToast("Room invite error: "+e.message); }
 }
 
 window.addEventListener("beforeunload", () => {
