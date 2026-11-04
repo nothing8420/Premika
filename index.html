@@ -512,6 +512,42 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
 .room-seats-grid .premium-seat.mine{outline:2px solid #e8c5ff;outline-offset:1px}
 .friend-presence{display:block}
 
+
+/* ROOM CHAT MESSAGE ALIGNMENT */
+.room-chat-message{display:flex;flex-direction:column;max-width:82%;width:max-content;padding:9px 12px;margin:8px 0;border-radius:14px;overflow-wrap:anywhere;border:1px solid #ffffff12;box-shadow:0 4px 12px #0002}
+.room-chat-message.mine{margin-left:auto;margin-right:0;background:linear-gradient(135deg,#7136a0,#512876);border-bottom-right-radius:5px}
+.room-chat-message.theirs{margin-right:auto;margin-left:0;background:#352044;border-bottom-left-radius:5px}
+.room-chat-message .room-message-sender{font-size:11px;font-weight:800;color:#edcaff;margin-bottom:4px}
+.room-chat-message .room-message-content{font-size:13px;line-height:1.45;white-space:pre-wrap}
+.room-chat-message .room-message-time{font-size:9px;color:#d6c1e5;text-align:right;margin-top:5px;opacity:.8}
+.room-seat .seat-avatar{overflow:hidden}
+.room-seat .seat-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+
+
+
+/* ROOM MENU, COMPOSER MIC AND PRIVATE INBOX */
+.room-menu-wrap{position:relative;display:flex;justify-content:flex-end;margin:12px 2px 4px;z-index:8}
+.room-menu-toggle{width:42px;height:38px;border-radius:13px;color:#f0d7ff;background:#ffffff12;border:1px solid #b875ed66;font-size:21px;font-weight:900;letter-spacing:2px}
+.room-menu{position:absolute;right:0;top:44px;width:min(255px,85vw);padding:8px;border-radius:17px;background:#1b1128;border:1px solid #8055a0;box-shadow:0 18px 48px #000b;z-index:30}
+.room-menu button{display:flex;align-items:center;gap:10px;width:100%;padding:12px 11px;border-radius:11px;background:transparent;color:#f5eaff;text-align:left;font-size:13px}
+.room-menu button:active{background:#ffffff12}.room-menu button span{flex:1}.room-menu .menu-danger{color:#ff9fb3}
+.room-chat-compose{display:flex;align-items:center;gap:7px}
+.room-chat-compose .input-field{flex:1;min-width:0}
+.compose-icon-btn{width:39px;height:39px;flex:none;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#49275f,#241431);border:1px solid #a65ce766;color:#f5eaff;font-size:17px}
+.compose-icon-btn.active{background:linear-gradient(145deg,#a83c66,#5b1d3c);border-color:#ff9fcb}
+.room-voice-status{font-size:10px;color:#bca8ce;text-align:center;margin-top:7px;min-height:14px}
+.room-inbox-overlay{position:fixed;inset:0;z-index:150;background:#05030bdc;backdrop-filter:blur(9px);display:flex;align-items:center;justify-content:center;padding:15px}
+.room-inbox-card{width:100%;max-width:430px;max-height:78vh;overflow:auto;border:1px solid #8055a0;border-radius:22px;padding:17px;background:linear-gradient(150deg,#342044,#171020);box-shadow:0 25px 80px #000a}
+.room-inbox-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.room-inbox-head strong{display:block;font-size:18px}.room-inbox-head small{color:#bca8ce;font-size:11px}
+.room-inbox-friend{display:flex;align-items:center;gap:10px;padding:10px 4px;border-bottom:1px solid #ffffff12}
+.room-inbox-friend .user-info{flex:1;min-width:0}.room-inbox-friend .user-info strong{display:block}.room-inbox-friend .user-info small{color:#bca8ce}
+.chat-header-person{display:flex;align-items:center;gap:9px;min-width:0;flex:1}
+.chat-clear-btn{margin-left:auto}
+#chat-window.chat-window-open .chat-header-person .avatar{width:38px;height:38px}
+.room-control-btn.active span{border-color:#f2b7ff;background:#65358a}
+@media(max-width:380px){.compose-icon-btn{width:35px;height:35px}.room-chat-compose{gap:5px}}
+
 </style>
 </head>
 
@@ -650,10 +686,10 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
 
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:15px">
           <button id="back-to-chats" class="secondary-btn">←</button>
+          <button id="clear-private-chat-btn" class="secondary-btn chat-clear-btn" type="button" title="Clear conversation">🧹</button>
 
           <div>
-            <strong id="chat-friend-name">Friend</strong>
-            <p id="typing-indicator" class="small-text"></p>
+            <div class="chat-header-person"><div id="chat-friend-avatar" class="avatar">F</div><div><strong id="chat-friend-name">Friend</strong><p id="typing-indicator" class="small-text"></p></div></div>
           </div>
         </div>
 
@@ -746,12 +782,16 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
       <button type="button" class="room-seat premium-seat" data-seat="6"><div class="seat-avatar">＋</div><strong>Seat 6</strong><span>Tap to sit</span></button>
     </div>
 
-    <div class="room-control-bar">
-      <button id="room-mic-btn" class="room-control-btn" type="button"><span>🎤</span><small>Mic</small></button>
-      <button id="room-speaker-btn" class="room-control-btn" type="button"><span>🔊</span><small>Audio</small></button>
-      <button class="room-control-btn" type="button"><span>✋</span><small>Raise hand</small></button>
-      <button id="room-invite-btn" class="room-control-btn" type="button"><span>♧</span><small>Invite</small></button>
-      <button id="room-leave-btn" class="room-control-btn room-leave-control" type="button"><span>↗</span><small>Leave</small></button>
+    <div class="room-menu-wrap">
+      <button id="room-menu-toggle" class="room-menu-toggle" type="button" aria-label="Room settings" aria-expanded="false">•••</button>
+      <div id="room-menu" class="room-menu hidden">
+        <button id="room-speaker-btn" type="button">🔊 <span>Audio on</span></button>
+        <button id="room-raise-hand-btn" type="button">✋ <span>Raise hand</span></button>
+        <button id="room-invite-btn" type="button">♧ <span>Invite a friend</span></button>
+        <button id="room-rename-owner-btn" type="button">✏️ <span>Rename room</span></button>
+        <button id="room-clear-owner-btn" type="button">🧹 <span>Clear room chat</span></button>
+        <button id="room-leave-btn" class="menu-danger" type="button">↗ <span>Leave room</span></button>
+      </div>
     </div>
 
     <div class="room-chat-panel">
@@ -760,12 +800,23 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
         <div class="empty-state">Welcome to your room!</div>
       </div>
       <div class="room-chat-compose">
+        <button id="room-mic-btn" class="compose-icon-btn" type="button" aria-label="Microphone" title="Talk">🎤</button>
         <input id="room-chat-input" class="input-field" placeholder="Write a message..." autocomplete="off">
+        <button id="room-private-inbox-btn" class="compose-icon-btn inbox-compose-btn" type="button" aria-label="Private messages" title="Private messages">✉</button>
         <button id="room-chat-send" class="primary-btn" type="button" aria-label="Send message">➤</button>
       </div>
+      <p id="room-voice-status" class="room-voice-status">Join a seat to speak in the room</p>
     </div>
   </div>
 </section>
+
+<!-- PRIVATE INBOX FROM VOICE ROOM -->
+<div id="room-private-inbox" class="room-inbox-overlay hidden" role="dialog" aria-modal="true">
+  <div class="room-inbox-card">
+    <div class="room-inbox-head"><div><strong>Private Inbox</strong><small>Message your Premika friends</small></div><button id="room-inbox-close" class="secondary-btn" type="button">✕</button></div>
+    <div id="room-inbox-friends"><div class="empty-state">Loading friends...</div></div>
+  </div>
+</div>
 
 <!-- PROFILE PAGE -->
 <section id="profile" class="page">
@@ -898,6 +949,7 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js"></script>
 <script>
 (function () {
   "use strict";
@@ -905,6 +957,7 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
   // SUPABASE CONNECTION
   const SUPABASE_URL = "https://vlpeysngfrrujvztbnqe.supabase.co";
   const SUPABASE_KEY = "sb_publishable_DNyEEOK-geIDO4oBNDDWmg_wxK-31jW";
+  const LIVEKIT_TOKEN_URL = "https://vlpeysngfrrujvztbnqe.supabase.co/functions/v1/livekit-token";
 
   let supabaseClient = null;
   let currentUser = null;
@@ -1520,7 +1573,7 @@ async function searchFriends() {
       const username = document.createElement("small");
       username.textContent = "@" + person.username;
       const { data: presence } = await supabaseClient.from("user_presence")
-        .select("is_online,last_seen").eq("user_id", friendId).maybeSingle();
+        .select("is_online,last_seen").eq("user_id", person.id).maybeSingle();
       const status = document.createElement("small");
       status.className = "friend-presence " + (presence?.is_online ? "is-online" : "is-offline");
       status.textContent = presence?.is_online ? "● Online" : "● Offline";
@@ -1944,6 +1997,7 @@ async function openChat(friendId, person) {
 
   $("chat-friend-name").textContent =
     person.display_name || person.username || "Friend";
+  setAvatarElement($("chat-friend-avatar"), person.avatar_url, person.display_name || person.username);
   $("typing-indicator").textContent = "";
 
   await loadMessages();
@@ -2104,6 +2158,21 @@ async function sendMessage() {
 }
 
 
+// CLEAR THE CURRENT PRIVATE CONVERSATION
+async function clearPrivateChat() {
+  if (!currentUser || !activeChatFriendId) return;
+  if (!confirm("Clear this conversation for both participants where database permissions allow? This cannot be undone.")) return;
+  try {
+    const { error } = await supabaseClient.from("direct_messages").delete()
+      .or(`and(sender_id.eq.${currentUser.id},receiver_id.eq.${activeChatFriendId}),and(sender_id.eq.${activeChatFriendId},receiver_id.eq.${currentUser.id})`);
+    if (error) throw error;
+    await loadMessages();
+  } catch (error) {
+    alert("Chat clear nahi ho saki. Supabase DELETE policy check karein: " + error.message);
+  }
+}
+$("clear-private-chat-btn").addEventListener("click", clearPrivateChat);
+
 // =====================================
 // CLOSE CHAT
 // =====================================
@@ -2201,9 +2270,9 @@ function renderRoomSeats() {
     const title = button.querySelector("strong");
     const status = button.querySelector("span:not(.seat-avatar)");
     if (person) {
-      avatar.textContent = (person.display_name || person.username || "U").slice(0,1).toUpperCase();
+      setAvatarElement(avatar, person.avatar_url, person.display_name || person.username || "Member");
       title.textContent = person.display_name || person.username || "Member";
-      status.textContent = mine ? "You are sitting" : "Occupied";
+      status.textContent = mine ? "You are sitting" : (person.raised_hand ? "✋ Raised hand" : "Occupied");
     } else {
       avatar.textContent = "＋";
       title.textContent = "Seat " + seatNo;
@@ -2233,6 +2302,8 @@ async function joinRoomSeat(seatNo) {
       joined_at: new Date().toISOString()
     });
     myRoomSeat = seatNo;
+    myHandRaised = false;
+    $("room-raise-hand-btn")?.classList.remove("active");
     renderRoomSeats();
   } catch (error) {
     alert("Seat join error: " + error.message);
@@ -2240,9 +2311,17 @@ async function joinRoomSeat(seatNo) {
 }
 
 async function leaveRoomSeat() {
+  if (liveKitRoom && micEnabled) {
+    await liveKitRoom.localParticipant.setMicrophoneEnabled(false).catch(()=>{});
+    micEnabled = false;
+    $("room-mic-btn")?.classList.remove("active");
+    if ($("room-mic-btn")) $("room-mic-btn").textContent = "🎤";
+  }
   if (roomSeatsChannel) {
     await roomSeatsChannel.untrack();
     myRoomSeat = null;
+    const handButton = $("room-raise-hand-btn");
+    if (handButton) handButton.classList.remove("active");
     renderRoomSeats();
   }
 }
@@ -2256,20 +2335,183 @@ async function connectRoomSeats(roomId) {
   roomSeatsChannel = supabaseClient.channel("room-seats-" + roomId, {
     config: { presence: { key: currentUser.id } }
   });
-  roomSeatsChannel
-    .on("presence", { event: "sync" }, renderRoomSeats)
-    .on("presence", { event: "join" }, renderRoomSeats)
-    .on("presence", { event: "leave" }, renderRoomSeats)
-    .subscribe(async status => {
-      if (status === "SUBSCRIBED") renderRoomSeats();
-    });
+  await new Promise((resolve, reject) => {
+    roomSeatsChannel
+      .on("presence", { event: "sync" }, renderRoomSeats)
+      .on("presence", { event: "join" }, renderRoomSeats)
+      .on("presence", { event: "leave" }, renderRoomSeats)
+      .subscribe(status => {
+        if (status === "SUBSCRIBED") {
+          renderRoomSeats();
+          resolve();
+        } else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT" || status === "CLOSED") {
+          reject(new Error("Room seats connection failed: " + status));
+        }
+      });
+  });
 }
 
 $("room-seats-grid").addEventListener("click", event => {
   const button = event.target.closest("[data-seat]");
   if (button && !button.disabled) joinRoomSeat(Number(button.dataset.seat));
 });
-$("room-leave-btn").addEventListener("click", leaveRoomSeat);
+let liveKitRoom = null;
+let micEnabled = false;
+let speakerEnabled = true;
+let roomRecord = null;
+
+function setVoiceStatus(message) {
+  const el = $("room-voice-status");
+  if (el) el.textContent = message;
+}
+
+async function connectLiveKitVoice() {
+  if (!currentUser || !activeRoomId) throw new Error("Room pehle open karein.");
+  if (!myRoomSeat) throw new Error("Pehle kisi khaali seat par baithain.");
+  if (!window.LivekitClient) throw new Error("LiveKit SDK load nahi hui. Internet check karein.");
+  if (liveKitRoom && liveKitRoom.state === "connected") return liveKitRoom;
+
+  const { data: sessionData, error: sessionError } = await supabaseClient.auth.getSession();
+  if (sessionError) throw sessionError;
+  const accessToken = sessionData?.session?.access_token;
+  if (!accessToken) throw new Error("Login session expire ho gayi. Dobara login karein.");
+
+  const { data: room, error: roomError } = await supabaseClient
+    .from("rooms").select("id,name,owner_id").eq("id",activeRoomId).maybeSingle();
+  if (roomError) throw roomError;
+  if (!room) throw new Error("Room nahi mila.");
+  roomRecord = room;
+
+  setVoiceStatus("Connecting voice...");
+  const response = await fetch(LIVEKIT_TOKEN_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + accessToken,
+      "apikey": SUPABASE_KEY
+    },
+    body: JSON.stringify({
+      roomId: room.id, room_id: room.id, roomName: room.name, room_name: room.name,
+      participantName: currentProfile?.username || currentUser.id,
+      participant_name: currentProfile?.username || currentUser.id
+    })
+  });
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(payload.error || payload.message || "Token request failed (" + response.status + ")");
+  const token = payload.token || payload.accessToken || payload.access_token;
+  const serverUrl = payload.url || payload.livekitUrl || payload.livekit_url || payload.wsUrl;
+  if (!token || !serverUrl) throw new Error("Token response mein token ya LiveKit server URL nahi mila. Function response fields verify karein.");
+
+  const { Room, RoomEvent } = window.LivekitClient;
+  liveKitRoom = new Room({ adaptiveStream: true, dynacast: true });
+  liveKitRoom.on(RoomEvent.TrackSubscribed, (track) => {
+    if (track.kind === "audio") {
+      const audio = track.attach();
+      audio.autoplay = true;
+      audio.playsInline = true;
+      document.body.appendChild(audio);
+    }
+  });
+  liveKitRoom.on(RoomEvent.Disconnected, () => {
+    micEnabled = false;
+    $("room-mic-btn")?.classList.remove("active");
+    setVoiceStatus("Voice disconnected");
+  });
+  await liveKitRoom.connect(serverUrl, token);
+  setVoiceStatus("Connected — tap mic to talk");
+  return liveKitRoom;
+}
+
+async function toggleRoomMic() {
+  const button = $("room-mic-btn");
+  button.disabled = true;
+  try {
+    if (!liveKitRoom || liveKitRoom.state !== "connected") await connectLiveKitVoice();
+    micEnabled = !micEnabled;
+    await liveKitRoom.localParticipant.setMicrophoneEnabled(micEnabled);
+    button.classList.toggle("active", micEnabled);
+    button.textContent = micEnabled ? "🔴" : "🎤";
+    setVoiceStatus(micEnabled ? "Your microphone is live" : "Microphone muted");
+  } catch (error) {
+    micEnabled = false;
+    button.classList.remove("active");
+    setVoiceStatus("Voice error: " + error.message);
+    alert("Mic error: " + error.message);
+  } finally {
+    button.disabled = false;
+  }
+}
+$("room-mic-btn").addEventListener("click", toggleRoomMic);
+$("room-speaker-btn").addEventListener("click", async () => {
+  speakerEnabled = !speakerEnabled;
+  if (liveKitRoom) {
+    liveKitRoom.remoteParticipants.forEach(participant => {
+      participant.audioTrackPublications.forEach(publication => {
+        if (publication.track) publication.track.setVolume(speakerEnabled ? 1 : 0);
+      });
+    });
+  }
+  $("room-speaker-btn").querySelector("span").textContent = speakerEnabled ? "Audio on" : "Audio off";
+});
+
+async function leaveVoiceRoom() {
+  try {
+    if (liveKitRoom) {
+      await liveKitRoom.localParticipant.setMicrophoneEnabled(false).catch(()=>{});
+      await liveKitRoom.disconnect();
+      liveKitRoom = null;
+    }
+  } catch (e) { console.warn("LiveKit leave:",e); }
+  micEnabled = false;
+  $("room-mic-btn").textContent = "🎤";
+  $("room-mic-btn").classList.remove("active");
+  await leaveRoomSeat();
+  if (roomMessagesChannel) {
+    await supabaseClient.removeChannel(roomMessagesChannel);
+    roomMessagesChannel = null;
+  }
+  if (roomSeatsChannel) {
+    await supabaseClient.removeChannel(roomSeatsChannel);
+    roomSeatsChannel = null;
+  }
+  activeRoomId = null;
+  $("active-room").style.display = "none";
+  setVoiceStatus("You left the room");
+}
+$("room-leave-btn").addEventListener("click", async () => {
+  if (confirm("Leave this voice room?")) {
+    $("room-menu").classList.add("hidden");
+    await leaveVoiceRoom();
+  }
+});
+
+
+// RAISE HAND (ROOM PRESENCE)
+let myHandRaised = false;
+$("room-raise-hand-btn").addEventListener("click", async () => {
+  if (!roomSeatsChannel || !myRoomSeat) {
+    alert("Pehle kisi seat par baithain, phir hand raise kar sakte hain.");
+    return;
+  }
+  myHandRaised = !myHandRaised;
+  try {
+    await roomSeatsChannel.track({
+      user_id: currentUser.id,
+      username: currentProfile?.username || "User",
+      display_name: currentProfile?.display_name || currentProfile?.username || "User",
+      avatar_url: currentProfile?.avatar_url || null,
+      seat: myRoomSeat,
+      raised_hand: myHandRaised,
+      joined_at: new Date().toISOString()
+    });
+    $("room-raise-hand-btn").classList.toggle("active", myHandRaised);
+    $("room-raise-hand-btn").querySelector("span").textContent = myHandRaised ? "Lower hand" : "Raise hand";
+    renderRoomSeats();
+  } catch (error) {
+    myHandRaised = !myHandRaised;
+    alert("Raise hand error: " + error.message);
+  }
+});
 
 // LOAD ROOM MESSAGES
 async function loadRoomMessages(roomId) {
@@ -2283,38 +2525,54 @@ async function loadRoomMessages(roomId) {
     .order("created_at", { ascending: true });
 
   if (error) {
-    alert("Chat loading error: " + error.message);
+    console.error("Room chat loading error:", error);
+    box.textContent = "Chat loading error: " + error.message;
     return;
   }
 
   box.innerHTML = "";
-
   if (!data || data.length === 0) {
-    box.textContent = "No messages yet. Start chatting!";
+    box.innerHTML = '<div class="empty-state">No messages yet. Start chatting! 💜</div>';
     return;
   }
 
+  const senderIds = [...new Set(data.map(m => m.user_id).filter(Boolean))];
+  const profileMap = {};
+  if (senderIds.length) {
+    const { data: profiles, error: profileError } = await supabaseClient
+      .from("profiles")
+      .select("id, username, display_name")
+      .in("id", senderIds);
+    if (!profileError) {
+      (profiles || []).forEach(profile => { profileMap[profile.id] = profile; });
+    }
+  }
+
   data.forEach(message => {
+    const mine = message.user_id === currentUser.id;
+    const profile = profileMap[message.user_id];
+    const senderName = mine ? "You" : (profile?.display_name || profile?.username || "Member");
     const item = document.createElement("div");
-    item.style.padding = "9px";
-    item.style.marginBottom = "7px";
-    item.style.borderRadius = "10px";
-    item.style.background = "rgba(255,255,255,0.07)";
+    item.className = "room-chat-message " + (mine ? "mine" : "theirs");
 
     const sender = document.createElement("strong");
-    sender.textContent =
-      message.user_id === currentUser.id
-        ? "You"
-        : "Member";
+    sender.className = "room-message-sender";
+    sender.textContent = senderName;
 
     const content = document.createElement("div");
-    content.textContent = message.content;
+    content.className = "room-message-content";
+    content.textContent = message.content || "";
 
-    item.appendChild(sender);
-    item.appendChild(content);
+    const time = document.createElement("small");
+    time.className = "room-message-time";
+    const createdAt = message.created_at ? new Date(message.created_at) : null;
+    time.textContent = createdAt && !Number.isNaN(createdAt.getTime())
+      ? createdAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+      : "";
+
+    item.append(sender, content, time);
     box.appendChild(item);
   });
-
   box.scrollTop = box.scrollHeight;
 }
 
@@ -2344,7 +2602,7 @@ async function openRoomChat(roomId) {
 }
 
 // SEND ROOM MESSAGE
-$("room-chat-send").addEventListener("click", async () => {
+async function sendRoomMessage() {
   if (!currentUser || !activeRoomId) {
     alert("Please open a room first.");
     return;
@@ -2377,6 +2635,11 @@ $("room-chat-send").addEventListener("click", async () => {
   } finally {
     button.disabled = false;
   }
+}
+
+$("room-chat-send").addEventListener("click", sendRoomMessage);
+$("room-chat-input").addEventListener("keydown", event => {
+  if (event.key === "Enter") sendRoomMessage();
 });
 // =====================================
 // ROOM MANAGER: ONE ROOM PER USER
@@ -2476,10 +2739,14 @@ async function loadPublicRooms() {
 
 async function showMyRoom(room) {
   if (!room || !currentUser) return;
+  roomRecord = room;
   activeRoomId = room.id;
   await connectRoomSeats(room.id);
   $("active-room-name").textContent = "🌙 " + room.name;
   $("room-owner-name").textContent = currentProfile?.display_name || currentProfile?.username || "Room Owner";
+  const isOwner = room.owner_id === currentUser.id;
+  $("room-rename-owner-btn").style.display = isOwner ? "flex" : "none";
+  $("room-clear-owner-btn").style.display = isOwner ? "flex" : "none";
   $("active-room").style.display = "block";
   await openRoomChat(room.id);
 }
@@ -2598,6 +2865,84 @@ $("room-invite-btn").addEventListener("click", async () => {
     if (sendError) throw sendError;
     alert("Room invitation @" + friend.username + " ko personal chat mein send ho gaya.");
   } catch(e) { alert("Invite send error: " + e.message); }
+});
+
+// THREE-DOT ROOM MENU
+$("room-menu-toggle").addEventListener("click", () => {
+  const menu = $("room-menu");
+  menu.classList.toggle("hidden");
+  $("room-menu-toggle").setAttribute("aria-expanded", String(!menu.classList.contains("hidden")));
+});
+document.addEventListener("click", event => {
+  if (!event.target.closest(".room-menu-wrap")) {
+    $("room-menu")?.classList.add("hidden");
+    $("room-menu-toggle")?.setAttribute("aria-expanded","false");
+  }
+});
+$("room-rename-owner-btn").addEventListener("click", async () => {
+  if (!currentUser || !activeRoomId) return;
+  if (roomRecord?.owner_id !== currentUser.id) return alert("Sirf room owner room rename kar sakta hai.");
+  const nextName = prompt("New room name:", roomRecord.name || "");
+  if (!nextName || nextName.trim().length < 3 || nextName.trim().length > 40) return;
+  try {
+    const {data,error} = await supabaseClient.from("rooms").update({name:nextName.trim()})
+      .eq("id",activeRoomId).eq("owner_id",currentUser.id).select("id,name,owner_id").single();
+    if (error) throw error;
+    roomRecord = data;
+    $("active-room-name").textContent = "🌙 " + data.name;
+    $("rename-room-name").value = data.name;
+    setVoiceStatus("Room name updated");
+  } catch(e) { alert("Rename error: " + e.message); }
+});
+$("room-clear-owner-btn").addEventListener("click", async () => {
+  if (!currentUser || !activeRoomId) return;
+  if (roomRecord?.owner_id !== currentUser.id) return alert("Sirf room owner room chat clear kar sakta hai.");
+  if (!confirm("Room chat ke tamam messages delete kar dein? Yeh action undo nahi hoga.")) return;
+  try {
+    const {error} = await supabaseClient.from("room_messages").delete().eq("room_id",activeRoomId);
+    if (error) throw error;
+    await loadRoomMessages(activeRoomId);
+  } catch(e) { alert("Clear chat error: " + e.message + " — Supabase DELETE policy check karein."); }
+});
+
+// PRIVATE INBOX FROM ROOM
+async function openRoomPrivateInbox() {
+  const overlay = $("room-private-inbox");
+  const list = $("room-inbox-friends");
+  overlay.classList.remove("hidden");
+  list.innerHTML = '<div class="empty-state">Loading friends...</div>';
+  try {
+    const {data:requests,error} = await supabaseClient.from("friend_requests")
+      .select("sender_id,receiver_id").eq("status","accepted")
+      .or(`sender_id.eq.${currentUser.id},receiver_id.eq.${currentUser.id}`);
+    if (error) throw error;
+    const ids = [...new Set((requests || []).map(r => r.sender_id === currentUser.id ? r.receiver_id : r.sender_id))];
+    if (!ids.length) { list.innerHTML = '<div class="empty-state">No friends yet. Add friends first.</div>'; return; }
+    const {data:people,error:peopleError} = await supabaseClient.from("profiles")
+      .select("id,username,display_name,avatar_url").in("id",ids);
+    if (peopleError) throw peopleError;
+    list.innerHTML = "";
+    (people || []).forEach(person => {
+      const row = document.createElement("div"); row.className = "room-inbox-friend";
+      const avatar = document.createElement("div"); avatar.className = "avatar";
+      setAvatarElement(avatar,person.avatar_url,person.display_name || person.username);
+      const info = document.createElement("div"); info.className = "user-info";
+      const name = document.createElement("strong"); name.textContent = person.display_name || person.username;
+      const handle = document.createElement("small"); handle.textContent = "@" + person.username;
+      info.append(name,handle);
+      const button = document.createElement("button"); button.className = "primary-btn"; button.textContent = "Message";
+      button.addEventListener("click", async () => {
+        overlay.classList.add("hidden");
+        await openChat(person.id,person);
+      });
+      row.append(avatar,info,button); list.appendChild(row);
+    });
+  } catch(e) { list.textContent = "Inbox error: " + e.message; }
+}
+$("room-private-inbox-btn").addEventListener("click",openRoomPrivateInbox);
+$("room-inbox-close").addEventListener("click",()=>$("room-private-inbox").classList.add("hidden"));
+$("room-private-inbox").addEventListener("click",event => {
+  if (event.target === $("room-private-inbox")) $("room-private-inbox").classList.add("hidden");
 });
 
 async function openRoomInviteFromUrl() {
