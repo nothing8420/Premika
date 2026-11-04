@@ -488,6 +488,30 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
 .chat-window-open>div:last-child{flex:none;background:#191126;padding-top:7px}
 @media(max-width:480px){.room-seats-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}.room-seat.premium-seat{min-height:72px!important}.room-chat-heading{margin-bottom:7px!important}.room-chat-compose .input-field{padding:10px 13px!important}#room-chat-send{width:40px!important;height:40px!important}}
 
+
+/* CHAT WINDOW FIX: detached from animated page to prevent clipping */
+#chat-window.chat-window-open{
+  position:fixed!important;z-index:100;left:10px;right:10px;
+  top:calc(70px + env(safe-area-inset-top));
+  bottom:calc(76px + env(safe-area-inset-bottom));
+  width:auto;max-width:760px;margin:0 auto!important;
+  display:flex!important;flex-direction:column;overflow:hidden;
+  border-radius:20px!important;padding:14px!important;
+  background:linear-gradient(145deg,#231633,#130d1d)!important;
+  box-shadow:0 18px 60px #000b;
+}
+#chat-window.chat-window-open #messages-container{
+  height:auto!important;flex:1;min-height:0;overflow-y:auto!important;
+  overscroll-behavior:contain;margin-bottom:10px!important;
+}
+#chat-window.chat-window-open>div:last-child{flex:none;background:transparent;padding-top:5px}
+#chat-window.chat-window-open #message-input{min-width:0}
+.room-seats-grid .premium-seat{appearance:none;cursor:pointer;width:100%;font:inherit}
+.room-seats-grid .premium-seat:disabled{opacity:.65}
+.room-seats-grid .premium-seat.occupied{border-color:#d9a7ff!important;background:linear-gradient(145deg,#573274,#28183a)!important}
+.room-seats-grid .premium-seat.mine{outline:2px solid #e8c5ff;outline-offset:1px}
+.friend-presence{display:block}
+
 </style>
 </head>
 
@@ -688,7 +712,7 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
   <div class="panel premium-room" id="active-room" style="display:none;">
     <div class="room-topline">
       <div class="room-live-pill"><span class="live-dot"></span> LIVE NOW</div>
-      <span class="room-seat-count">🎙 6 SEATS</span>
+      <span class="room-seat-count">🎙 6 LIVE SEATS</span>
     </div>
 
     <div class="room-title-row">
@@ -713,13 +737,13 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
       <span class="room-host-label">♛ ROOM HOST</span>
     </div>
 
-    <div class="room-seats-grid" aria-label="Voice seats">
-      <div class="room-seat premium-seat"><div class="seat-avatar">＋</div><strong>Seat 1</strong><span>Tap to join</span></div>
-      <div class="room-seat premium-seat"><div class="seat-avatar">＋</div><strong>Seat 2</strong><span>Tap to join</span></div>
-      <div class="room-seat premium-seat"><div class="seat-avatar">＋</div><strong>Seat 3</strong><span>Tap to join</span></div>
-      <div class="room-seat premium-seat"><div class="seat-avatar">＋</div><strong>Seat 4</strong><span>Tap to join</span></div>
-      <div class="room-seat premium-seat"><div class="seat-avatar">＋</div><strong>Seat 5</strong><span>Tap to join</span></div>
-      <div class="room-seat premium-seat"><div class="seat-avatar">＋</div><strong>Seat 6</strong><span>Tap to join</span></div>
+    <div class="room-seats-grid" id="room-seats-grid" aria-label="Voice seats">
+      <button type="button" class="room-seat premium-seat" data-seat="1"><div class="seat-avatar">＋</div><strong>Seat 1</strong><span>Tap to sit</span></button>
+      <button type="button" class="room-seat premium-seat" data-seat="2"><div class="seat-avatar">＋</div><strong>Seat 2</strong><span>Tap to sit</span></button>
+      <button type="button" class="room-seat premium-seat" data-seat="3"><div class="seat-avatar">＋</div><strong>Seat 3</strong><span>Tap to sit</span></button>
+      <button type="button" class="room-seat premium-seat" data-seat="4"><div class="seat-avatar">＋</div><strong>Seat 4</strong><span>Tap to sit</span></button>
+      <button type="button" class="room-seat premium-seat" data-seat="5"><div class="seat-avatar">＋</div><strong>Seat 5</strong><span>Tap to sit</span></button>
+      <button type="button" class="room-seat premium-seat" data-seat="6"><div class="seat-avatar">＋</div><strong>Seat 6</strong><span>Tap to sit</span></button>
     </div>
 
     <div class="room-control-bar">
@@ -1910,11 +1934,17 @@ async function openChat(friendId, person) {
   activeChatFriendId = friendId;
 
   $("chat-friends-list").parentElement.classList.add("hidden");
-  $("chat-window").classList.remove("hidden");
-  $("chat-window").classList.add("chat-window-open");
+  const chatWindow = $("chat-window");
+  if (!chatWindow.dataset.originalParent) {
+    chatWindow.dataset.originalParent = "chat";
+  }
+  document.body.appendChild(chatWindow);
+  chatWindow.classList.remove("hidden");
+  chatWindow.classList.add("chat-window-open");
 
   $("chat-friend-name").textContent =
     person.display_name || person.username || "Friend";
+  $("typing-indicator").textContent = "";
 
   await loadMessages();
 
@@ -1923,7 +1953,25 @@ async function openChat(friendId, person) {
   }
 
   activeChatSubscription = supabaseClient
-    .channel("private-chat-" + currentUser.id + "-" + friendId)
+    .channel("direct-chat-" + [currentUser.id, friendId].sort().join("-"), {
+      config: { broadcast: { self: false } }
+    })
+    .on("broadcast", { event: "typing" }, ({ payload }) => {
+      if (payload?.user_id === activeChatFriendId) {
+        $("typing-indicator").textContent = payload.typing ? "Friend is typing..." : "";
+        if (window._premikaTypingTimer) clearTimeout(window._premikaTypingTimer);
+        if (payload.typing) {
+          window._premikaTypingTimer = setTimeout(() => {
+            $("typing-indicator").textContent = "";
+          }, 2800);
+        }
+      }
+    })
+    .on("broadcast", { event: "new-message" }, ({ payload }) => {
+      if (payload?.sender_id === activeChatFriendId || payload?.sender_id === currentUser.id) {
+        loadMessages();
+      }
+    })
     .on(
       "postgres_changes",
       {
@@ -2031,7 +2079,21 @@ async function sendMessage() {
 
     if (error) throw error;
 
+    if (activeChatSubscription) {
+      await activeChatSubscription.send({
+        type: "broadcast",
+        event: "new-message",
+        payload: { sender_id: currentUser.id, receiver_id: activeChatFriendId }
+      });
+    }
     input.value = "";
+    $("typing-indicator").textContent = "";
+    if (activeChatSubscription) {
+      activeChatSubscription.send({
+        type: "broadcast", event: "typing",
+        payload: { user_id: currentUser.id, typing: false }
+      });
+    }
     await loadMessages();
 
   } catch (error) {
@@ -2054,9 +2116,13 @@ async function closeChat() {
     activeChatSubscription = null;
   }
 
-  $("chat-window").classList.add("hidden");
-  $("chat-window").classList.remove("chat-window-open");
+  const chatWindow = $("chat-window");
+  chatWindow.classList.add("hidden");
+  chatWindow.classList.remove("chat-window-open");
+  const chatPage = $("chat");
+  chatPage.appendChild(chatWindow);
   $("chat-friends-list").parentElement.classList.remove("hidden");
+  $("typing-indicator").textContent = "";
 }
 
 
@@ -2087,6 +2153,14 @@ $("message-input").addEventListener(
     if (event.key === "Enter") sendMessage();
   }
 );
+$("message-input").addEventListener("input", () => {
+  if (!activeChatSubscription || !activeChatFriendId) return;
+  activeChatSubscription.send({
+    type: "broadcast",
+    event: "typing",
+    payload: { user_id: currentUser.id, typing: $("message-input").value.length > 0 }
+  });
+});
 
 $("back-to-chats").addEventListener(
   "click",
@@ -2099,6 +2173,103 @@ $("back-to-chats").addEventListener(
 
 let activeRoomId = null;
 let roomMessagesChannel = null;
+
+
+// =====================================
+// REALTIME ROOM SEATS (SUPABASE PRESENCE)
+// =====================================
+let roomSeatsChannel = null;
+let myRoomSeat = null;
+
+function renderRoomSeats() {
+  const grid = $("room-seats-grid");
+  if (!grid) return;
+  const states = roomSeatsChannel?.presenceState?.() || {};
+  const occupants = {};
+  Object.values(states).flat().forEach(p => {
+    if (p && p.seat) occupants[Number(p.seat)] = p;
+  });
+
+  grid.querySelectorAll("[data-seat]").forEach(button => {
+    const seatNo = Number(button.dataset.seat);
+    const person = occupants[seatNo];
+    const mine = person?.user_id === currentUser?.id;
+    button.classList.toggle("occupied", !!person);
+    button.classList.toggle("mine", !!mine);
+    button.disabled = !!person && !mine;
+    const avatar = button.querySelector(".seat-avatar");
+    const title = button.querySelector("strong");
+    const status = button.querySelector("span:not(.seat-avatar)");
+    if (person) {
+      avatar.textContent = (person.display_name || person.username || "U").slice(0,1).toUpperCase();
+      title.textContent = person.display_name || person.username || "Member";
+      status.textContent = mine ? "You are sitting" : "Occupied";
+    } else {
+      avatar.textContent = "＋";
+      title.textContent = "Seat " + seatNo;
+      status.textContent = "Tap to sit";
+    }
+  });
+}
+
+async function joinRoomSeat(seatNo) {
+  if (!currentUser || !activeRoomId || !roomSeatsChannel) {
+    alert("Room connection abhi ready nahi. Dobara room open karein.");
+    return;
+  }
+  const state = roomSeatsChannel.presenceState();
+  const occupied = Object.values(state).flat().find(p => Number(p.seat) === seatNo);
+  if (occupied && occupied.user_id !== currentUser.id) {
+    alert("Yeh seat pehle se occupied hai.");
+    return;
+  }
+  try {
+    await roomSeatsChannel.track({
+      user_id: currentUser.id,
+      username: currentProfile?.username || "User",
+      display_name: currentProfile?.display_name || currentProfile?.username || "User",
+      avatar_url: currentProfile?.avatar_url || null,
+      seat: seatNo,
+      joined_at: new Date().toISOString()
+    });
+    myRoomSeat = seatNo;
+    renderRoomSeats();
+  } catch (error) {
+    alert("Seat join error: " + error.message);
+  }
+}
+
+async function leaveRoomSeat() {
+  if (roomSeatsChannel) {
+    await roomSeatsChannel.untrack();
+    myRoomSeat = null;
+    renderRoomSeats();
+  }
+}
+
+async function connectRoomSeats(roomId) {
+  if (roomSeatsChannel) {
+    await roomSeatsChannel.untrack();
+    await supabaseClient.removeChannel(roomSeatsChannel);
+  }
+  myRoomSeat = null;
+  roomSeatsChannel = supabaseClient.channel("room-seats-" + roomId, {
+    config: { presence: { key: currentUser.id } }
+  });
+  roomSeatsChannel
+    .on("presence", { event: "sync" }, renderRoomSeats)
+    .on("presence", { event: "join" }, renderRoomSeats)
+    .on("presence", { event: "leave" }, renderRoomSeats)
+    .subscribe(async status => {
+      if (status === "SUBSCRIBED") renderRoomSeats();
+    });
+}
+
+$("room-seats-grid").addEventListener("click", event => {
+  const button = event.target.closest("[data-seat]");
+  if (button && !button.disabled) joinRoomSeat(Number(button.dataset.seat));
+});
+$("room-leave-btn").addEventListener("click", leaveRoomSeat);
 
 // LOAD ROOM MESSAGES
 async function loadRoomMessages(roomId) {
@@ -2306,6 +2477,7 @@ async function loadPublicRooms() {
 async function showMyRoom(room) {
   if (!room || !currentUser) return;
   activeRoomId = room.id;
+  await connectRoomSeats(room.id);
   $("active-room-name").textContent = "🌙 " + room.name;
   $("room-owner-name").textContent = currentProfile?.display_name || currentProfile?.username || "Room Owner";
   $("active-room").style.display = "block";
@@ -2447,6 +2619,7 @@ async function openRoomInviteFromUrl() {
 }
 
 window.addEventListener("beforeunload", () => {
+  if (roomSeatsChannel) roomSeatsChannel.untrack();
   if (currentUser && supabaseClient) {
     supabaseClient.from("user_presence").upsert({
       user_id:currentUser.id,is_online:false,last_seen:new Date().toISOString()
