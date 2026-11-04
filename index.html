@@ -506,30 +506,12 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
 }
 #chat-window.chat-window-open>div:last-child{flex:none;background:transparent;padding-top:5px}
 #chat-window.chat-window-open #message-input{min-width:0}
-.room-seats-grid .premium-seat{appearance:none;cursor:pointer;width:100%;font:inherit}
+.room-seat.owner-seat{grid-column:1 / -1;max-width:100%;min-height:82px!important;background:linear-gradient(135deg,#563c20,#2b1b13)!important;border-color:#e7bd70!important}.room-seats-grid .premium-seat{appearance:none;cursor:pointer;width:100%;font:inherit}
 .room-seats-grid .premium-seat:disabled{opacity:.65}
 .room-seats-grid .premium-seat.occupied{border-color:#d9a7ff!important;background:linear-gradient(145deg,#573274,#28183a)!important}
 .room-seats-grid .premium-seat.mine{outline:2px solid #e8c5ff;outline-offset:1px}
 .friend-presence{display:block}
 
-
-
-/* Room settings v1 */
-.room-settings-trigger{flex:none;width:40px;height:40px;border-radius:13px;border:1px solid #bd80df66;background:linear-gradient(145deg,#593475,#29183c);color:#f6e7ff;font-size:20px;box-shadow:0 5px 15px #0003}
-.room-settings-trigger:active{transform:scale(.96)}
-.room-announcement-banner{position:relative;z-index:2;margin:12px 0 4px;padding:11px 13px;border:1px solid #e5b65a55;border-radius:13px;background:linear-gradient(110deg,#62451d55,#30201988);color:#ffe8b1;font-size:12px;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere}
-.room-announcement-banner[hidden]{display:none!important}
-.room-settings-section{margin:12px 0 16px;padding:12px;border:1px solid #ffffff12;border-radius:16px;background:#100a1988}
-.room-settings-section-title{font-size:9px;font-weight:900;letter-spacing:1.3px;color:#d6a5f1;margin-bottom:4px}
-.room-settings-section .settings-row:first-of-type{padding-top:10px}
-.room-settings-sheet{max-width:540px}
-.room-seat-lock-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}
-.room-seat-lock-item{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px;border:1px solid #ffffff18;border-radius:12px;background:#ffffff08;color:#f4e8ff;font-size:11px}
-.room-seat-lock-item button{padding:7px 9px;border-radius:9px;border:1px solid #a65ce766;background:#39234c;color:#f5eaff;font-size:10px;font-weight:800}
-.room-seat-lock-item button.is-locked{border-color:#e28b9c88;background:#542538;color:#ffdce3}
-.room-seat.premium-seat.seat-locked{border-color:#e28b9c88!important;background:linear-gradient(145deg,#482638,#211522)!important}
-.room-seat.premium-seat.seat-locked .seat-avatar{border-color:#e28b9c;color:#ffc8d3}
-@media(max-width:380px){.room-settings-trigger{width:35px;height:35px}.room-seat-lock-controls{grid-template-columns:1fr 1fr}}
 
 /* ROOM CHAT MESSAGE ALIGNMENT */
 .room-chat-message{display:flex;flex-direction:column;max-width:82%;width:max-content;padding:9px 12px;margin:8px 0;border-radius:14px;overflow-wrap:anywhere;border:1px solid #ffffff12;box-shadow:0 4px 12px #0002}
@@ -649,179 +631,6 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
 .admin-tabs{display:flex;gap:7px;overflow:auto;margin:12px 0}
 .admin-tabs button{white-space:nowrap}
 .admin-hidden{display:none!important}
-
-
-/* ===== PREMIKA VISUAL BODY REFRESH v2 — design-only layer ===== */
-:root{
-  --bg:#090611;
-  --panel:#171020;
-  --panel2:#21152f;
-  --border:rgba(211,166,255,.19);
-  --accent:#edccff;
-  --accent2:#b46be8;
-  --muted:#b9a9c9;
-  --success:#65e5b0;
-}
-html{background:#090611}
-body{
-  color:#fbf7ff;
-  background:
-    radial-gradient(ellipse at 12% 0%,rgba(142,66,190,.22),transparent 35%),
-    radial-gradient(ellipse at 92% 18%,rgba(99,48,146,.16),transparent 32%),
-    linear-gradient(180deg,#100a19 0%,#090611 72%);
-  background-attachment:fixed;
-  font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
-}
-button{ -webkit-tap-highlight-color:transparent }
-#auth-section{
-  position:relative;isolation:isolate;overflow:hidden;min-height:100svh;
-  background:
-    radial-gradient(ellipse at 50% 15%,rgba(167,91,221,.28),transparent 38%),
-    radial-gradient(ellipse at 10% 90%,rgba(99,49,151,.18),transparent 38%),#090611;
-}
-#auth-section:before,#auth-section:after{
-  content:"";position:absolute;z-index:-1;border-radius:50%;pointer-events:none;
-  filter:blur(2px);border:1px solid rgba(220,178,255,.12)
-}
-#auth-section:before{width:290px;height:290px;top:-145px;right:-90px;box-shadow:0 0 80px rgba(165,88,220,.12)}
-#auth-section:after{width:230px;height:230px;bottom:-125px;left:-75px;box-shadow:0 0 80px rgba(165,88,220,.1)}
-.auth-card{
-  position:relative;overflow:hidden;max-width:410px;padding:38px 25px 30px;
-  border:1px solid rgba(222,183,255,.23);border-radius:30px;
-  background:linear-gradient(155deg,rgba(48,31,67,.96),rgba(20,13,31,.98) 70%);
-  box-shadow:0 28px 90px rgba(0,0,0,.58),inset 0 1px rgba(255,255,255,.09);
-  backdrop-filter:blur(20px)
-}
-.auth-card:before{content:"✦";position:absolute;right:20px;top:14px;color:rgba(236,205,255,.16);font-size:76px;line-height:1}
-.logo{position:relative;font-size:36px;letter-spacing:3px;color:#f0d5ff;text-shadow:0 0 28px rgba(190,117,240,.48);margin-bottom:13px}
-.auth-subtitle{max-width:280px;margin:0 auto 30px;color:#c8b5d8;line-height:1.7;font-size:13px}
-.google-btn{
-  position:relative;z-index:1;min-height:52px;border:1px solid rgba(255,255,255,.28);
-  border-radius:15px;background:linear-gradient(110deg,#f1dcff,#c88cf0 55%,#a85bda);
-  box-shadow:0 10px 28px rgba(168,85,247,.28);font-size:14px
-}
-#auth-status{margin-top:19px;color:#bba9ca;font-size:12px}
-.topbar{
-  min-height:66px;padding:12px 17px;background:rgba(13,8,21,.88);
-  border-bottom:1px solid rgba(220,178,255,.14);box-shadow:0 10px 28px rgba(0,0,0,.24);
-  backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px)
-}
-.top-logo{font-size:22px;letter-spacing:2px;color:#f0d5ff;text-shadow:0 0 22px rgba(195,125,239,.4)}
-.coin-box{padding:9px 14px;border-radius:30px;background:linear-gradient(135deg,#38234e,#21142f);border:1px solid rgba(218,169,255,.25);font-weight:800;box-shadow:inset 0 1px rgba(255,255,255,.08)}
-.content{max-width:760px;padding:20px 15px calc(112px + env(safe-area-inset-bottom))}
-.page.active{animation:premikaSoftEnter .24s ease both}
-@keyframes premikaSoftEnter{from{opacity:.35;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.section-title{font-size:19px;font-weight:850;letter-spacing:-.35px;color:#f7eaff}
-.panel,.profile-card{
-  background:linear-gradient(145deg,rgba(36,25,51,.96),rgba(19,13,29,.98));
-  border:1px solid rgba(210,165,250,.16);border-radius:21px;
-  box-shadow:0 14px 36px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.035)
-}
-.panel{padding:17px;margin-bottom:15px}
-.panel>h3:not(.section-title){font-size:16px;font-weight:850;margin-bottom:10px;color:#f3e3ff}
-.welcome-card{
-  position:relative;isolation:isolate;overflow:hidden;padding:24px 21px;
-  border-radius:24px;border:1px solid rgba(230,190,255,.25);
-  background:linear-gradient(115deg,#75429a 0%,#4c2a68 48%,#241532 100%);
-  box-shadow:0 17px 40px rgba(0,0,0,.3),inset 0 1px rgba(255,255,255,.13)
-}
-.welcome-card:after{content:"✧";position:absolute;z-index:-1;right:18px;top:-17px;color:rgba(255,255,255,.14);font-size:108px;line-height:1}
-.welcome-card h2{font-size:23px;line-height:1.25;letter-spacing:-.6px;margin-bottom:7px}
-.welcome-card p{max-width:310px;color:#ead9f6;font-size:12px;line-height:1.65}
-#home .panel{position:relative}
-#home .panel .section-title{margin-bottom:12px}
-#home .panel:last-child{background:linear-gradient(135deg,rgba(65,39,87,.78),rgba(25,17,38,.98))}
-#home .panel:last-child .primary-btn{margin-top:14px;min-width:140px}
-.primary-btn,.google-btn{
-  border:1px solid rgba(255,255,255,.15);border-radius:13px;
-  background:linear-gradient(115deg,#efd4ff,#c184eb 58%,#9b50cf);
-  color:#1c0d29;font-weight:850;box-shadow:0 7px 20px rgba(159,83,208,.22)
-}
-.primary-btn{padding:12px 17px}
-.secondary-btn{border:1px solid rgba(205,157,244,.27);border-radius:13px;background:linear-gradient(145deg,#342246,#21152f);color:#ead7fa;font-weight:750}
-.danger-btn{border:1px solid rgba(245,113,147,.25);border-radius:13px;background:linear-gradient(145deg,#54243a,#321827);color:#ffc0d0;font-weight:800}
-button{transition:transform .16s ease,filter .16s ease,box-shadow .16s ease}
-button:active{transform:scale(.975);filter:brightness(1.08)}
-.input-field{background:rgba(12,8,19,.78);border:1px solid rgba(201,155,239,.22);border-radius:13px;color:#fff;padding:13px 14px}
-.input-field:focus{border-color:#c184eb;box-shadow:0 0 0 3px rgba(177,104,225,.13)}
-.input-field::placeholder{color:#91809f}
-.small-text{color:#bbaacb;line-height:1.55}
-/* Friends, requests and chat lists */
-#friends .panel,#chat .panel{padding:16px}
-#friend-search-input{margin:10px 0 9px}
-#friend-search-btn{min-width:104px}
-.user-row{padding:12px 9px;gap:12px;border-bottom:1px solid rgba(255,255,255,.075);border-radius:15px}
-.user-row:last-child{border-bottom:0}
-.user-row:active{background:rgba(255,255,255,.045)}
-.avatar{width:49px;height:49px;border:2px solid rgba(234,202,255,.32);box-shadow:0 5px 15px rgba(0,0,0,.32)}
-.user-info strong{font-size:14px;font-weight:850;color:#fff}
-.user-info small{color:#bdaecc;font-size:11px}
-.friend-presence.is-online{color:#70e8b8!important}
-.friend-presence.is-offline{color:#9f91ad!important}
-#friend-search-results .user-row button,#friends-list .user-row button,#chat-friends-list .user-row button{padding:9px 12px;font-size:11px;white-space:nowrap}
-.empty-state{padding:23px 12px;color:#ad9cbd;line-height:1.6}
-#chat-window{border:1px solid rgba(203,155,244,.24);background:linear-gradient(145deg,#251833,#171020)}
-#chat-window>div:first-child{padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.08)}
-#messages-container{background:rgba(9,6,15,.82)!important;border:1px solid rgba(255,255,255,.07);border-radius:17px!important;padding:13px!important}
-#messages-container>div:not(.empty-state){border-radius:16px!important;border:1px solid rgba(255,255,255,.08);box-shadow:0 5px 13px rgba(0,0,0,.12);font-size:13px;line-height:1.5}
-#message-input{min-width:0}
-#send-message-btn{flex:none}
-/* Room directory and live voice lounge */
-#public-room-directory,#room-manager-panel{background:linear-gradient(145deg,rgba(38,25,54,.98),rgba(18,12,28,.98))}
-.room-directory-head .section-title{font-size:16px}
-.public-room-card{padding:13px;border-radius:16px;background:linear-gradient(110deg,rgba(103,59,132,.2),rgba(255,255,255,.025));border-color:rgba(207,158,246,.2)}
-.public-room-card strong{font-size:13px;color:#f7eaff}
-.public-room-card small{font-size:10px;color:#bca9cd}
-.public-room-card .join-public-room{border-radius:12px;padding:10px 13px}
-#room-manager-panel .section-title{margin-bottom:8px}
-#room-manager-panel .input-field{margin-top:12px}
-#active-room{border-radius:25px!important;border-color:rgba(218,160,255,.35)!important;box-shadow:0 20px 48px rgba(0,0,0,.38),inset 0 1px rgba(255,255,255,.1)!important}
-.room-title-row{border-radius:19px;background:rgba(255,255,255,.055);border-color:rgba(255,255,255,.1)}
-.room-seat.premium-seat{border-color:rgba(202,147,245,.29)!important;background:linear-gradient(155deg,#3a2450,#1b1229)!important}
-.room-seat.premium-seat.occupied{border-color:rgba(103,225,174,.48)!important;background:linear-gradient(155deg,#244b43,#1b2929)!important}
-.room-seat.premium-seat.mine{border-color:#d6a1ff!important;box-shadow:0 0 0 2px rgba(190,119,235,.16),0 8px 22px rgba(0,0,0,.25)!important}
-.seat-avatar{border-color:rgba(224,184,255,.58);background:rgba(255,255,255,.07)}
-.room-chat-panel{border-color:rgba(211,165,249,.17);background:rgba(10,7,16,.68)}
-.premium-room-messages{border-radius:16px;background:#0b0711}
-.room-chat-message{max-width:88%;padding:10px 12px;margin:8px 0;border-radius:14px;background:linear-gradient(120deg,#382148,#21152f);border:1px solid rgba(255,255,255,.07)}
-.room-chat-message.mine{margin-left:auto;background:linear-gradient(120deg,#75429b,#512b70)}
-.room-message-sender{display:block;font-size:11px;color:#edceff;margin-bottom:4px}
-.room-message-content{font-size:13px;line-height:1.45;overflow-wrap:anywhere}
-.room-message-time{display:block;margin-top:5px;text-align:right;color:#bba8ca;font-size:9px}
-/* Profile and wallet preview */
-.profile-card{padding:20px}
-.profile-avatar-wrap{width:122px;height:122px}
-.profile-name{font-size:23px;color:#fff}
-.profile-handle{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.13);color:#e7c5ff}
-.profile-divider{border-color:rgba(255,255,255,.09)}
-.profile-field-label{color:#d4c0e4;font-size:11px;letter-spacing:.2px}
-.profile-photo-label{font-size:11px;font-weight:800;color:#edceff}
-.wallet-preview{border-radius:19px;background:linear-gradient(145deg,#332044,#1a1028);border-color:rgba(207,154,246,.25)}
-.wallet-balance{border:1px solid rgba(255,255,255,.06)}
-/* Navigation */
-.bottom-nav{
-  padding:9px 4px calc(9px + env(safe-area-inset-bottom));
-  background:rgba(14,9,22,.94);border-top:1px solid rgba(221,177,255,.16);
-  box-shadow:0 -12px 34px rgba(0,0,0,.38);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px)
-}
-.nav-btn{flex:1;min-width:0;color:#a99ab9;font-size:10px;font-weight:800;gap:4px}
-.nav-btn .nav-icon{font-size:20px;line-height:1.2}
-.nav-btn.active{color:#f0d5ff}
-.nav-btn.active .nav-icon{filter:drop-shadow(0 0 7px rgba(207,139,248,.65))}
-@media(max-width:480px){
-  .content{padding:15px 11px calc(106px + env(safe-area-inset-bottom))}
-  .welcome-card{padding:21px 18px}
-  .welcome-card h2{font-size:21px}
-  .panel{padding:14px}
-  .auth-card{padding:34px 21px 27px;border-radius:26px}
-  .bottom-nav{gap:0}
-  .nav-btn{font-size:9px}
-  .nav-btn .nav-icon{font-size:19px}
-  .room-topline{gap:6px}
-  .room-live-pill,.room-seat-count{font-size:8px;padding:6px 8px}
-}
-@media(prefers-reduced-motion:reduce){.page.active{animation:none!important}}
-/* ===== END DESIGN-ONLY LAYER ===== */
 
 </style>
 </head>
@@ -1041,11 +850,9 @@ button:active{transform:scale(.975);filter:brightness(1.08)}
       <div class="room-cover">💜</div>
       <div class="room-title-copy">
         <h2 id="active-room-name">🌙 Your Room</h2>
-        <p id="room-topic-line">Welcome in — connect, talk & enjoy</p>
+        <p>Welcome in — connect, talk & enjoy</p>
       </div>
-      <button id="room-settings-open" class="room-settings-trigger" type="button" aria-label="Open room settings" title="Room settings" style="display:none">⚙</button>
     </div>
-    <div id="room-announcement-banner" class="room-announcement-banner" hidden></div>
 
     <div class="room-stats-row">
       <span class="room-stat-live">〽 Live Room</span>
@@ -1068,6 +875,7 @@ button:active{transform:scale(.975);filter:brightness(1.08)}
     </div>
 
     <div class="room-seats-grid" id="room-seats-grid" aria-label="Voice seats">
+      <button type="button" class="room-seat premium-seat owner-seat" data-seat="0"><div class="seat-avatar">👑</div><strong>Owner Seat</strong><span>Owner only</span></button>
       <button type="button" class="room-seat premium-seat" data-seat="1"><div class="seat-avatar">＋</div><strong>Seat 1</strong><span>Tap to sit</span></button>
       <button type="button" class="room-seat premium-seat" data-seat="2"><div class="seat-avatar">＋</div><strong>Seat 2</strong><span>Tap to sit</span></button>
       <button type="button" class="room-seat premium-seat" data-seat="3"><div class="seat-avatar">＋</div><strong>Seat 3</strong><span>Tap to sit</span></button>
@@ -1226,23 +1034,15 @@ button:active{transform:scale(.975);filter:brightness(1.08)}
 </div>
 
 <!-- PREMIKA ROOM SETTINGS -->
-<div id="premika-room-settings" class="premium-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="room-settings-title">
- <div class="premium-sheet room-settings-sheet">
-  <div class="premium-sheet-head"><div><small>PREMIKA ROOM CONTROL</small><h2 id="room-settings-title">Room Settings</h2></div><button class="sheet-close" data-close="premika-room-settings" type="button" aria-label="Close">×</button></div>
-  <div class="room-settings-section"><div class="room-settings-section-title">ROOM PROFILE</div>
-   <div class="settings-row"><div><strong>Room Picture</strong><small>Upload a room cover image</small></div><label class="settings-action" for="room-avatar-file">Choose<input id="room-avatar-file" type="file" accept="image/*" hidden></label></div>
-   <div class="settings-row"><div><strong>Room Name</strong><small>Change the room title</small></div><button id="settings-rename-open" class="settings-action" type="button">Edit</button></div>
-   <div class="settings-row"><div><strong>Room Topic</strong><small id="room-topic-preview">Add a short room topic</small></div><button id="settings-topic-open" class="settings-action" type="button">Edit</button></div>
-   <div class="settings-row"><div><strong>Announcement</strong><small>Shown to people inside the room</small></div><button id="settings-notice-open" class="settings-action" type="button">Edit</button></div>
-  </div>
-  <div class="room-settings-section"><div class="room-settings-section-title">APPEARANCE</div>
-   <div class="settings-row"><div><strong>Room Background</strong><small>Choose the room's visual theme</small></div><button id="settings-background-open" class="settings-action" type="button">Change</button></div>
-  </div>
-  <div class="room-settings-section"><div class="room-settings-section-title">VOICE SEAT MANAGEMENT</div>
-   <p class="settings-footnote">Lock a seat to stop new members from taking it. Existing seated members are not removed.</p>
-   <div id="room-seat-lock-controls" class="room-seat-lock-controls"></div>
-  </div>
-  <p class="settings-footnote">Only the room owner can change these settings. Manager roles, password protection and blacklist enforcement will be added after their database permissions are configured.</p>
+<div id="premika-room-settings" class="premium-overlay hidden" role="dialog" aria-modal="true">
+ <div class="premium-sheet"><div class="premium-sheet-head"><div><small>PREMIKA ROOM CONTROL</small><h2>Room Settings</h2></div><button class="sheet-close" data-close="premika-room-settings">×</button></div>
+  <div class="settings-row"><div><strong>Room Avatar</strong><small>Change the room icon</small></div><label class="settings-action">Choose image<input id="room-avatar-file" type="file" accept="image/*" hidden></label></div>
+  <div class="settings-row"><div><strong>Room Name</strong><small>Update your room title</small></div><button id="settings-rename-open" class="settings-action">Edit</button></div>
+  <div class="settings-row"><div><strong>Administrator Settings</strong><small>Owner controls and permissions</small></div><span class="settings-tag">Owner</span></div>
+  <div class="settings-row"><div><strong>Room Type</strong><small>Voice seats currently supported</small></div><span class="settings-tag">6 Mic Seats</span></div>
+  <div class="settings-row"><div><strong>Room Background</strong><small>Choose a visual theme</small></div><button id="settings-background-open" class="settings-action">Change</button></div>
+  <div class="settings-row"><div><strong>Room Announcement</strong><small>Message shown to visitors</small></div><button id="settings-notice-open" class="settings-action">Edit</button></div>
+  <p class="settings-footnote">Advanced admin roles require a database role system and are not simulated.</p>
  </div>
 </div>
 <div id="premika-editor" class="premium-overlay hidden" role="dialog" aria-modal="true"><div class="premium-dialog"><div class="premium-sheet-head"><h2 id="editor-title">Edit</h2><button class="sheet-close" data-close="premika-editor">×</button></div><div id="editor-body"></div><div class="dialog-actions"><button class="secondary-btn" data-close="premika-editor">Cancel</button><button id="editor-save" class="primary-btn">Save</button></div></div></div>
@@ -1263,10 +1063,15 @@ button:active{transform:scale(.975);filter:brightness(1.08)}
     <div id="view-profile-name" class="profile-view-name">Premika User</div>
     <div id="view-profile-username" class="profile-handle">@username</div>
     <p id="view-profile-bio" class="profile-view-bio">No bio added yet.</p>
-    <div style="display:flex;gap:9px">
-      <button id="view-profile-message" class="primary-btn" style="flex:1">Message</button>
-      <button id="close-user-profile" class="secondary-btn" style="flex:1">Close</button>
+    <div class="profile-room-actions" style="display:flex;gap:9px;align-items:center;position:relative">
+      <button id="view-profile-more" class="secondary-btn" type="button" aria-label="More options">⋮</button>
+      <div id="view-profile-more-menu" class="hidden" style="position:absolute;left:0;top:48px;z-index:100;background:#24152f;border:1px solid #a875c7;border-radius:12px;padding:6px;min-width:135px;box-shadow:0 8px 24px #0008">
+        <button id="view-profile-kick" class="secondary-btn" type="button" style="width:100%;color:#ff9b9b">Kick User</button>
+      </div>
+      <button id="view-profile-add-friend" class="primary-btn" style="flex:1">＋ Add Friend</button>
+      <button id="view-profile-message" class="secondary-btn" style="flex:1">Message</button>
     </div>
+    <button id="close-user-profile" class="secondary-btn" style="width:100%;margin-top:9px">Close</button>
   </div>
 </div>
 
@@ -2235,7 +2040,7 @@ async function loadFriends() {
 }
 
 // VIEW FRIEND PROFILE
-async function viewUserProfile(userId) {
+async function viewUserProfile(userId, options = {}) {
     if (!userId || !currentUser) return;
 
     const modal = $("user-profile-modal");
@@ -2245,6 +2050,10 @@ async function viewUserProfile(userId) {
     const bio = $("view-profile-bio");
     const messageBtn = $("view-profile-message");
     const closeBtn = $("close-user-profile");
+    const addFriendBtn = $("view-profile-add-friend");
+    const moreBtn = $("view-profile-more");
+    const moreMenu = $("view-profile-more-menu");
+    const kickBtn = $("view-profile-kick");
 
     try {
         const { data: person, error } = await supabaseClient
@@ -2271,6 +2080,27 @@ async function viewUserProfile(userId) {
         );
 
         modal.style.display = "flex";
+        if (moreMenu) moreMenu.classList.add("hidden");
+        if (addFriendBtn) {
+          addFriendBtn.style.display = person.id === currentUser.id ? "none" : "inline-flex";
+          addFriendBtn.onclick = () => sendFriendRequest(person.id, addFriendBtn);
+        }
+        const canKick = !!options.roomSeat && !!activeRoomId && roomRecord?.owner_id === currentUser.id && person.id !== currentUser.id;
+        if (moreBtn) moreBtn.style.display = canKick ? "inline-flex" : "none";
+        if (moreBtn) moreBtn.onclick = () => moreMenu?.classList.toggle("hidden");
+        if (kickBtn) {
+          kickBtn.onclick = async () => {
+            if (!canKick || !roomSeatsChannel) return;
+            const ok = await premikaConfirm("Kick User", "Kya aap is user ko room se remove karna chahte hain?");
+            if (!ok) return;
+            try {
+              await roomSeatsChannel.send({ type: "broadcast", event: "kick", payload: { user_id: person.id, room_id: activeRoomId } });
+              moreMenu?.classList.add("hidden");
+              modal.style.display = "none";
+              showToast("Kick request bhej di gayi.");
+            } catch (kickError) { showToast("Kick error: " + kickError.message); }
+          };
+        }
 
         closeBtn.onclick = function () {
             modal.style.display = "none";
@@ -2660,7 +2490,7 @@ function renderRoomSeats() {
   const states = roomSeatsChannel?.presenceState?.() || {};
   const occupants = {};
   Object.values(states).flat().forEach(p => {
-    if (p && p.seat) occupants[Number(p.seat)] = p;
+    if (p && p.seat !== undefined && p.seat !== null) occupants[Number(p.seat)] = p;
   });
 
   const liveList = $("room-live-members");
@@ -2678,7 +2508,7 @@ function renderRoomSeats() {
         setAvatarElement(avatar, person.avatar_url, person.display_name || person.username || "Member");
         const info = document.createElement("div"); info.className = "room-live-person-info";
         const name = document.createElement("strong"); name.textContent = person.display_name || person.username || "Member";
-        const seat = document.createElement("small"); seat.textContent = "Seat " + Number(person.seat) + (person.raised_hand ? " · ✋ Hand raised" : " · Live");
+        const seat = document.createElement("small"); seat.textContent = (Number(person.seat) === 0 ? "Owner Seat" : "Seat " + Number(person.seat)) + (person.raised_hand ? " · ✋ Hand raised" : " · Live");
         info.append(name,seat); item.append(avatar,info);
         if (person.user_id === currentUser?.id) { const you=document.createElement("em"); you.textContent="YOU"; item.appendChild(you); }
         liveList.appendChild(item);
@@ -2689,22 +2519,20 @@ function renderRoomSeats() {
     const seatNo = Number(button.dataset.seat);
     const person = occupants[seatNo];
     const mine = person?.user_id === currentUser?.id;
-    const seatLocked = roomSettingsState.seat_locks.includes(seatNo);
-    button.classList.toggle("seat-locked", seatLocked);
     button.classList.toggle("occupied", !!person);
     button.classList.toggle("mine", !!mine);
-    button.disabled = (!!person && !mine) || (seatLocked && !mine && roomRecord?.owner_id !== currentUser?.id);
+    button.disabled = false;
     const avatar = button.querySelector(".seat-avatar");
     const title = button.querySelector("strong");
     const status = button.querySelector("span:not(.seat-avatar)");
     if (person) {
       setAvatarElement(avatar, person.avatar_url, person.display_name || person.username || "Member");
       title.textContent = person.display_name || person.username || "Member";
-      status.textContent = mine ? "You are sitting" : (person.raised_hand ? "✋ Raised hand" : "Occupied");
+      status.textContent = mine ? "You are sitting · Tap profile" : (person.raised_hand ? "✋ Raised hand · Tap profile" : "Occupied · Tap profile");
     } else {
       avatar.textContent = "＋";
-      title.textContent = "Seat " + seatNo;
-      status.textContent = seatLocked ? "🔒 Locked" : "Tap to sit";
+      title.textContent = seatNo === 0 ? "Owner Seat" : "Seat " + seatNo;
+      status.textContent = seatNo === 0 ? "Owner only" : "Tap to sit";
     }
   });
 }
@@ -2714,14 +2542,19 @@ async function joinRoomSeat(seatNo) {
     showToast("Room connection abhi ready nahi. Dobara room open karein.");
     return;
   }
+  if (seatNo === 0 && roomRecord?.owner_id !== currentUser.id) {
+    showToast("Owner Seat sirf room owner ke liye hai.");
+    return;
+  }
+  if (seatNo < 0 || seatNo > 6) return;
   const state = roomSeatsChannel.presenceState();
-  if(roomSettingsState.seat_locks.includes(Number(seatNo)) && roomRecord?.owner_id!==currentUser.id){showToast("Yeh seat room owner ne lock ki hui hai.");return;}
   const occupied = Object.values(state).flat().find(p => Number(p.seat) === seatNo);
   if (occupied && occupied.user_id !== currentUser.id) {
     showToast("Yeh seat pehle se occupied hai.");
     return;
   }
   try {
+    if (myRoomSeat !== null && myRoomSeat !== seatNo) await roomSeatsChannel.untrack();
     await roomSeatsChannel.track({
       user_id: currentUser.id,
       username: currentProfile?.username || "User",
@@ -2799,6 +2632,12 @@ async function connectRoomSeats(roomId) {
       .on("presence", { event: "sync" }, renderRoomSeats)
       .on("presence", { event: "join" }, renderRoomSeats)
       .on("presence", { event: "leave" }, renderRoomSeats)
+      .on("broadcast", { event: "kick" }, async ({ payload }) => {
+        if (payload?.user_id === currentUser?.id && payload?.room_id === roomId) {
+          showToast("Owner ne aap ko room se remove kar diya.");
+          await leaveVoiceRoom();
+        }
+      })
       .subscribe(status => {
         if (status === "SUBSCRIBED") {
           renderRoomSeats();
@@ -2812,7 +2651,12 @@ async function connectRoomSeats(roomId) {
 
 $("room-seats-grid").addEventListener("click", event => {
   const button = event.target.closest("[data-seat]");
-  if (button && !button.disabled) joinRoomSeat(Number(button.dataset.seat));
+  if (!button) return;
+  const seatNo = Number(button.dataset.seat);
+  const states = roomSeatsChannel?.presenceState?.() || {};
+  const occupant = Object.values(states).flat().find(p => Number(p.seat) === seatNo);
+  if (occupant?.user_id) { viewUserProfile(occupant.user_id, { roomSeat: true }); return; }
+  if (!button.disabled) joinRoomSeat(seatNo);
 });
 let liveKitRoom = null;
 let micEnabled = false;
@@ -3282,20 +3126,16 @@ async function showMyRoom(room) {
   roomRecord = room;
   activeRoomId = room.id;
   await connectRoomSeats(room.id);
-  if (room.owner_id === currentUser.id && !myRoomSeat) {
-    const occupiedSeats = new Set(Object.values(roomSeatsChannel?.presenceState?.() || {}).flat().map(p => Number(p.seat)));
-    const freeSeat = [1,2,3,4,5,6].find(n => !occupiedSeats.has(n));
-    if (freeSeat) await joinRoomSeat(freeSeat);
+  if (room.owner_id === currentUser.id && myRoomSeat === null) {
+    await joinRoomSeat(0);
   }
   $("active-room-name").textContent = "🌙 " + room.name;
   $("room-owner-name").textContent = currentProfile?.display_name || currentProfile?.username || "Room Owner";
   const isOwner = room.owner_id === currentUser.id;
-  $("room-settings-open").style.display = isOwner ? "grid" : "none";
   $("room-rename-owner-btn").style.display = isOwner ? "flex" : "none";
   $("room-clear-owner-btn").style.display = isOwner ? "inline-flex" : "none";
   $("room-clear-owner-btn").disabled = !isOwner;
   $("active-room").style.display = "block";
-  await loadRoomSettings();
   await openRoomChat(room.id);
 }
 
@@ -3526,7 +3366,6 @@ document.querySelectorAll("[data-payment]").forEach(button=>button.addEventListe
 $("room-live-list-toggle")?.addEventListener("click",()=>{const side=$("room-live-side");const open=side.classList.toggle("is-open");$("room-live-list-toggle").setAttribute("aria-expanded",String(open));});
 // New in-app room controls and compact room dock
 let confirmResolver=null, editorResolver=null, bgChoice=localStorage.getItem("premika-room-bg")||"purple";
-let roomSettingsState={topic:"",announcement:"",background_key:"purple",avatar_url:null,seat_locks:[]};
 function premikaConfirm(title,message){return new Promise(resolve=>{confirmResolver=resolve;$("confirm-title").textContent=title;$("confirm-message").textContent=message;$("premika-confirm").classList.remove("hidden")})}
 function finishConfirm(value){$("premika-confirm").classList.add("hidden");if(confirmResolver){confirmResolver(value);confirmResolver=null}}
 $("confirm-no").addEventListener("click",()=>finishConfirm(false));$("confirm-yes").addEventListener("click",()=>finishConfirm(true));
@@ -3534,53 +3373,12 @@ function premikaEditText(title,placeholder,value=""){return new Promise(resolve=
 function openEditor(title,html,save,cancel){$("editor-title").textContent=title;$("editor-body").innerHTML=html;$("premika-editor").classList.remove("hidden");editorResolver={save,cancel};$("editor-save").onclick=async()=>{const fn=editorResolver?.save;editorResolver=null;try{await fn?.();$("premika-editor").classList.add("hidden")}catch(e){showToast(e.message||"Unable to save.")}}}
 function closeEditor(){if(editorResolver?.cancel)editorResolver.cancel();editorResolver=null;$("premika-editor").classList.add("hidden")}
 document.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.close==="premika-editor")closeEditor();else $(b.dataset.close).classList.add("hidden")}));
-async function loadRoomSettings(){
-  if(!activeRoomId||!supabaseClient)return;
-  roomSettingsState={topic:"",announcement:"",background_key:"purple",avatar_url:null,seat_locks:[]};
-  const {data,error}=await supabaseClient.from("premika_room_settings").select("room_id,topic,announcement,background_key,avatar_url,seat_locks").eq("room_id",activeRoomId).maybeSingle();
-  if(error){
-    console.warn("Room settings load:",error);
-    if(error.code==="42P01"||error.code==="PGRST205") showToast("Room Settings SQL abhi run nahi hui. Pehle provided SQL run karein.");
-    renderRoomSettings();
-    return;
-  }
-  roomSettingsState={topic:data?.topic||"",announcement:data?.announcement||"",background_key:data?.background_key||"purple",avatar_url:data?.avatar_url||null,seat_locks:Array.isArray(data?.seat_locks)?data.seat_locks.map(Number):[]};
-  bgChoice=roomSettingsState.background_key;
-  renderRoomSettings();
-  applyBg();
-}
-async function saveRoomSettings(patch){
-  if(!currentUser||!activeRoomId||roomRecord?.owner_id!==currentUser.id)throw new Error("Sirf room owner settings change kar sakta hai.");
-  const next={...roomSettingsState,...patch};
-  const payload={room_id:activeRoomId,topic:next.topic||"",announcement:next.announcement||"",background_key:next.background_key||"purple",avatar_url:next.avatar_url||null,seat_locks:Array.isArray(next.seat_locks)?next.seat_locks:[],updated_at:new Date().toISOString()};
-  const {error}=await supabaseClient.from("premika_room_settings").upsert(payload,{onConflict:"room_id"});
-  if(error)throw error;
-  roomSettingsState=next;
-  renderRoomSettings();
-  applyBg();
-}
-function renderRoomSettings(){
-  const topic=$("room-topic-line"); if(topic)topic.textContent=roomSettingsState.topic||"Welcome in — connect, talk & enjoy";
-  const preview=$("room-topic-preview");if(preview)preview.textContent=roomSettingsState.topic||"Add a short room topic";
-  const notice=$("room-announcement-banner");if(notice){notice.textContent=roomSettingsState.announcement||"";notice.hidden=!roomSettingsState.announcement;}
-  const cover=$("active-room")?.querySelector(".room-cover");if(cover){if(roomSettingsState.avatar_url){const img=document.createElement("img");img.src=roomSettingsState.avatar_url;img.alt="Room picture";img.style="width:100%;height:100%;object-fit:cover;border-radius:14px";cover.replaceChildren(img)}else{cover.textContent="💜"}}
-  const locks=$("room-seat-lock-controls");if(locks){locks.replaceChildren();for(let n=1;n<=6;n++){const locked=roomSettingsState.seat_locks.includes(n);const item=document.createElement("div");item.className="room-seat-lock-item";const label=document.createElement("strong");label.textContent="Seat "+n;const button=document.createElement("button");button.type="button";button.className=locked?"is-locked":"";button.textContent=locked?"🔒 Locked":"🔓 Open";button.addEventListener("click",async()=>{const updated=locked?roomSettingsState.seat_locks.filter(x=>x!==n):[...roomSettingsState.seat_locks,n];try{await saveRoomSettings({seat_locks:updated});renderRoomSeats();showToast("Seat "+n+(locked?" unlocked.":" locked."))}catch(e){showToast("Seat setting save failed: "+e.message)}});item.append(label,button);locks.append(item)}}
-  renderRoomSeats();
-}
-async function openPremikaRoomSettings(){
-  if(!currentUser||!activeRoomId)return showToast("Pehle apna room open karein.");
-  if(roomRecord?.owner_id!==currentUser.id)return showToast("Room settings sirf owner ke liye hain.");
-  await loadRoomSettings();
-  $("premika-room-settings").classList.remove("hidden");
-}
-function applyBg(){const el=$("active-room");if(!el)return;const key=roomSettingsState.background_key||bgChoice;el.style.background=key==="purple"?"":({aurora:"radial-gradient(ellipse at 50% 0%,#24506a,#211434 52%,#100b1b)",rose:"radial-gradient(ellipse at 50% 0%,#6a2855,#29142f 52%,#100b1b)",midnight:"radial-gradient(ellipse at 50% 0%,#273b70,#1d1738 52%,#0a0b18)"}[key]||"")}
-function openBgEditor(){openEditor("Room Background",'<p class="small-text">Choose a background for everyone who opens this room.</p><div class="room-background-options"><button class="room-background-choice" data-bg="purple">Purple Glow</button><button class="room-background-choice" data-bg="aurora">Aurora</button><button class="room-background-choice" data-bg="rose">Rose Galaxy</button><button class="room-background-choice" data-bg="midnight">Midnight</button></div>',async()=>{const chosen=$("editor-body").querySelector(".selected")?.dataset.bg;if(chosen){await saveRoomSettings({background_key:chosen});bgChoice=chosen;localStorage.setItem("premika-room-bg",chosen);applyBg();showToast("Room background updated.")} });$("editor-body").querySelectorAll("[data-bg]").forEach(b=>{if(b.dataset.bg===(roomSettingsState.background_key||bgChoice))b.classList.add("selected");b.onclick=()=>{$("editor-body").querySelectorAll("[data-bg]").forEach(x=>x.classList.remove("selected"));b.classList.add("selected")}})}
-$("room-settings-open").addEventListener("click",openPremikaRoomSettings);
+function applyBg(){const el=$("active-room");if(!el)return;el.style.background=bgChoice==="purple"?"":({aurora:"radial-gradient(ellipse at 50% 0%,#24506a,#211434 52%,#100b1b)",rose:"radial-gradient(ellipse at 50% 0%,#6a2855,#29142f 52%,#100b1b)",midnight:"radial-gradient(ellipse at 50% 0%,#273b70,#1d1738 52%,#0a0b18)"}[bgChoice]||"")}
+function openBgEditor(){openEditor("Room Background",'<p class="small-text">Choose a background for this device.</p><div class="room-background-options"><button class="room-background-choice" data-bg="purple">Purple Glow</button><button class="room-background-choice" data-bg="aurora">Aurora</button><button class="room-background-choice" data-bg="rose">Rose Galaxy</button><button class="room-background-choice" data-bg="midnight">Midnight</button></div>',()=>{const chosen=$("editor-body").querySelector(".selected")?.dataset.bg;if(chosen){bgChoice=chosen;localStorage.setItem("premika-room-bg",chosen);applyBg()} });$("editor-body").querySelectorAll("[data-bg]").forEach(b=>{if(b.dataset.bg===bgChoice)b.classList.add("selected");b.onclick=()=>{$("editor-body").querySelectorAll("[data-bg]").forEach(x=>x.classList.remove("selected"));b.classList.add("selected")}})}
 $("settings-rename-open").addEventListener("click",async()=>{const n=await premikaEditText("Rename Room","Enter a room name",roomRecord?.name||"");if(!n)return;if(n.length<3||n.length>40)return showToast("Room name must be 3–40 characters.");const {data,error}=await supabaseClient.from("rooms").update({name:n}).eq("id",activeRoomId).eq("owner_id",currentUser.id).select("id,name,owner_id,is_public").single();if(error)return showToast(error.message);roomRecord=data;$("active-room-name").textContent="🌙 "+n;$("premika-room-settings").classList.add("hidden");showToast("Room name updated.")});
 $("settings-background-open").addEventListener("click",openBgEditor);
-$("settings-topic-open").addEventListener("click",()=>openEditor("Room Topic",'<input id="editor-topic" class="input-field" maxlength="100" placeholder="What is this room about?" value="'+String(roomSettingsState.topic||"").replace(/&/g,"&amp;").replace(/"/g,"&quot;")+'">',async()=>{const topic=$("editor-topic").value.trim();await saveRoomSettings({topic});showToast("Room topic updated.")}));
-$("settings-notice-open").addEventListener("click",()=>openEditor("Room Announcement",'<textarea id="editor-notice" class="input-field" rows="3" maxlength="300" placeholder="Welcome to our room...">'+String(roomSettingsState.announcement||"").replace(/</g,"&lt;")+'</textarea>',async()=>{const announcement=$("editor-notice").value.trim();await saveRoomSettings({announcement});showToast("Room announcement updated.")}));
-$("room-avatar-file").addEventListener("change",async e=>{const f=e.target.files?.[0];if(!f)return;if(!f.type.startsWith("image/")||f.size>2*1024*1024){showToast("Choose an image under 2 MB.");e.target.value="";return}try{const safeName=f.name.replace(/[^a-zA-Z0-9._-]/g,"_");const path=activeRoomId+"/"+Date.now()+"-"+safeName;const {error:uploadError}=await supabaseClient.storage.from("premika-room-assets").upload(path,f,{upsert:true,contentType:f.type});if(uploadError)throw uploadError;const {data}=supabaseClient.storage.from("premika-room-assets").getPublicUrl(path);await saveRoomSettings({avatar_url:data.publicUrl});showToast("Room picture updated for everyone.")}catch(err){showToast("Room picture upload failed: "+err.message)}finally{e.target.value=""}});
+$("settings-notice-open").addEventListener("click",()=>openEditor("Room Announcement",'<textarea id="editor-notice" class="input-field" rows="3" maxlength="180" placeholder="Welcome to our room...">'+(localStorage.getItem("premika-room-notice")||"")+'</textarea>',()=>localStorage.setItem("premika-room-notice",$("editor-notice").value.trim())));
+$("room-avatar-file").addEventListener("change",e=>{const f=e.target.files?.[0];if(!f)return;if(!f.type.startsWith("image/")||f.size>2*1024*1024)return showToast("Choose an image under 2 MB.");const r=new FileReader();r.onload=()=>{const img=document.createElement("img");img.src=r.result;img.alt="Room avatar";img.style="width:100%;height:100%;object-fit:cover;border-radius:14px";$("active-room").querySelector(".room-cover").replaceChildren(img);localStorage.setItem("premika-room-avatar",r.result);showToast("Room avatar preview saved on this device.")};r.readAsDataURL(f)});
 const baseShowPage=window.showPage;window.showPage=function(id,btn){baseShowPage(id,btn);const dock=$("premika-mini-room");dock.classList.toggle("hidden",!activeRoomId||id==="room-suggestions")};
 $("premika-mini-room").addEventListener("click",e=>{if(e.target.id!=="mini-room-leave")window.showPage("room-suggestions")});$("mini-room-leave").addEventListener("click",async e=>{e.stopPropagation();if(await premikaConfirm("Leave room?","You will disconnect from this room."))await leaveVoiceRoom()});
 
