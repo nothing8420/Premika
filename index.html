@@ -1080,7 +1080,34 @@ alert("Supabase Client: " + (supabaseClient ? "Loaded" : "Not Loaded"));
       button.disabled = false;
     }
   }
+// AVATAR HELPER FUNCTION
+function setAvatarElement(element, avatarUrl, displayName) {
+    if (!element) return;
 
+    element.innerHTML = "";
+
+    const name = String(displayName || "User");
+
+    if (avatarUrl) {
+        const img = document.createElement("img");
+
+        img.src = avatarUrl;
+        img.alt = name + " Profile";
+        img.style.width = "100%";
+        img.style.height = "100%";
+        img.style.objectFit = "cover";
+        img.style.borderRadius = "50%";
+
+        img.onerror = function () {
+            element.innerHTML = "";
+            element.textContent = name.charAt(0).toUpperCase();
+        };
+
+        element.appendChild(img);
+    } else {
+        element.textContent = name.charAt(0).toUpperCase();
+    }
+}
   // UPDATE PROFILE UI
   function updateProfileDisplay(user, profile) {
     const displayName =
