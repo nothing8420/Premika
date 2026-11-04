@@ -654,19 +654,23 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
   <div class="welcome-card room-heading"><h2>Voice Rooms 🎙️</h2><p>Join conversations, meet the community and create your own space.</p></div>
   <h2 class="section-title">Explore Rooms</h2>
 
-  <!-- CREATE ROOM -->
-  <div class="panel">
-    <h3 class="section-title">＋ Create a Room</h3><p class="small-text">Start a public space and invite the Premika community.</p>
+  <!-- ROOM MANAGEMENT: CREATE ONCE, THEN RENAME -->
+  <div class="panel" id="room-manager-panel">
+    <div id="create-room-form">
+      <h3 class="section-title">＋ Create Your Room</h3>
+      <p class="small-text">You can create one room. After that, you can rename your room anytime.</p>
+      <input id="new-room-name" class="input-field" placeholder="Enter room name" maxlength="40">
+      <button id="create-room-btn" class="primary-btn">＋ Create Room</button>
+    </div>
 
-    <input
-      id="new-room-name"
-      class="input-field"
-      placeholder="Enter room name"
-    >
-
-    <button id="create-room-btn" class="primary-btn">
-      + Create Room
-    </button>
+    <div id="rename-room-form" style="display:none">
+      <h3 class="section-title">✏️ Manage Your Room</h3>
+      <p class="small-text">Your room is already created. You cannot create another room, but you can change its name here.</p>
+      <label class="small-text" for="rename-room-name" style="display:block;margin:12px 0 6px">New room name</label>
+      <input id="rename-room-name" class="input-field" placeholder="Enter new room name" maxlength="40">
+      <button id="rename-room-btn" class="primary-btn">Save Room Name</button>
+      <p id="rename-room-status" class="small-text" style="margin-top:10px"></p>
+    </div>
   </div>
 
 <!-- PUBLIC ROOMS LIST -->
@@ -2192,6 +2196,93 @@ $("room-chat-send").addEventListener("click", async () => {
   }
 });
 // =====================================
+// ROOM MANAGER: ONE ROOM PER USER
+// =====================================
+
+function showRoomManager(existingRoom) {
+  const createForm = $("create-room-form");
+  const renameForm = $("rename-room-form");
+  if (!createForm || !renameForm) return;
+
+  if (existingRoom) {
+    createForm.style.display = "none";
+    renameForm.style.display = "block";
+    $("rename-room-name").value = existingRoom.name || "";
+    renameForm.dataset.roomId = existingRoom.id;
+  } else {
+    createForm.style.display = "block";
+    renameForm.style.display = "none";
+    delete renameForm.dataset.roomId;
+  }
+}
+
+async function loadMyRoom() {
+  if (!currentUser) return null;
+  const { data, error } = await supabaseClient
+    .from("rooms")
+    .select("id, name, owner_id")
+    .eq("owner_id", currentUser.id)
+    .limit(1)
+    .maybeSingle();
+
+  if (error) throw error;
+  showRoomManager(data);
+  return data;
+}
+
+$("rename-room-btn").addEventListener("click", async () => {
+  if (!currentUser) {
+    alert("Please login first.");
+    return;
+  }
+
+  const form = $("rename-room-form");
+  const roomId = form?.dataset.roomId;
+  const input = $("rename-room-name");
+  const button = $("rename-room-btn");
+  const newName = input.value.trim();
+
+  if (!roomId) {
+    alert("Your room could not be found. Please refresh the Rooms page.");
+    return;
+  }
+  if (newName.length < 3 || newName.length > 40) {
+    alert("Room name 3 se 40 characters ka hona chahiye.");
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = "Saving...";
+  $("rename-room-status").textContent = "Updating your room name...";
+
+  try {
+    const { data, error } = await supabaseClient
+      .from("rooms")
+      .update({ name: newName })
+      .eq("id", roomId)
+      .eq("owner_id", currentUser.id)
+      .select("id, name, owner_id")
+      .single();
+
+    if (error) throw error;
+
+    input.value = data.name;
+    $("rename-room-status").textContent = "✅ Room name updated successfully.";
+    if (activeRoomId === data.id) {
+      $("active-room-name").textContent = "🌙 " + data.name;
+    }
+    await loadPublicRooms();
+    alert("Room name updated successfully!");
+  } catch (error) {
+    $("rename-room-status").textContent = "Rename error: " + error.message;
+    alert("Rename error: " + error.message);
+  } finally {
+    button.disabled = false;
+    button.textContent = "Save Room Name";
+  }
+});
+
+// =====================================
 // LOAD PUBLIC ROOMS
 // =====================================
 
@@ -2211,6 +2302,7 @@ async function loadPublicRooms() {
 
     if (error) throw error;
 
+    await loadMyRoom();
     box.innerHTML = "";
 
     if (!data || data.length === 0) {
@@ -2311,15 +2403,15 @@ $("create-room-btn").addEventListener("click", async () => {
     const { data: existingRoom, error: checkError } =
       await supabaseClient
         .from("rooms")
-        .select("id")
+        .select("id, name, owner_id")
         .eq("owner_id", currentUser.id)
         .limit(1);
 
     if (checkError) throw checkError;
 
 if (existingRoom && existingRoom.length > 0) {
-  alert("You can create only ONE room!");
-
+  showRoomManager(existingRoom[0]);
+  alert("Aapka room pehle se bana hua hai. Ab aap sirf uska naam change kar sakte hain.");
   button.disabled = false;
   button.textContent = "+ Create Room";
   return;
@@ -2363,8 +2455,10 @@ $("room-chat-messages").innerHTML =
 
 activeRoomId = data.id;
 await openRoomChat(data.id);
+showRoomManager(data);
+await loadPublicRooms();
 
-alert("Room successfully created!");
+alert("Room successfully created! Ab aap sirf room ka naam change kar sakte hain.");
 
 
   } catch (error) {
