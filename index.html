@@ -526,11 +526,7 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
 
 
 /* ROOM MENU, COMPOSER MIC AND PRIVATE INBOX */
-.room-menu-wrap{position:relative;display:flex;justify-content:flex-end;margin:12px 2px 4px;z-index:8}
-.room-menu-toggle{width:42px;height:38px;border-radius:13px;color:#f0d7ff;background:#ffffff12;border:1px solid #b875ed66;font-size:21px;font-weight:900;letter-spacing:2px}
-.room-menu{position:absolute;right:0;top:44px;width:min(255px,85vw);padding:8px;border-radius:17px;background:#1b1128;border:1px solid #8055a0;box-shadow:0 18px 48px #000b;z-index:30}
-.room-menu button{display:flex;align-items:center;gap:10px;width:100%;padding:12px 11px;border-radius:11px;background:transparent;color:#f5eaff;text-align:left;font-size:13px}
-.room-menu button:active{background:#ffffff12}.room-menu button span{flex:1}.room-menu .menu-danger{color:#ff9fb3}
+.room-menu .menu-danger{color:#ff9fb3}
 .room-chat-compose{display:flex;align-items:center;gap:7px}
 .room-chat-compose .input-field{flex:1;min-width:0}
 .compose-icon-btn{width:39px;height:39px;flex:none;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#49275f,#241431);border:1px solid #a65ce766;color:#f5eaff;font-size:17px}
@@ -550,16 +546,13 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
 
 
 /* Video-inspired room controls, using Premika's original purple identity */
-.room-title-row{gap:10px!important}.room-menu-header-wrap{margin:0!important;flex:none}.room-menu-toggle{width:38px!important;height:38px!important;font-size:25px!important;line-height:1!important}.room-menu{top:44px!important;width:min(270px,82vw)!important;max-height:72vh;overflow:auto}.room-menu button{padding:11px 12px!important}
+
 .premium-overlay{position:fixed;inset:0;z-index:1000;display:flex;align-items:flex-end;justify-content:center;padding:10px;background:#05030bdc;backdrop-filter:blur(12px)}.premium-overlay.hidden{display:none!important}.premium-sheet,.premium-dialog{width:100%;max-width:520px;max-height:90vh;overflow:auto;padding:18px;border:1px solid #8756a8;border-radius:24px;background:linear-gradient(155deg,#342044,#171020);box-shadow:0 25px 90px #000b;color:#fff}.premium-dialog{align-self:center;max-width:420px}.premium-sheet-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.premium-sheet-head small,.wallet-preview-head small{font-size:9px;letter-spacing:1.4px;color:#d7a8f3}.premium-sheet-head h2{font-size:20px}.sheet-close{width:36px;height:36px;border-radius:50%;background:#ffffff12;color:#fff;font-size:23px}.settings-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 2px;border-bottom:1px solid #ffffff15}.settings-row strong{display:block;font-size:13px}.settings-row small{display:block;color:#bca8ce;font-size:10px;margin-top:4px}.settings-action{border:1px solid #a65ce766;background:#39234c;color:#f5eaff;padding:9px 13px;border-radius:12px;font-size:11px;font-weight:800}.settings-tag{font-size:10px;color:#e4c5ff;background:#ffffff12;padding:7px 10px;border-radius:20px}.settings-footnote,.wallet-note{font-size:10px;line-height:1.5;color:#bca8ce;margin-top:13px}.dialog-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:18px}.confirm-dialog{text-align:center}.confirm-symbol{width:46px;height:46px;display:grid;place-items:center;border-radius:50%;margin:0 auto 12px;background:#7b3aa4;font-size:23px}.confirm-dialog p{color:#cbb8d8;font-size:13px;line-height:1.5;margin-top:8px}.wallet-preview{padding:16px;border:1px solid #8b55b266;border-radius:20px;background:linear-gradient(145deg,#342044,#1a1028)}.wallet-preview-head{display:flex;justify-content:space-between;align-items:center}.wallet-preview-head h3{font-size:16px;margin-top:4px}.wallet-chip{font-size:9px;padding:6px 9px;border-radius:20px;background:#9d62bd33;color:#e6c4ff}.wallet-balance{margin:15px 0;padding:16px;border-radius:16px;background:#100a19aa}.wallet-balance small,.wallet-balance span{display:block;color:#bca8ce;font-size:10px}.wallet-balance strong{display:block;font-size:25px;margin:5px 0}.wallet-methods{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.wallet-method{display:flex;flex-direction:column;align-items:center;gap:5px;padding:12px 4px;border-radius:14px;background:#ffffff0b;border:1px solid #ffffff16;color:#fff}.wallet-method b{width:30px;height:30px;display:grid;place-items:center;border-radius:10px;background:#8a4eb3}.wallet-method span{font-size:10px;font-weight:800}.wallet-method small{font-size:8px;color:#c6b2d6}.mini-room-dock{position:fixed;z-index:500;left:10px;right:10px;bottom:calc(76px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:10px;padding:11px 14px;border:1px solid #c17be6;border-radius:18px;background:linear-gradient(100deg,#42205d,#1a1028);box-shadow:0 12px 35px #0009;color:#fff}.mini-room-dock.hidden{display:none!important}.mini-room-pulse{width:10px;height:10px;border-radius:50%;background:#ff5caa;box-shadow:0 0 12px #ff5caa}.mini-room-title{font-size:12px;font-weight:900;flex:1}.mini-room-dock small{font-size:9px;color:#d4bce4}.mini-room-dock button{width:28px;height:28px;border-radius:50%;background:#ffffff18;color:#fff;font-size:20px}
 @media(max-width:480px){.premium-overlay{padding:8px}.premium-sheet{padding:16px}.wallet-methods{gap:5px}.wallet-method{padding:10px 2px}}
 
 
 /* Reference-inspired room layout: icon menu, live members side rail, profile payment shortcut */
-.room-menu{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;width:min(300px,88vw)!important;padding:10px!important}
-.room-menu button{min-height:65px;display:flex!important;flex-direction:column;justify-content:center;align-items:center;gap:5px!important;text-align:center!important;border-radius:12px;background:#ffffff08!important;font-size:21px!important;padding:8px 5px!important}
-.room-menu button span{font-size:10px;line-height:1.2;flex:none!important}
-.room-menu button:active{background:#8c4bb744!important}
+
 .room-live-list-toggle{padding:7px 10px;border-radius:16px;border:1px solid #c17be688;background:#6d358d55;color:#f5eaff;font-size:10px;font-weight:800}
 .room-live-layout{display:grid;grid-template-columns:minmax(0,1fr) 190px;gap:12px;align-items:start}
 .room-main-column{min-width:0;grid-column:1;grid-row:1}
@@ -572,25 +565,14 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
 .room-live-person-info{min-width:0;flex:1}.room-live-person-info strong{display:block;font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.room-live-person-info small{display:block;font-size:8px;color:#bca8ce;margin-top:3px}.room-live-person em{font-size:7px;font-style:normal;color:#d9a7ff}
 .room-live-empty{font-size:10px;color:#bca8ce;padding:12px 3px;text-align:center}
 .profile-page-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}.profile-page-heading .section-title{margin:0}.profile-payment-shortcut{flex:none;padding:9px 11px;border-radius:13px;background:linear-gradient(135deg,#a85bd1,#66318b);border:1px solid #e0b2ff66;color:#fff;font-size:10px;font-weight:800;box-shadow:0 5px 16px #9a4dc233}
-@media(max-width:560px){.room-live-layout{display:block}.room-live-side{display:none;position:static;max-height:220px;margin:0 0 12px}.room-live-side.is-open{display:block}.room-live-list-toggle{display:inline-flex}.room-menu{max-height:65vh;overflow:auto}.profile-payment-shortcut{font-size:9px;padding:8px 9px}}
+@media(max-width:560px){.room-live-layout{display:block}.room-live-side{display:none;position:static;max-height:220px;margin:0 0 12px}.room-live-side.is-open{display:block}.room-live-list-toggle{display:inline-flex}.profile-payment-shortcut{font-size:9px;padding:8px 9px}}
 
 
 
 /* FINAL ROOM LAYOUT FIX — mobile-first, no overlapping menu tiles */
-.room-menu{
-  display:flex!important;flex-direction:column!important;grid-template-columns:none!important;
-  gap:2px!important;width:min(285px,calc(100vw - 40px))!important;
-  max-height:min(68dvh,520px)!important;overflow-y:auto!important;overscroll-behavior:contain;
-  padding:8px!important;background:#160d22!important;border:1px solid #a65ce7!important;
-  box-shadow:0 18px 50px #000e!important;z-index:120!important;
-}
-.room-menu button{
-  display:flex!important;flex-direction:row!important;justify-content:flex-start!important;
-  align-items:center!important;gap:11px!important;min-height:44px!important;width:100%!important;
-  padding:10px 12px!important;border-radius:11px!important;background:transparent!important;
-  color:#f5eaff!important;text-align:left!important;font-size:15px!important;line-height:1.25!important;
-}
-.room-menu button span{flex:1!important;font-size:13px!important;line-height:1.25!important;text-align:left!important;white-space:normal!important}
+
+
+
 .room-menu button:active{background:#8c4bb744!important}
 .room-menu-header-wrap{position:relative!important;z-index:121!important}
 .room-live-layout{display:grid;grid-template-columns:minmax(0,1fr) 190px;gap:12px;align-items:start}
@@ -611,7 +593,7 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
   .room-main-column{width:100%!important;order:1}
   .room-stats-row{gap:6px!important}
   .room-stats-row>span,.room-live-list-toggle{font-size:9px!important;padding:7px 8px!important}
-  .room-menu{position:absolute!important;right:0!important;left:auto!important;top:calc(100% + 8px)!important;width:min(285px,calc(100vw - 40px))!important;max-height:65dvh!important}
+  
   .premium-overlay{align-items:flex-end!important;padding:8px 8px max(8px,env(safe-area-inset-bottom))!important}
   .premium-sheet{max-height:82dvh!important;border-radius:22px 22px 18px 18px!important;padding:15px!important}
   .settings-row{min-height:58px;padding:10px 0!important}
@@ -619,29 +601,14 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
   .settings-action{padding:8px 10px;font-size:10px}
 }
 @media(max-width:380px){
-  .room-menu{width:min(270px,calc(100vw - 32px))!important}
-  .room-menu button{min-height:42px;padding:9px 10px!important}
-  .room-menu button span{font-size:12px!important}
+  
+  
+  
   .room-seats-grid{gap:7px!important}
 }
 
 
 /* HARD FIX: detached room menu must override all earlier mobile absolute-position rules */
-body > #room-menu.room-menu-detached{
-  position:fixed!important;
-  display:flex!important;
-  flex-direction:column!important;
-  left:var(--room-menu-left,16px)!important;
-  right:auto!important;
-  top:var(--room-menu-top,90px)!important;
-  width:var(--room-menu-width,285px)!important;
-  max-width:calc(100vw - 32px)!important;
-  max-height:min(68dvh,520px)!important;
-  overflow-y:auto!important;
-  z-index:10000!important;
-  margin:0!important;
-}
-
 </style>
 </head>
 
@@ -850,25 +817,6 @@ body > #room-menu.room-menu-detached{
       <div class="room-title-copy">
         <h2 id="active-room-name">🌙 Your Room</h2>
         <p>Welcome in — connect, talk & enjoy</p>
-      </div>
-      <div class="room-menu-wrap room-menu-header-wrap">
-        <button id="room-menu-toggle" class="room-menu-toggle" type="button" aria-label="Room menu" aria-expanded="false">⋮</button>
-        <div id="room-menu" class="room-menu hidden">
-          <button type="button" data-room-action="settings">⚙️ <span>Room Settings</span></button>
-          <button type="button" data-room-action="mode">🎛️ <span>Room Mode</span></button>
-          <button type="button" data-room-action="background">🌌 <span>Room Background</span></button>
-          <button type="button" data-room-action="tasks">🧩 <span>Tasks & Activities</span></button>
-          <button type="button" data-room-action="sound">🔊 <span>Sound Effects</span></button>
-          <button type="button" data-room-action="speaker">🔈 <span>Toggle Speaker</span></button>
-          <button type="button" data-room-action="hand">✋ <span>Raise Hand</span></button>
-          <button type="button" data-room-action="invite">♧ <span>Invite a Friend</span></button>
-          <button type="button" data-room-action="notice">📢 <span>Room Notice</span></button>
-          <button type="button" data-room-action="cleanup">🧹 <span>Message Cleanup</span></button>
-          <button type="button" data-room-action="lock">🔒 <span>Room Lock</span></button>
-          <button type="button" data-room-action="minimize">➖ <span>Minimize Room</span></button>
-          <button type="button" data-room-action="share">↗ <span>Share Room</span></button>
-          <button type="button" data-room-action="exit" class="menu-danger">⏻ <span>Exit Room</span></button>
-        </div>
       </div>
     </div>
 
@@ -2664,7 +2612,6 @@ async function leaveVoiceRoom() {
 }
 $("room-leave-btn").addEventListener("click", async () => {
   if (await premikaConfirm("Leave room?", "You will leave this voice room.")) {
-    $("room-menu").classList.add("hidden");
     await leaveVoiceRoom();
   }
 });
@@ -3188,51 +3135,15 @@ function closeEditor(){if(editorResolver?.cancel)editorResolver.cancel();editorR
 document.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.close==="premika-editor")closeEditor();else $(b.dataset.close).classList.add("hidden")}));
 function applyBg(){const el=$("active-room");if(!el)return;el.style.background=bgChoice==="purple"?"":({aurora:"radial-gradient(ellipse at 50% 0%,#24506a,#211434 52%,#100b1b)",rose:"radial-gradient(ellipse at 50% 0%,#6a2855,#29142f 52%,#100b1b)",midnight:"radial-gradient(ellipse at 50% 0%,#273b70,#1d1738 52%,#0a0b18)"}[bgChoice]||"")}
 function openBgEditor(){openEditor("Room Background",'<p class="small-text">Choose a background for this device.</p><div class="room-background-options"><button class="room-background-choice" data-bg="purple">Purple Glow</button><button class="room-background-choice" data-bg="aurora">Aurora</button><button class="room-background-choice" data-bg="rose">Rose Galaxy</button><button class="room-background-choice" data-bg="midnight">Midnight</button></div>',()=>{const chosen=$("editor-body").querySelector(".selected")?.dataset.bg;if(chosen){bgChoice=chosen;localStorage.setItem("premika-room-bg",chosen);applyBg()} });$("editor-body").querySelectorAll("[data-bg]").forEach(b=>{if(b.dataset.bg===bgChoice)b.classList.add("selected");b.onclick=()=>{$("editor-body").querySelectorAll("[data-bg]").forEach(x=>x.classList.remove("selected"));b.classList.add("selected")}})}
-$("room-menu").addEventListener("click",async e=>{const b=e.target.closest("[data-room-action]");if(!b)return;const a=b.dataset.roomAction;closeRoomMenu();if(a==="settings"){$("premika-room-settings").classList.remove("hidden");$("settings-rename-open").style.display=roomRecord?.owner_id===currentUser?.id?"inline-flex":"none"}if(a==="background")openBgEditor();if(a==="mode"){if(roomRecord?.owner_id!==currentUser?.id)return showToast("Only the room owner can change room mode.");const v=!roomRecord.is_public;if(!await premikaConfirm("Change room mode?",v?"Make this room public?":"Make this room private?"))return;const {data,error}=await supabaseClient.from("rooms").update({is_public:v}).eq("id",activeRoomId).eq("owner_id",currentUser.id).select("id,name,owner_id,is_public").single();if(error)showToast(error.message);else{roomRecord=data;showToast(v?"Room is now public.":"Room is now private.")}}if(a==="tasks")showToast("Room activities will be available in a future update.");if(a==="sound")showToast("Sound effects are not connected yet.");if(a==="speaker")$("room-speaker-btn").click();if(a==="hand")$("room-raise-hand-btn").click();if(a==="invite")openRoomPrivateInbox();if(a==="notice")openEditor("Room Announcement",'<textarea id="editor-notice" class="input-field" rows="3" maxlength="180" placeholder="Welcome to our room...">'+(localStorage.getItem("premika-room-notice")||"")+'</textarea>',()=>localStorage.setItem("premika-room-notice",$("editor-notice").value.trim()));if(a==="cleanup"){if(roomRecord?.owner_id!==currentUser?.id)return showToast("Only the room owner can clear room messages.");if(await premikaConfirm("Clear room messages?","This action cannot be undone.")){const {error}=await supabaseClient.from("room_messages").delete().eq("room_id",activeRoomId);if(error)showToast(error.message);else await loadRoomMessages(activeRoomId)}}if(a==="lock")showToast("Room lock needs a server-side access policy before it can securely block new members.");if(a==="minimize")window.showPage("home");if(a==="share"){const u=location.origin+location.pathname+"?room="+activeRoomId;try{await navigator.clipboard.writeText(u);showToast("Room link copied.")}catch(_){showToast(u)}}if(a==="exit"&&await premikaConfirm("Exit room?","You will leave this voice room.")){await leaveVoiceRoom()}});
 $("settings-rename-open").addEventListener("click",async()=>{const n=await premikaEditText("Rename Room","Enter a room name",roomRecord?.name||"");if(!n)return;if(n.length<3||n.length>40)return showToast("Room name must be 3–40 characters.");const {data,error}=await supabaseClient.from("rooms").update({name:n}).eq("id",activeRoomId).eq("owner_id",currentUser.id).select("id,name,owner_id,is_public").single();if(error)return showToast(error.message);roomRecord=data;$("active-room-name").textContent="🌙 "+n;$("premika-room-settings").classList.add("hidden");showToast("Room name updated.")});
 $("settings-background-open").addEventListener("click",openBgEditor);
 $("settings-notice-open").addEventListener("click",()=>openEditor("Room Announcement",'<textarea id="editor-notice" class="input-field" rows="3" maxlength="180" placeholder="Welcome to our room...">'+(localStorage.getItem("premika-room-notice")||"")+'</textarea>',()=>localStorage.setItem("premika-room-notice",$("editor-notice").value.trim())));
 $("room-avatar-file").addEventListener("change",e=>{const f=e.target.files?.[0];if(!f)return;if(!f.type.startsWith("image/")||f.size>2*1024*1024)return showToast("Choose an image under 2 MB.");const r=new FileReader();r.onload=()=>{const img=document.createElement("img");img.src=r.result;img.alt="Room avatar";img.style="width:100%;height:100%;object-fit:cover;border-radius:14px";$("active-room").querySelector(".room-cover").replaceChildren(img);localStorage.setItem("premika-room-avatar",r.result);showToast("Room avatar preview saved on this device.")};r.readAsDataURL(f)});
 const baseShowPage=window.showPage;window.showPage=function(id,btn){baseShowPage(id,btn);const dock=$("premika-mini-room");dock.classList.toggle("hidden",!activeRoomId||id==="room-suggestions")};
 $("premika-mini-room").addEventListener("click",e=>{if(e.target.id!=="mini-room-leave")window.showPage("room-suggestions")});$("mini-room-leave").addEventListener("click",async e=>{e.stopPropagation();if(await premikaConfirm("Leave room?","You will disconnect from this room."))await leaveVoiceRoom()});
-const roomMenuElement = $("room-menu");
-const roomMenuHome = roomMenuElement.parentElement;
-function closeRoomMenu(){
-  roomMenuElement.classList.add("hidden");
-  roomMenuElement.classList.remove("room-menu-detached");
-  roomMenuHome.appendChild(roomMenuElement);
-  roomMenuElement.style.removeProperty("--room-menu-left");
-  roomMenuElement.style.removeProperty("--room-menu-top");
-  roomMenuElement.style.removeProperty("--room-menu-width");
-  $("room-menu-toggle").setAttribute("aria-expanded","false");
-}
-$("room-menu-toggle").addEventListener("click",e=>{
-  e.stopPropagation();
-  if(!roomMenuElement.classList.contains("hidden")){
-    closeRoomMenu();
-    return;
-  }
-  document.body.appendChild(roomMenuElement);
-  roomMenuElement.classList.remove("hidden");
-  roomMenuElement.classList.add("room-menu-detached");
-  const anchor = $("room-menu-toggle").getBoundingClientRect();
-  const width = Math.min(300, window.innerWidth - 32);
-  const left = Math.max(16, Math.min(anchor.right - width, window.innerWidth - width - 16));
-  const estimatedHeight = Math.min(window.innerHeight * 0.68, 520);
-  const top = Math.max(12, Math.min(anchor.bottom + 8, window.innerHeight - estimatedHeight - 12));
-  roomMenuElement.style.setProperty("--room-menu-left",left+"px");
-  roomMenuElement.style.setProperty("--room-menu-top",top+"px");
-  roomMenuElement.style.setProperty("--room-menu-width",width+"px");
-  $("room-menu-toggle").setAttribute("aria-expanded","true");
-});
-document.addEventListener("click",e=>{
-  if(e.target.closest("#room-menu")) return;
-  if(!e.target.closest(".room-menu-wrap")) closeRoomMenu();
-});
-window.addEventListener("resize",()=>{if(!roomMenuElement.classList.contains("hidden"))closeRoomMenu()});
 
 $("premika-confirm").addEventListener("click",e=>{if(e.target===$("premika-confirm"))finishConfirm(false)});
-document.addEventListener("keydown",e=>{if(e.key==="Escape"){["premika-room-settings","premika-editor"].forEach(id=>$(id).classList.add("hidden"));finishConfirm(false);closeRoomMenu()}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){["premika-room-settings","premika-editor"].forEach(id=>$(id).classList.add("hidden"));finishConfirm(false)}});
 
 // START PREMIKA
 startPremika();
