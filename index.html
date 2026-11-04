@@ -554,6 +554,26 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
 .premium-overlay{position:fixed;inset:0;z-index:1000;display:flex;align-items:flex-end;justify-content:center;padding:10px;background:#05030bdc;backdrop-filter:blur(12px)}.premium-overlay.hidden{display:none!important}.premium-sheet,.premium-dialog{width:100%;max-width:520px;max-height:90vh;overflow:auto;padding:18px;border:1px solid #8756a8;border-radius:24px;background:linear-gradient(155deg,#342044,#171020);box-shadow:0 25px 90px #000b;color:#fff}.premium-dialog{align-self:center;max-width:420px}.premium-sheet-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.premium-sheet-head small,.wallet-preview-head small{font-size:9px;letter-spacing:1.4px;color:#d7a8f3}.premium-sheet-head h2{font-size:20px}.sheet-close{width:36px;height:36px;border-radius:50%;background:#ffffff12;color:#fff;font-size:23px}.settings-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 2px;border-bottom:1px solid #ffffff15}.settings-row strong{display:block;font-size:13px}.settings-row small{display:block;color:#bca8ce;font-size:10px;margin-top:4px}.settings-action{border:1px solid #a65ce766;background:#39234c;color:#f5eaff;padding:9px 13px;border-radius:12px;font-size:11px;font-weight:800}.settings-tag{font-size:10px;color:#e4c5ff;background:#ffffff12;padding:7px 10px;border-radius:20px}.settings-footnote,.wallet-note{font-size:10px;line-height:1.5;color:#bca8ce;margin-top:13px}.dialog-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:18px}.confirm-dialog{text-align:center}.confirm-symbol{width:46px;height:46px;display:grid;place-items:center;border-radius:50%;margin:0 auto 12px;background:#7b3aa4;font-size:23px}.confirm-dialog p{color:#cbb8d8;font-size:13px;line-height:1.5;margin-top:8px}.wallet-preview{padding:16px;border:1px solid #8b55b266;border-radius:20px;background:linear-gradient(145deg,#342044,#1a1028)}.wallet-preview-head{display:flex;justify-content:space-between;align-items:center}.wallet-preview-head h3{font-size:16px;margin-top:4px}.wallet-chip{font-size:9px;padding:6px 9px;border-radius:20px;background:#9d62bd33;color:#e6c4ff}.wallet-balance{margin:15px 0;padding:16px;border-radius:16px;background:#100a19aa}.wallet-balance small,.wallet-balance span{display:block;color:#bca8ce;font-size:10px}.wallet-balance strong{display:block;font-size:25px;margin:5px 0}.wallet-methods{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.wallet-method{display:flex;flex-direction:column;align-items:center;gap:5px;padding:12px 4px;border-radius:14px;background:#ffffff0b;border:1px solid #ffffff16;color:#fff}.wallet-method b{width:30px;height:30px;display:grid;place-items:center;border-radius:10px;background:#8a4eb3}.wallet-method span{font-size:10px;font-weight:800}.wallet-method small{font-size:8px;color:#c6b2d6}.mini-room-dock{position:fixed;z-index:500;left:10px;right:10px;bottom:calc(76px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:10px;padding:11px 14px;border:1px solid #c17be6;border-radius:18px;background:linear-gradient(100deg,#42205d,#1a1028);box-shadow:0 12px 35px #0009;color:#fff}.mini-room-dock.hidden{display:none!important}.mini-room-pulse{width:10px;height:10px;border-radius:50%;background:#ff5caa;box-shadow:0 0 12px #ff5caa}.mini-room-title{font-size:12px;font-weight:900;flex:1}.mini-room-dock small{font-size:9px;color:#d4bce4}.mini-room-dock button{width:28px;height:28px;border-radius:50%;background:#ffffff18;color:#fff;font-size:20px}
 @media(max-width:480px){.premium-overlay{padding:8px}.premium-sheet{padding:16px}.wallet-methods{gap:5px}.wallet-method{padding:10px 2px}}
 
+
+/* Reference-inspired room layout: icon menu, live members side rail, profile payment shortcut */
+.room-menu{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;width:min(300px,88vw)!important;padding:10px!important}
+.room-menu button{min-height:65px;display:flex!important;flex-direction:column;justify-content:center;align-items:center;gap:5px!important;text-align:center!important;border-radius:12px;background:#ffffff08!important;font-size:21px!important;padding:8px 5px!important}
+.room-menu button span{font-size:10px;line-height:1.2;flex:none!important}
+.room-menu button:active{background:#8c4bb744!important}
+.room-live-list-toggle{padding:7px 10px;border-radius:16px;border:1px solid #c17be688;background:#6d358d55;color:#f5eaff;font-size:10px;font-weight:800}
+.room-live-layout{display:grid;grid-template-columns:minmax(0,1fr) 190px;gap:12px;align-items:start}
+.room-main-column{min-width:0;grid-column:1;grid-row:1}
+.room-live-side{grid-column:2;grid-row:1;position:sticky;top:12px;padding:12px;border-radius:17px;background:#120b1dcc;border:1px solid #a65ce755;max-height:520px;overflow:auto}
+.room-live-side-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;color:#e8caff;font-size:10px;letter-spacing:.8px}
+.room-live-side-head span{background:#a84c9c44;padding:4px 7px;border-radius:12px}
+.room-live-person{display:flex;align-items:center;gap:8px;padding:8px 2px;border-bottom:1px solid #ffffff12;min-width:0}
+.room-live-avatar{width:32px;height:32px;flex:none;border-radius:50%;overflow:hidden;background:#6b3a86;display:grid;place-items:center;font-size:11px}
+.room-live-avatar img{width:100%;height:100%;object-fit:cover}
+.room-live-person-info{min-width:0;flex:1}.room-live-person-info strong{display:block;font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.room-live-person-info small{display:block;font-size:8px;color:#bca8ce;margin-top:3px}.room-live-person em{font-size:7px;font-style:normal;color:#d9a7ff}
+.room-live-empty{font-size:10px;color:#bca8ce;padding:12px 3px;text-align:center}
+.profile-page-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}.profile-page-heading .section-title{margin:0}.profile-payment-shortcut{flex:none;padding:9px 11px;border-radius:13px;background:linear-gradient(135deg,#a85bd1,#66318b);border:1px solid #e0b2ff66;color:#fff;font-size:10px;font-weight:800;box-shadow:0 5px 16px #9a4dc233}
+@media(max-width:560px){.room-live-layout{display:block}.room-live-side{display:none;position:static;max-height:220px;margin:0 0 12px}.room-live-side.is-open{display:block}.room-live-list-toggle{display:inline-flex}.room-menu{max-height:65vh;overflow:auto}.profile-payment-shortcut{font-size:9px;padding:8px 9px}}
+
 </style>
 </head>
 
@@ -788,8 +808,15 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
       <span class="room-stat-live">〽 Live Room</span>
       <span class="room-stat">👥 Community</span>
       <span class="room-stat">✦ Public</span>
+      <button id="room-live-list-toggle" class="room-live-list-toggle" type="button" aria-expanded="false">☷ Live List</button>
     </div>
 
+    <div class="room-live-layout">
+      <div class="room-live-side" id="room-live-side">
+        <div class="room-live-side-head"><strong>LIVE IN ROOM</strong><span id="room-live-count">0</span></div>
+        <div id="room-live-members"><div class="room-live-empty">No one is seated yet</div></div>
+      </div>
+      <div class="room-main-column">
     <div class="room-stage">
       <div class="room-stage-glow"></div>
       <div class="room-host-avatar" aria-hidden="true"><span>👑</span></div>
@@ -819,6 +846,8 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
       </div>
       <p id="room-voice-status" class="room-voice-status">Join a seat to speak in the room</p>
     </div>
+      </div><!-- /room-main-column -->
+    </div><!-- /room-live-layout -->
   </div>
 </section>
 
@@ -832,7 +861,7 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
 
 <!-- PROFILE PAGE -->
 <section id="profile" class="page">
-  <h2 class="section-title">My Profile 👤</h2>
+  <div class="profile-page-heading"><h2 class="section-title">My Profile 👤</h2><button id="profile-payment-shortcut" class="profile-payment-shortcut" type="button">▣ Payment Method</button></div>
 
   <div class="profile-card">
     <div class="profile-hero">
@@ -2225,7 +2254,7 @@ async function sendMessage() {
 // CLEAR THE CURRENT PRIVATE CONVERSATION
 async function clearPrivateChat() {
   if (!currentUser || !activeChatFriendId) return;
-  if (!confirm("Clear this conversation for both participants where database permissions allow? This cannot be undone.")) return;
+  if (!(await premikaConfirm("Clear conversation?", "This permanently deletes the conversation where database permissions allow."))) return;
   try {
     const { error } = await supabaseClient.from("direct_messages").delete()
       .or(`and(sender_id.eq.${currentUser.id},receiver_id.eq.${activeChatFriendId}),and(sender_id.eq.${activeChatFriendId},receiver_id.eq.${currentUser.id})`);
@@ -2323,6 +2352,28 @@ function renderRoomSeats() {
     if (p && p.seat) occupants[Number(p.seat)] = p;
   });
 
+  const liveList = $("room-live-members");
+  const liveCount = $("room-live-count");
+  if (liveList) {
+    const people = Object.values(states).flat().filter(p => p && p.user_id);
+    if (liveCount) liveCount.textContent = String(people.length);
+    liveList.replaceChildren();
+    if (!people.length) {
+      const empty = document.createElement("div"); empty.className = "room-live-empty"; empty.textContent = "No one is seated yet"; liveList.appendChild(empty);
+    } else {
+      people.sort((a,b)=>Number(a.seat||99)-Number(b.seat||99)).forEach(person => {
+        const item = document.createElement("div"); item.className = "room-live-person";
+        const avatar = document.createElement("div"); avatar.className = "room-live-avatar";
+        setAvatarElement(avatar, person.avatar_url, person.display_name || person.username || "Member");
+        const info = document.createElement("div"); info.className = "room-live-person-info";
+        const name = document.createElement("strong"); name.textContent = person.display_name || person.username || "Member";
+        const seat = document.createElement("small"); seat.textContent = "Seat " + Number(person.seat) + (person.raised_hand ? " · ✋ Hand raised" : " · Live");
+        info.append(name,seat); item.append(avatar,info);
+        if (person.user_id === currentUser?.id) { const you=document.createElement("em"); you.textContent="YOU"; item.appendChild(you); }
+        liveList.appendChild(item);
+      });
+    }
+  }
   grid.querySelectorAll("[data-seat]").forEach(button => {
     const seatNo = Number(button.dataset.seat);
     const person = occupants[seatNo];
@@ -2712,7 +2763,9 @@ $("room-chat-input").addEventListener("keydown", event => {
 function showRoomManager(existingRoom) {
   const createForm = $("create-room-form");
   const renameForm = $("rename-room-form");
+  const managerPanel = $("room-manager-panel");
   if (!createForm || !renameForm) return;
+  if (managerPanel) managerPanel.style.display = existingRoom ? "none" : "block";
 
   if (existingRoom) {
     createForm.style.display = "none";
@@ -2726,18 +2779,37 @@ function showRoomManager(existingRoom) {
   }
 }
 
+let myRoomLoadPromise = null;
 async function loadMyRoom() {
   if (!currentUser) return null;
-  const { data, error } = await supabaseClient
-    .from("rooms")
-    .select("id, name, owner_id")
-    .eq("owner_id", currentUser.id)
-    .limit(1)
-    .maybeSingle();
-
-  if (error) throw error;
-  showRoomManager(data);
-  return data;
+  if (myRoomLoadPromise) return myRoomLoadPromise;
+  myRoomLoadPromise = (async () => {
+    const { data, error } = await supabaseClient
+      .from("rooms")
+      .select("id, name, owner_id")
+      .eq("owner_id", currentUser.id)
+      .limit(1)
+      .maybeSingle();
+    if (error) throw error;
+    let room = data;
+    if (!room) {
+      const { data: created, error: createError } = await supabaseClient.from("rooms")
+        .insert({ name: "My Room", owner_id: currentUser.id, is_public: false, status: "active" })
+        .select("id, name, owner_id")
+        .single();
+      if (createError) {
+        // Another page action may have created the room at the same time; fetch it once.
+        const { data: latest, error: latestError } = await supabaseClient.from("rooms")
+          .select("id, name, owner_id").eq("owner_id", currentUser.id).limit(1).maybeSingle();
+        if (latestError || !latest) throw createError;
+        room = latest;
+      } else room = created;
+    }
+    showRoomManager(room);
+    return room;
+  })();
+  try { return await myRoomLoadPromise; }
+  finally { myRoomLoadPromise = null; }
 }
 
 $("rename-room-btn").addEventListener("click", async () => {
@@ -3050,6 +3122,8 @@ window.addEventListener("beforeunload", () => {
 
 
 document.querySelectorAll("[data-payment]").forEach(button=>button.addEventListener("click",()=>showToast(button.dataset.payment+" will be connected in a later update.")));
+$("profile-payment-shortcut")?.addEventListener("click",()=>$("profile").querySelector(".wallet-preview")?.scrollIntoView({behavior:"smooth",block:"center"}));
+$("room-live-list-toggle")?.addEventListener("click",()=>{const side=$("room-live-side");const open=side.classList.toggle("is-open");$("room-live-list-toggle").setAttribute("aria-expanded",String(open));});
 // New in-app room controls and compact room dock
 let confirmResolver=null, editorResolver=null, bgChoice=localStorage.getItem("premika-room-bg")||"purple";
 function premikaConfirm(title,message){return new Promise(resolve=>{confirmResolver=resolve;$("confirm-title").textContent=title;$("confirm-message").textContent=message;$("premika-confirm").classList.remove("hidden")})}
