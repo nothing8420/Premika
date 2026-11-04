@@ -824,7 +824,7 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
 <!-- ACTIVE ROOM: PREMIUM VOICE LOUNGE -->
   <div class="panel premium-room" id="active-room" style="display:none;">
     <div class="room-topline">
-      <div class="room-live-pill"><span class="live-dot"></span> LIVE NOW</div>
+      <div class="room-live-pill"><span class="live-dot"></span> VOICE ROOM · LIVE</div>
       <span class="room-seat-count">🎙 6 LIVE SEATS</span>
     </div>
 
@@ -2277,20 +2277,21 @@ async function sendMessage() {
 
     if (error) throw error;
 
-    if (activeChatSubscription) {
-      await activeChatSubscription.send({
-        type: "broadcast",
-        event: "new-message",
-        payload: { sender_id: currentUser.id, receiver_id: activeChatFriendId }
-      });
-    }
+    // The database insert is the source of truth. Realtime broadcasts are
+    // best-effort only and must not turn a saved message into a false error.
+    const sentTo = activeChatFriendId;
     input.value = "";
     $("typing-indicator").textContent = "";
     if (activeChatSubscription) {
       activeChatSubscription.send({
+        type: "broadcast",
+        event: "new-message",
+        payload: { sender_id: currentUser.id, receiver_id: sentTo }
+      }).catch(error => console.warn("Private chat broadcast:", error));
+      activeChatSubscription.send({
         type: "broadcast", event: "typing",
         payload: { user_id: currentUser.id, typing: false }
-      });
+      }).catch(error => console.warn("Typing broadcast:", error));
     }
     await loadMessages();
 
@@ -2842,21 +2843,13 @@ async function loadMyRoom() {
       .limit(1)
       .maybeSingle();
     if (error) throw error;
-    let room = data;
-    if (!room) {
-      const { data: created, error: createError } = await supabaseClient.from("rooms")
-        .insert({ name: "My Room", owner_id: currentUser.id, is_public: false, status: "active" })
-        .select("id, name, owner_id")
-        .single();
-      if (createError) {
-        // Another page action may have created the room at the same time; fetch it once.
-        const { data: latest, error: latestError } = await supabaseClient.from("rooms")
-          .select("id, name, owner_id").eq("owner_id", currentUser.id).limit(1).maybeSingle();
-        if (latestError || !latest) throw createError;
-        room = latest;
-      } else room = created;
-    }
+    const room = data || null;
+    // Room creation is explicit: opening this page must not create a demo room.
     showRoomManager(room);
+    if (!room) {
+      $("active-room").style.display = "none";
+      return null;
+    }
     return room;
   })();
   try { return await myRoomLoadPromise; }
@@ -2977,6 +2970,7 @@ $("create-room-btn").addEventListener("click", async () => {
 
 if (existingRoom && existingRoom.length > 0) {
   showRoomManager(existingRoom[0]);
+  await showMyRoom(existingRoom[0]);
   showToast("Aapka room pehle se bana hua hai. Ab aap sirf uska naam change kar sakte hain.");
   button.disabled = false;
   button.textContent = "+ Create Room";
@@ -3020,9 +3014,8 @@ $("room-chat-messages").innerHTML =
   '!</div>';
 
 activeRoomId = data.id;
-await openRoomChat(data.id);
 showRoomManager(data);
-await loadPublicRooms();
+await showMyRoom(data);
 
 showToast("Room successfully created! Ab aap sirf room ka naam change kar sakte hain.");
 
@@ -3173,7 +3166,6 @@ window.addEventListener("beforeunload", () => {
 
 
 document.querySelectorAll("[data-payment]").forEach(button=>button.addEventListener("click",()=>showToast(button.dataset.payment+" will be connected in a later update.")));
-$("profile-payment-shortcut")?.addEventListener("click",()=>$("profile").querySelector(".wallet-preview")?.scrollIntoView({behavior:"smooth",block:"center"}));
 $("room-live-list-toggle")?.addEventListener("click",()=>{const side=$("room-live-side");const open=side.classList.toggle("is-open");$("room-live-list-toggle").setAttribute("aria-expanded",String(open));});
 // New in-app room controls and compact room dock
 let confirmResolver=null, editorResolver=null, bgChoice=localStorage.getItem("premika-room-bg")||"purple";
