@@ -652,6 +652,109 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
 .premium-room-messages{height:clamp(230px,38vh,390px)!important;min-height:210px!important}
 @media(max-width:380px){.room-seats-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:5px!important}.room-seat.premium-seat,.room-seat.owner-seat{width:min(100%,70px)!important;max-width:70px!important}.room-seat .seat-avatar{width:33px!important;height:33px!important;min-width:33px!important}}
 
+
+
+/* PREMIKA ROOM LAYOUT: OWNER ON TOP, SIX MEMBERS IN ONE ROW, CHAT BELOW */
+#active-room .room-live-layout{display:block!important;width:100%!important}
+#active-room .room-live-side{display:none!important}
+#active-room .room-main-column{display:flex!important;flex-direction:column!important;width:100%!important;min-width:0!important}
+#active-room .room-stage{display:none!important}
+#active-room .room-seats-grid{
+  display:grid!important;
+  grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  grid-auto-flow:row!important;
+  align-items:start!important;
+  justify-items:center!important;
+  gap:8px!important;
+  width:100%!important;
+  margin:12px 0 14px!important;
+}
+#active-room .room-seats-grid .room-seat.owner-seat{
+  grid-column:1 / -1!important;
+  grid-row:1!important;
+  width:76px!important;max-width:76px!important;
+  height:76px!important;min-height:76px!important;
+  margin:0 auto 5px!important;
+  border-radius:50%!important;
+  background:radial-gradient(circle at 35% 25%,#75502b,#2b1b13 72%)!important;
+  border:2px solid #e7bd70!important;
+}
+#active-room .room-seats-grid .room-seat:not(.owner-seat){
+  grid-row:2!important;
+  width:100%!important;max-width:58px!important;
+  min-width:0!important;height:auto!important;min-height:0!important;
+  aspect-ratio:1/1!important;padding:3px 1px!important;
+  border-radius:50%!important;display:flex!important;
+  flex-direction:column!important;justify-content:center!important;align-items:center!important;
+  gap:2px!important;overflow:hidden!important;
+}
+#active-room .room-seats-grid .room-seat .seat-avatar{
+  width:clamp(20px,6vw,31px)!important;height:clamp(20px,6vw,31px)!important;
+  min-width:clamp(20px,6vw,31px)!important;margin:0!important;
+  border-radius:50%!important;font-size:15px!important;
+}
+#active-room .room-seats-grid .room-seat strong{font-size:clamp(6px,1.8vw,9px)!important;line-height:1!important}
+#active-room .room-seats-grid .room-seat span{font-size:6px!important;line-height:1!important}
+#active-room .room-chat-panel{width:100%!important;margin:4px 0 0!important;padding:12px!important}
+#active-room .premium-room-messages{height:clamp(280px,48vh,560px)!important;min-height:260px!important}
+@media(max-width:380px){
+  #active-room .room-seats-grid{gap:4px!important;margin-top:8px!important}
+  #active-room .room-seats-grid .room-seat.owner-seat{width:68px!important;max-width:68px!important;height:68px!important;min-height:68px!important}
+  #active-room .room-seats-grid .room-seat:not(.owner-seat){max-width:50px!important}
+  #active-room .room-chat-panel{padding:9px!important}
+}
+
+
+
+/* FINAL PREMIUM ROOM POLISH: tiny single-row seats + extra-large chat */
+#active-room .room-seats-grid{
+  display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  gap:clamp(3px,1.4vw,9px)!important;align-items:start!important;
+  margin:7px 0 12px!important;padding:0 2px!important;
+}
+#active-room .room-seats-grid .room-seat.owner-seat{
+  grid-column:1/-1!important;grid-row:1!important;width:64px!important;height:64px!important;
+  min-height:64px!important;max-width:64px!important;margin:0 auto 5px!important;
+}
+#active-room .room-seats-grid .room-seat:not(.owner-seat){
+  grid-row:2!important;position:relative!important;width:clamp(39px,12vw,53px)!important;
+  max-width:53px!important;height:clamp(39px,12vw,53px)!important;min-height:0!important;
+  aspect-ratio:1/1!important;padding:3px!important;border-radius:50%!important;
+  justify-self:center!important;display:flex!important;align-items:center!important;
+  justify-content:center!important;overflow:visible!important;
+}
+#active-room .room-seats-grid .room-seat:not(.owner-seat) .seat-avatar{
+  width:clamp(24px,7vw,33px)!important;height:clamp(24px,7vw,33px)!important;
+  min-width:clamp(24px,7vw,33px)!important;font-size:15px!important;margin:0!important;
+}
+#active-room .room-seats-grid .room-seat:not(.owner-seat) strong,
+#active-room .room-seats-grid .room-seat:not(.owner-seat) span{display:none!important}
+#active-room .room-seats-grid .room-seat:not(.owner-seat)::after{
+  content:attr(data-seat);position:absolute;top:-3px;right:-3px;width:15px;height:15px;
+  display:grid;place-items:center;border-radius:50%;font-size:8px;font-weight:900;
+  color:#fff;background:#8d39bd;border:1px solid #e4b9ff;box-shadow:0 2px 7px #0008;
+}
+#active-room .room-chat-panel{margin-top:5px!important;padding:12px!important}
+#active-room .premium-room-messages{height:clamp(390px,62vh,720px)!important;min-height:340px!important}
+#active-room .room-chat-compose{display:flex!important;gap:7px!important;align-items:center!important}
+#active-room #room-private-inbox-btn{order:0!important;flex:0 0 42px!important;width:42px!important;height:42px!important;border-radius:50%!important}
+#active-room #room-chat-input{order:1!important;flex:1 1 auto!important;min-width:0!important}
+#active-room #room-mic-btn{order:2!important;flex:0 0 40px!important;width:40px!important;height:40px!important}
+#active-room #room-chat-send{order:3!important;flex:0 0 43px!important;width:43px!important;height:43px!important;border-radius:50%!important}
+.settings-row-button{width:100%;text-align:left;color:inherit;font:inherit;cursor:pointer;background:transparent;border:0}
+.settings-row-button:active{background:#ffffff0b}
+@media(max-width:360px){
+ #active-room .room-seats-grid{gap:2px!important;padding:0!important}
+ #active-room .room-seats-grid .room-seat:not(.owner-seat){width:38px!important;height:38px!important;max-width:38px!important}
+ #active-room .room-seats-grid .room-seat .seat-avatar{width:23px!important;height:23px!important;min-width:23px!important}
+ #active-room .premium-room-messages{height:60vh!important;min-height:320px!important}
+ #active-room #room-private-inbox-btn{width:37px!important;height:37px!important;flex-basis:37px!important}
+}
+
+
+/* Premium room header + minimized picture-in-picture */
+.room-header-actions{display:flex;align-items:center;gap:7px;margin-left:auto}.room-header-actions .room-menu-mark{flex:0 0 38px;width:38px;height:38px;border-radius:13px;border:1px solid #ffffff24;background:#ffffff0c;color:#fff;font-size:20px}.mini-room-dock{cursor:pointer;max-width:420px;margin:0 auto}.mini-room-dock .mini-room-title{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
 </style>
 </head>
 
@@ -872,7 +975,7 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
         <h2 id="active-room-name">🌙 Your Room</h2>
         <p>Welcome in — connect, talk & enjoy</p>
       </div>
-      <button id="room-settings-menu-btn" class="room-menu-mark" type="button" aria-label="Room settings" title="Room Settings">⋮</button>
+      <div class="room-header-actions"><button id="room-minimize-btn" class="room-menu-mark" type="button" aria-label="Minimize room" title="Minimize room">▁</button><button id="room-settings-menu-btn" class="room-menu-mark" type="button" aria-label="Room settings" title="Room Settings">⋮</button></div>
     </div>
 
     <div class="room-stats-row">
@@ -911,9 +1014,9 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
         <div class="empty-state">Welcome to your room!</div>
       </div>
       <div class="room-chat-compose">
-        <button id="room-mic-btn" class="compose-icon-btn" type="button" aria-label="Microphone" title="Talk">🎤</button>
+        <button id="room-private-inbox-btn" class="compose-icon-btn inbox-compose-btn" type="button" aria-label="Friend private messages" title="Friend private messages">✉</button>
         <input id="room-chat-input" class="input-field" placeholder="Write a message..." autocomplete="off">
-        <button id="room-private-inbox-btn" class="compose-icon-btn inbox-compose-btn" type="button" aria-label="Private messages" title="Private messages">✉</button>
+        <button id="room-mic-btn" class="compose-icon-btn" type="button" aria-label="Microphone" title="Talk">🎤</button>
         <button id="room-chat-send" class="primary-btn" type="button" aria-label="Send message">➤</button>
       </div>
       <p id="room-voice-status" class="room-voice-status">Join a seat to speak in the room</p>
@@ -1059,13 +1162,15 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
  <div class="premium-sheet"><div class="premium-sheet-head"><div><small>PREMIKA ROOM CONTROL</small><h2>Room Settings</h2></div><button class="sheet-close" data-close="premika-room-settings">×</button></div>
   <div class="settings-row"><div><strong>Room Avatar</strong><small>Change the room icon</small></div><label class="settings-action">Choose image<input id="room-avatar-file" type="file" accept="image/*" hidden></label></div>
   <div class="settings-row"><div><strong>Room Name</strong><small>Update your room title</small></div><button id="settings-rename-open" class="settings-action">Edit</button></div>
-  <div class="settings-row"><div><strong>Administrator Settings</strong><small>Owner controls and permissions</small></div><span class="settings-tag">Owner</span></div>
-  <div class="settings-row"><div><strong>Room Type</strong><small>Voice seats currently supported</small></div><span class="settings-tag">6 Mic Seats</span></div>
+  <button class="settings-row settings-row-button" id="settings-admin-open" type="button"><span><strong>Administrator Settings</strong><small>Manage room administrator access</small></span><span class="settings-tag">★ Admin</span></button>
+  <div class="settings-row"><div><strong>Room Seats</strong><small>Owner can lock or unlock member seats</small></div><button id="settings-seats-open" class="settings-action" type="button">Manage</button></div>
+  <div class="settings-row"><div><strong>Leave Room</strong><small>Disconnect and leave this voice room</small></div><button id="settings-leave-room" class="settings-action" type="button">Leave</button></div>
   <div class="settings-row"><div><strong>Room Background</strong><small>Choose a visual theme</small></div><button id="settings-background-open" class="settings-action">Change</button></div>
   <div class="settings-row"><div><strong>Room Announcement</strong><small>Message shown to visitors</small></div><button id="settings-notice-open" class="settings-action">Edit</button></div>
   <p class="settings-footnote">Advanced admin roles require a database role system and are not simulated.</p>
  </div>
 </div>
+<div id="premika-seat-settings" class="premium-overlay hidden" role="dialog" aria-modal="true"><div class="premium-sheet"><div class="premium-sheet-head"><div><small>PREMIKA ROOM CONTROL</small><h2>Seat Management</h2></div><button class="sheet-close" data-close="premika-seat-settings">×</button></div><p class="small-text">Owner seat is always reserved. Member seats can be locked or unlocked here.</p><div id="room-seat-lock-list"></div><p class="settings-footnote">Seat lock state is currently device-session only until the Supabase seat-lock table is installed.</p></div></div>
 <div id="premika-editor" class="premium-overlay hidden" role="dialog" aria-modal="true"><div class="premium-dialog"><div class="premium-sheet-head"><h2 id="editor-title">Edit</h2><button class="sheet-close" data-close="premika-editor">×</button></div><div id="editor-body"></div><div class="dialog-actions"><button class="secondary-btn" data-close="premika-editor">Cancel</button><button id="editor-save" class="primary-btn">Save</button></div></div></div>
 <div id="premika-confirm" class="premium-overlay hidden" role="dialog" aria-modal="true"><div class="premium-dialog confirm-dialog"><div class="confirm-symbol">?</div><h2 id="confirm-title">Confirm</h2><p id="confirm-message"></p><div class="dialog-actions"><button id="confirm-no" class="secondary-btn">Cancel</button><button id="confirm-yes" class="primary-btn">Continue</button></div></div></div>
 <div id="premika-mini-room" class="mini-room-dock hidden" role="button" tabindex="0"><span class="mini-room-pulse"></span><span class="mini-room-title">Voice room active</span><small>Tap to return</small><button id="mini-room-leave" aria-label="Leave room">×</button></div>
@@ -3155,6 +3260,7 @@ async function showMyRoom(room) {
     await joinRoomSeat(0);
   }
   $("active-room-name").textContent = "🌙 " + room.name;
+  const savedRoomPhoto=localStorage.getItem("premika-room-avatar"); if(savedRoomPhoto){const cover=$("active-room").querySelector(".room-cover");if(cover)cover.innerHTML="";if(cover){const photo=document.createElement("img");photo.src=savedRoomPhoto;photo.alt="Room avatar";photo.style="width:100%;height:100%;object-fit:cover;border-radius:14px";cover.append(photo)}}
   $("room-owner-name").textContent = currentProfile?.display_name || currentProfile?.username || "Room Owner";
   const isOwner = room.owner_id === currentUser.id;
   $("room-rename-owner-btn").style.display = isOwner ? "flex" : "none";
@@ -3401,15 +3507,36 @@ document.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",
 function applyBg(){const el=$("active-room");if(!el)return;el.style.background=bgChoice==="purple"?"":({aurora:"radial-gradient(ellipse at 50% 0%,#24506a,#211434 52%,#100b1b)",rose:"radial-gradient(ellipse at 50% 0%,#6a2855,#29142f 52%,#100b1b)",midnight:"radial-gradient(ellipse at 50% 0%,#273b70,#1d1738 52%,#0a0b18)"}[bgChoice]||"")}
 function openBgEditor(){openEditor("Room Background",'<p class="small-text">Choose a background for this device.</p><div class="room-background-options"><button class="room-background-choice" data-bg="purple">Purple Glow</button><button class="room-background-choice" data-bg="aurora">Aurora</button><button class="room-background-choice" data-bg="rose">Rose Galaxy</button><button class="room-background-choice" data-bg="midnight">Midnight</button></div>',()=>{const chosen=$("editor-body").querySelector(".selected")?.dataset.bg;if(chosen){bgChoice=chosen;localStorage.setItem("premika-room-bg",chosen);applyBg()} });$("editor-body").querySelectorAll("[data-bg]").forEach(b=>{if(b.dataset.bg===bgChoice)b.classList.add("selected");b.onclick=()=>{$("editor-body").querySelectorAll("[data-bg]").forEach(x=>x.classList.remove("selected"));b.classList.add("selected")}})}
 $("room-settings-menu-btn")?.addEventListener("click",()=>$("premika-room-settings").classList.remove("hidden"));
+$("room-minimize-btn")?.addEventListener("click",()=>{
+  if(!activeRoomId) return;
+  $("active-room").style.display="none";
+  $("premika-mini-room").classList.remove("hidden");
+  $("premika-mini-room").querySelector(".mini-room-title").textContent=roomRecord?.name||"Voice room active";
+});
+$("settings-seats-open")?.addEventListener("click",()=>{
+  if(roomRecord?.owner_id!==currentUser?.id) return showToast("Sirf room owner seats lock/unlock kar sakta hai.");
+  const list=$("room-seat-lock-list"); list.replaceChildren();
+  for(let n=1;n<=6;n++){const row=document.createElement("div");row.className="settings-row";const label=document.createElement("strong");label.textContent="Seat "+n;const btn=document.createElement("button");btn.type="button";btn.className="settings-action";const key="premika-seat-lock-"+activeRoomId+"-"+n;let locked=localStorage.getItem(key)==="1";btn.textContent=locked?"Unlock":"Lock";btn.addEventListener("click",()=>{locked=!locked;localStorage.setItem(key,locked?"1":"0");btn.textContent=locked?"Unlock":"Lock";showToast("Seat "+n+(locked?" locked":" unlocked")+" on this device.")});row.append(label,btn);list.append(row)}
+  $("premika-room-settings").classList.add("hidden");$("premika-seat-settings").classList.remove("hidden");
+});
+$("settings-leave-room")?.addEventListener("click",async()=>{if(await premikaConfirm("Leave Room?","You will disconnect from this room.")){ $("premika-room-settings").classList.add("hidden"); await leaveVoiceRoom(); }});
+$("settings-admin-open")?.addEventListener("click",async()=>{
+  if(!currentUser || !activeRoomId) return showToast("Pehle room open karein.");
+  if(roomRecord?.owner_id !== currentUser.id) return showToast("Sirf room owner administrator settings chala sakta hai.");
+  const {data:members,error}=await supabaseClient.from("profiles").select("id,username,display_name").neq("id",currentUser.id).order("username").limit(100);
+  if(error) return showToast("Admin list load nahi hui: "+error.message);
+  const options=(members||[]).map(m=>`<option value="${m.id}">${(m.display_name||m.username||"User").replace(/[<>]/g,"") } (@${(m.username||"").replace(/[<>]/g,"")})</option>`).join("");
+  openEditor("Room Administrator",`<p class="small-text">Admin star assign karne ke liye pehle Supabase room_admins table aur RLS SQL install karna zaroori hai.</p><select id="room-admin-member" class="input-field"><option value="">Select a member</option>${options}</select><p class="settings-footnote">Database setup ke baghair kisi ko admin banana secure nahi hoga.</p>`,()=>{throw new Error("Supabase room_admins table/RLS SQL setup required before assigning an admin.")});
+});
 $("settings-rename-open").addEventListener("click",async()=>{const n=await premikaEditText("Rename Room","Enter a room name",roomRecord?.name||"");if(!n)return;if(n.length<3||n.length>40)return showToast("Room name must be 3–40 characters.");const {data,error}=await supabaseClient.from("rooms").update({name:n}).eq("id",activeRoomId).eq("owner_id",currentUser.id).select("id,name,owner_id,is_public").single();if(error)return showToast(error.message);roomRecord=data;$("active-room-name").textContent="🌙 "+n;$("premika-room-settings").classList.add("hidden");showToast("Room name updated.")});
 $("settings-background-open").addEventListener("click",openBgEditor);
 $("settings-notice-open").addEventListener("click",()=>openEditor("Room Announcement",'<textarea id="editor-notice" class="input-field" rows="3" maxlength="180" placeholder="Welcome to our room...">'+(localStorage.getItem("premika-room-notice")||"")+'</textarea>',()=>localStorage.setItem("premika-room-notice",$("editor-notice").value.trim())));
-$("room-avatar-file").addEventListener("change",e=>{const f=e.target.files?.[0];if(!f)return;if(!f.type.startsWith("image/")||f.size>2*1024*1024)return showToast("Choose an image under 2 MB.");const r=new FileReader();r.onload=()=>{const img=document.createElement("img");img.src=r.result;img.alt="Room avatar";img.style="width:100%;height:100%;object-fit:cover;border-radius:14px";$("active-room").querySelector(".room-cover").replaceChildren(img);localStorage.setItem("premika-room-avatar",r.result);showToast("Room avatar preview saved on this device.")};r.readAsDataURL(f)});
+$("room-avatar-file").addEventListener("change",e=>{const f=e.target.files?.[0];if(!f)return;if(!f.type.startsWith("image/")||f.size>2*1024*1024){showToast("Choose an image under 2 MB.");e.target.value="";return;}const r=new FileReader();r.onload=()=>{const img=document.createElement("img");img.src=r.result;img.alt="Room avatar";img.style="width:100%;height:100%;object-fit:cover;border-radius:14px";$("active-room").querySelector(".room-cover").replaceChildren(img);localStorage.setItem("premika-room-avatar",r.result);showToast("Room photo changed on this device. Cloud sync requires room storage setup.")};r.readAsDataURL(f)});
 const baseShowPage=window.showPage;window.showPage=function(id,btn){baseShowPage(id,btn);const dock=$("premika-mini-room");dock.classList.toggle("hidden",!activeRoomId||id==="room-suggestions")};
-$("premika-mini-room").addEventListener("click",e=>{if(e.target.id!=="mini-room-leave")window.showPage("room-suggestions")});$("mini-room-leave").addEventListener("click",async e=>{e.stopPropagation();if(await premikaConfirm("Leave room?","You will disconnect from this room."))await leaveVoiceRoom()});
+$("premika-mini-room").addEventListener("click",e=>{if(e.target.id!=="mini-room-leave"){window.showPage("room-suggestions");$("active-room").style.display="block";$("premika-mini-room").classList.add("hidden")}});$("mini-room-leave").addEventListener("click",async e=>{e.stopPropagation();if(await premikaConfirm("Leave room?","You will disconnect from this room."))await leaveVoiceRoom()});
 
 $("premika-confirm").addEventListener("click",e=>{if(e.target===$("premika-confirm"))finishConfirm(false)});
-document.addEventListener("keydown",e=>{if(e.key==="Escape"){["premika-room-settings","premika-editor"].forEach(id=>$(id).classList.add("hidden"));finishConfirm(false)}});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){["premika-room-settings","premika-seat-settings","premika-editor"].forEach(id=>$(id).classList.add("hidden"));finishConfirm(false)}});
 
 
 // ===== PREMIKA ADMIN PANEL =====
