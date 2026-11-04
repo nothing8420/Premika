@@ -1778,7 +1778,57 @@ async function loadFriends() {
   }
 }
 
+// VIEW FRIEND PROFILE
+async function viewUserProfile(userId) {
+    if (!userId || !currentUser) return;
 
+    const modal = $("user-profile-modal");
+    const avatar = $("view-profile-avatar");
+    const name = $("view-profile-name");
+    const username = $("view-profile-username");
+    const bio = $("view-profile-bio");
+    const messageBtn = $("view-profile-message");
+    const closeBtn = $("close-user-profile");
+
+    try {
+        const { data: person, error } = await supabaseClient
+            .from("profiles")
+            .select("id, username, display_name, avatar_url, bio")
+            .eq("id", userId)
+            .maybeSingle();
+
+        if (error) throw error;
+
+        if (!person) {
+            alert("User profile not found.");
+            return;
+        }
+
+        name.textContent = person.display_name || person.username || "Premika User";
+        username.textContent = "@" + (person.username || "username");
+        bio.textContent = person.bio || "No bio added yet.";
+
+        setAvatarElement(
+            avatar,
+            person.avatar_url,
+            person.display_name || person.username
+        );
+
+        modal.style.display = "flex";
+
+        closeBtn.onclick = function () {
+            modal.style.display = "none";
+        };
+
+        messageBtn.onclick = function () {
+            modal.style.display = "none";
+            openChat(person.id, person);
+        };
+
+    } catch (error) {
+        alert("Profile error: " + error.message);
+    }
+}
 // =====================================
 // LOAD CHAT FRIENDS
 // =====================================
