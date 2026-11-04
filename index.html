@@ -632,6 +632,26 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
 .admin-tabs button{white-space:nowrap}
 .admin-hidden{display:none!important}
 
+
+/* PREMIKA ROOM POLISH: circular seats, compact stage, larger live chat */
+.room-title-row{gap:10px!important}
+#room-settings-menu-btn{flex:none;cursor:pointer;background:#ffffff10;font-size:25px;letter-spacing:0;border:1px solid #c17be688}
+.room-stage{padding:5px 8px 4px!important}
+.room-stage-glow{top:0!important;height:110px!important}
+.room-host-avatar{width:58px!important;height:58px!important;font-size:25px!important}
+.room-host-name{margin-top:5px!important;font-size:12px!important}
+.room-host-label{margin-top:3px!important;padding:4px 9px!important;font-size:8px!important}
+.room-seats-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:9px!important;margin:3px 0 9px!important;align-items:center}
+.room-seat.premium-seat,.room-seat.owner-seat{width:min(100%,82px)!important;aspect-ratio:1/1!important;min-height:0!important;height:auto!important;max-width:82px!important;justify-self:center!important;padding:6px 3px!important;border-radius:50%!important;display:flex!important;flex-direction:column!important;justify-content:center!important;align-items:center!important;gap:2px!important;overflow:hidden!important;background:radial-gradient(circle at 35% 25%,#52316a,#21142f 72%)!important;border:1px solid #b978dc88!important;box-shadow:inset 0 1px 5px #ffffff16,0 5px 13px #0004!important}
+.room-seat.owner-seat{grid-column:auto!important;background:radial-gradient(circle at 35% 25%,#75502b,#2b1b13 72%)!important;border-color:#e7bd70!important}
+.room-seat .seat-avatar{width:39px!important;height:39px!important;min-width:39px!important;border-radius:50%!important;margin:0!important;border:1px solid #c17be688!important;font-size:19px!important;overflow:hidden}
+.room-seat strong{font-size:9px!important;line-height:1.1!important;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.room-seat span{font-size:7px!important;line-height:1.1!important;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.room-seats-grid .premium-seat:disabled{opacity:1!important}
+.room-chat-panel{margin-top:2px!important;padding:10px!important}
+.premium-room-messages{height:clamp(230px,38vh,390px)!important;min-height:210px!important}
+@media(max-width:380px){.room-seats-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:5px!important}.room-seat.premium-seat,.room-seat.owner-seat{width:min(100%,70px)!important;max-width:70px!important}.room-seat .seat-avatar{width:33px!important;height:33px!important;min-width:33px!important}}
+
 </style>
 </head>
 
@@ -843,7 +863,7 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
   <div class="panel premium-room" id="active-room" style="display:none;">
     <div class="room-topline">
       <div class="room-live-pill"><span class="live-dot"></span> VOICE ROOM · LIVE</div>
-      <span class="room-seat-count">🎙 6 LIVE SEATS</span>
+      <span class="room-seat-count">🎙 7 LIVE SEATS</span>
     </div>
 
     <div class="room-title-row">
@@ -852,6 +872,7 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
         <h2 id="active-room-name">🌙 Your Room</h2>
         <p>Welcome in — connect, talk & enjoy</p>
       </div>
+      <button id="room-settings-menu-btn" class="room-menu-mark" type="button" aria-label="Room settings" title="Room Settings">⋮</button>
     </div>
 
     <div class="room-stats-row">
@@ -2904,7 +2925,11 @@ async function openRoomChat(roomId) {
       },
       () => loadRoomMessages(roomId)
     )
-    .subscribe();
+    .subscribe(status => {
+      if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
+        console.warn("Room chat realtime status:", status);
+      }
+    });
 }
 
 // SEND ROOM MESSAGE
@@ -3375,6 +3400,7 @@ function closeEditor(){if(editorResolver?.cancel)editorResolver.cancel();editorR
 document.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.close==="premika-editor")closeEditor();else $(b.dataset.close).classList.add("hidden")}));
 function applyBg(){const el=$("active-room");if(!el)return;el.style.background=bgChoice==="purple"?"":({aurora:"radial-gradient(ellipse at 50% 0%,#24506a,#211434 52%,#100b1b)",rose:"radial-gradient(ellipse at 50% 0%,#6a2855,#29142f 52%,#100b1b)",midnight:"radial-gradient(ellipse at 50% 0%,#273b70,#1d1738 52%,#0a0b18)"}[bgChoice]||"")}
 function openBgEditor(){openEditor("Room Background",'<p class="small-text">Choose a background for this device.</p><div class="room-background-options"><button class="room-background-choice" data-bg="purple">Purple Glow</button><button class="room-background-choice" data-bg="aurora">Aurora</button><button class="room-background-choice" data-bg="rose">Rose Galaxy</button><button class="room-background-choice" data-bg="midnight">Midnight</button></div>',()=>{const chosen=$("editor-body").querySelector(".selected")?.dataset.bg;if(chosen){bgChoice=chosen;localStorage.setItem("premika-room-bg",chosen);applyBg()} });$("editor-body").querySelectorAll("[data-bg]").forEach(b=>{if(b.dataset.bg===bgChoice)b.classList.add("selected");b.onclick=()=>{$("editor-body").querySelectorAll("[data-bg]").forEach(x=>x.classList.remove("selected"));b.classList.add("selected")}})}
+$("room-settings-menu-btn")?.addEventListener("click",()=>$("premika-room-settings").classList.remove("hidden"));
 $("settings-rename-open").addEventListener("click",async()=>{const n=await premikaEditText("Rename Room","Enter a room name",roomRecord?.name||"");if(!n)return;if(n.length<3||n.length>40)return showToast("Room name must be 3–40 characters.");const {data,error}=await supabaseClient.from("rooms").update({name:n}).eq("id",activeRoomId).eq("owner_id",currentUser.id).select("id,name,owner_id,is_public").single();if(error)return showToast(error.message);roomRecord=data;$("active-room-name").textContent="🌙 "+n;$("premika-room-settings").classList.add("hidden");showToast("Room name updated.")});
 $("settings-background-open").addEventListener("click",openBgEditor);
 $("settings-notice-open").addEventListener("click",()=>openEditor("Room Announcement",'<textarea id="editor-notice" class="input-field" rows="3" maxlength="180" placeholder="Welcome to our room...">'+(localStorage.getItem("premika-room-notice")||"")+'</textarea>',()=>localStorage.setItem("premika-room-notice",$("editor-notice").value.trim())));
