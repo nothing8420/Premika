@@ -2475,18 +2475,48 @@ async function joinRoomSeat(seatNo) {
 }
 
 async function leaveRoomSeat() {
-  if (liveKitRoom && micEnabled) {
-    await liveKitRoom.localParticipant.setMicrophoneEnabled(false).catch(()=>{});
-    micEnabled = false;
-    $("room-mic-btn")?.classList.remove("active");
-    if ($("room-mic-btn")) $("room-mic-btn").textContent = "🎤";
-  }
-  if (roomSeatsChannel) {
-    await roomSeatsChannel.untrack();
+  try {
+    if (liveKitRoom && micEnabled) {
+      try {
+        await liveKitRoom.localParticipant.setMicrophoneEnabled(false);
+      } catch (e) {
+        console.warn("Seat mic cleanup:", e);
+      }
+
+      micEnabled = false;
+    }
+
+    const micButton = $("room-mic-btn");
+
+    if (micButton) {
+      micButton.classList.remove("active");
+      micButton.textContent = "🎤";
+    }
+
+    if (roomSeatsChannel) {
+      try {
+        await roomSeatsChannel.untrack();
+      } catch (e) {
+        console.warn("Seat untrack error:", e);
+      }
+    }
+
     myRoomSeat = null;
+    myHandRaised = false;
+
     const handButton = $("room-raise-hand-btn");
-    if (handButton) handButton.classList.remove("active");
+
+    if (handButton) {
+      handButton.classList.remove("active");
+
+      const span = handButton.querySelector("span");
+      if (span) span.textContent = "Raise hand";
+    }
+
     renderRoomSeats();
+
+  } catch (error) {
+    console.error("Leave seat error:", error);
   }
 }
 
@@ -2620,82 +2650,32 @@ $("room-speaker-btn").addEventListener("click", async () => {
 
 async function leaveVoiceRoom() {
   try {
-    // 1. Microphone off
-    micEnabled = false;
-
     if (liveKitRoom) {
-      try {
-        await liveKitRoom.localParticipant
-          .setMicrophoneEnabled(false);
-      } catch (e) {
-        console.warn("Mic cleanup:", e);
-      }
-
-      try {
-        await liveKitRoom.disconnect();
-      } catch (e) {
-        console.warn("LiveKit disconnect:", e);
-      }
-
+      await liveKitRoom.localParticipant.setMicrophoneEnabled(false).catch(()=>{});
+      await liveKitRoom.disconnect();
       liveKitRoom = null;
     }
-
-    // 2. Reset microphone button
-    const micButton = $("room-mic-btn");
-
-    if (micButton) {
-      micButton.textContent = "🎤";
-      micButton.classList.remove("active");
-    }
-
-    // 3. Leave seat safely
-    try {
-      await leaveRoomSeat();
-    } catch (e) {
-      console.warn("Seat cleanup:", e);
-    }
-
-    // 4. Remove message channel
-    if (roomMessagesChannel) {
-      try {
-        await supabaseClient.removeChannel(roomMessagesChannel);
-      } catch (e) {
-        console.warn("Message channel cleanup:", e);
-      }
-
-      roomMessagesChannel = null;
-    }
-
-    // 5. Remove seats channel
-    if (roomSeatsChannel) {
-      try {
-        await supabaseClient.removeChannel(roomSeatsChannel);
-      } catch (e) {
-        console.warn("Seat channel cleanup:", e);
-      }
-
-      roomSeatsChannel = null;
-    }
-
-    // 6. Reset room state
-    activeRoomId = null;
-    myRoomSeat = null;
-    myHandRaised = false;
-
-    const activeRoom = $("active-room");
-
-    if (activeRoom) {
-      activeRoom.style.display = "none";
-    }
-
-    setVoiceStatus("You left the room");
-    showToast("You left the room successfully.");
-
-  } catch (error) {
-    console.error("Leave room error:", error);
-    showToast("Room leave error: " + error.message);
+  } catch (e) { console.warn("LiveKit leave:",e); }
+  micEnabled = false;
+  $("room-mic-btn").textContent = "🎤";
+  $("room-mic-btn").classList.remove("active");
+  await leaveRoomSeat();
+  if (roomMessagesChannel) {
+    await supabaseClient.removeChannel(roomMessagesChannel);
+    roomMessagesChannel = null;
   }
+  if (roomSeatsChannel) {
+    await supabaseClient.removeChannel(roomSeatsChannel);
+    roomSeatsChannel = null;
+  }
+  activeRoomId = null;
+  $("active-room").style.display = "none";
+  setVoiceStatus("You left the room");
 }
+$("room-leave-btn").addEventListener("click", async () => {
+  if (await premikaConfirm("Leave room?", "You will leave this voice room.")) {
+    await leaveVoiceRoom();
+  }
 });
 
 
