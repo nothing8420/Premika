@@ -755,6 +755,8 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
 /* Premium room header + minimized picture-in-picture */
 .room-header-actions{display:flex;align-items:center;gap:7px;margin-left:auto}.room-header-actions .room-menu-mark{flex:0 0 38px;width:38px;height:38px;border-radius:13px;border:1px solid #ffffff24;background:#ffffff0c;color:#fff;font-size:20px}.mini-room-dock{cursor:pointer;max-width:420px;margin:0 auto}.mini-room-dock .mini-room-title{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
+
+.gift-catalogue{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:12px}.gift-item{padding:13px 8px;border:1px solid #8055a0;border-radius:15px;background:#ffffff0b;color:#fff;text-align:center}.gift-item b{display:block;font-size:27px;margin-bottom:5px}.gift-item small{color:#e6c4ff}
 </style>
 </head>
 
@@ -1021,6 +1023,7 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
       <div class="room-chat-compose">
         <button id="room-private-inbox-btn" class="compose-icon-btn inbox-compose-btn" type="button" aria-label="Friend private messages" title="Friend private messages">✉</button>
         <input id="room-chat-input" class="input-field" placeholder="Write a message..." autocomplete="off">
+        <button id="premika-gift-open" class="compose-icon-btn" type="button" aria-label="Send gift" title="Send gift">🎁</button>
         <button id="room-mic-btn" class="compose-icon-btn" type="button" aria-label="Microphone" title="Talk">🎤</button>
         <button id="room-chat-send" class="primary-btn" type="button" aria-label="Send message">➤</button>
       </div>
@@ -1077,6 +1080,14 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
     <button id="save-bio-btn" class="primary-btn profile-action">Save Bio</button>
 
     <hr class="profile-divider">
+    <section class="panel" id="premika-bff-panel">
+      <h3 class="section-title">💜 BFF Bond</h3>
+      <p class="small-text" id="premika-bff-status">One BFF connection per account. Send a request or accept an invitation.</p>
+      <input id="premika-bff-username" class="input-field" maxlength="20" placeholder="Enter friend's username">
+      <button id="premika-bff-request" class="primary-btn" type="button" style="width:100%">Send BFF Request</button>
+      <div id="premika-bff-pending" class="small-text" style="margin-top:10px"></div>
+    </section>
+
     <section class="wallet-preview">
       <div class="wallet-preview-head"><div><small>PREMIKA WALLET</small><h3>Wallet & Payments</h3></div><span class="wallet-chip">DEMO</span></div>
       <div class="wallet-balance"><small>Available balance</small><strong>PKR 0.00</strong><span>Payment services will be connected later.</span></div>
@@ -1162,20 +1173,27 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
 
 </div>
 
+<!-- PREMIKA GIFT CENTRE -->
+<div id="premika-gift-modal" class="premium-overlay hidden" role="dialog" aria-modal="true">
+ <div class="premium-sheet"><div class="premium-sheet-head"><div><small>PREMIKA GIFT CENTRE</small><h2>Send a Gift 🎁</h2></div><button class="sheet-close" data-close="premika-gift-modal">×</button></div>
+ <p class="small-text">Choose a seated room member and send a gift using coins.</p>
+ <select id="premika-gift-recipient" class="input-field"><option value="">Select room member</option></select>
+ <div id="premika-gift-catalogue" class="gift-catalogue"></div><p id="premika-gift-status" class="small-text" aria-live="polite"></p>
+ </div></div>
 <!-- PREMIKA ROOM SETTINGS -->
 <div id="premika-room-settings" class="premium-overlay hidden" role="dialog" aria-modal="true">
  <div class="premium-sheet"><div class="premium-sheet-head"><div><small>PREMIKA ROOM CONTROL</small><h2>Room Settings</h2></div><button class="sheet-close" data-close="premika-room-settings">×</button></div>
   <div class="settings-row"><div><strong>Room Avatar</strong><small>Change the room icon</small></div><label class="settings-action">Choose image<input id="room-avatar-file" type="file" accept="image/*" hidden></label></div>
   <div class="settings-row"><div><strong>Room Name</strong><small>Update your room title</small></div><button id="settings-rename-open" class="settings-action">Edit</button></div>
   <button class="settings-row settings-row-button" id="settings-admin-open" type="button"><span><strong>Administrator Settings</strong><small>Manage room administrator access</small></span><span class="settings-tag">★ Admin</span></button>
-  <div class="settings-row"><div><strong>Room Seats</strong><small>Owner can lock or unlock member seats</small></div><button id="settings-seats-open" class="settings-action" type="button">Manage</button></div>
+  <div class="settings-row"><div><strong>Room Seats</strong><small>Owner and Admin can lock or unlock member seats</small></div><button id="settings-seats-open" class="settings-action" type="button">Manage</button></div>
   <div class="settings-row"><div><strong>Leave Room</strong><small>Disconnect and leave this voice room</small></div><button id="settings-leave-room" class="settings-action" type="button">Leave</button></div>
   <div class="settings-row"><div><strong>Room Background</strong><small>Choose a visual theme</small></div><button id="settings-background-open" class="settings-action">Change</button></div>
   <div class="settings-row"><div><strong>Room Announcement</strong><small>Message shown to visitors</small></div><button id="settings-notice-open" class="settings-action">Edit</button></div>
   <p class="settings-footnote">Advanced admin roles require a database role system and are not simulated.</p>
  </div>
 </div>
-<div id="premika-seat-settings" class="premium-overlay hidden" role="dialog" aria-modal="true"><div class="premium-sheet"><div class="premium-sheet-head"><div><small>PREMIKA ROOM CONTROL</small><h2>Seat Management</h2></div><button class="sheet-close" data-close="premika-seat-settings">×</button></div><p class="small-text">Owner seat is always reserved. Member seats can be locked or unlocked here.</p><div id="room-seat-lock-list"></div><p class="settings-footnote">Seat lock state is currently device-session only until the Supabase seat-lock table is installed.</p></div></div>
+<div id="premika-seat-settings" class="premium-overlay hidden" role="dialog" aria-modal="true"><div class="premium-sheet"><div class="premium-sheet-head"><div><small>PREMIKA ROOM CONTROL</small><h2>Seat Management</h2></div><button class="sheet-close" data-close="premika-seat-settings">×</button></div><p class="small-text">Owner seat is always reserved. Member seats can be locked or unlocked here.</p><div id="room-seat-lock-list"></div><p class="settings-footnote">Seat locks are saved in Supabase and apply to everyone in this room.</p></div></div>
 <div id="premika-editor" class="premium-overlay hidden" role="dialog" aria-modal="true"><div class="premium-dialog"><div class="premium-sheet-head"><h2 id="editor-title">Edit</h2><button class="sheet-close" data-close="premika-editor">×</button></div><div id="editor-body"></div><div class="dialog-actions"><button class="secondary-btn" data-close="premika-editor">Cancel</button><button id="editor-save" class="primary-btn">Save</button></div></div></div>
 <div id="premika-confirm" class="premium-overlay hidden" role="dialog" aria-modal="true"><div class="premium-dialog confirm-dialog"><div class="confirm-symbol">?</div><h2 id="confirm-title">Confirm</h2><p id="confirm-message"></p><div class="dialog-actions"><button id="confirm-no" class="secondary-btn">Cancel</button><button id="confirm-yes" class="primary-btn">Continue</button></div></div></div>
 <div id="premika-mini-room" class="mini-room-dock hidden" role="button" tabindex="0"><span class="mini-room-pulse"></span><span class="mini-room-title">Voice room active</span><small>Tap to return</small><button id="mini-room-leave" aria-label="Leave room">×</button></div>
@@ -1459,6 +1477,7 @@ console.info("Supabase client:", supabaseClient ? "loaded" : "not loaded");
       $("username-modal").classList.add("hidden");
 
       updateProfileDisplay(currentUser, currentProfile);
+      premikaRefreshWallet(); premikaLoadBff();
 
       $("username-status").textContent = "";
 
@@ -2233,6 +2252,8 @@ async function viewUserProfile(userId, options = {}) {
             const ok = await premikaConfirm("Kick User", "Kya aap is user ko room se remove karna chahte hain?");
             if (!ok) return;
             try {
+              const { error: kickRpcError } = await supabaseClient.rpc("premika_room_kick_user", { _room_id: activeRoomId, _user_id: person.id });
+              if (kickRpcError) throw kickRpcError;
               await roomSeatsChannel.send({ type: "broadcast", event: "kick", payload: { user_id: person.id, room_id: activeRoomId } });
               moreMenu?.classList.add("hidden");
               modal.style.display = "none";
@@ -2622,6 +2643,7 @@ let roomMessagesChannel = null;
 // =====================================
 let roomSeatsChannel = null;
 let myRoomSeat = null;
+let roomSeatLocks = new Set();
 
 function renderRoomSeats() {
   const grid = $("room-seats-grid");
@@ -2661,7 +2683,8 @@ function renderRoomSeats() {
     const mine = person?.user_id === currentUser?.id;
     button.classList.toggle("occupied", !!person);
     button.classList.toggle("mine", !!mine);
-    button.disabled = false;
+    const seatLocked = seatNo > 0 && roomSeatLocks.has(seatNo);
+    button.disabled = !person && seatLocked;
     const avatar = button.querySelector(".seat-avatar");
     const title = button.querySelector("strong");
     const status = button.querySelector("span:not(.seat-avatar)");
@@ -2671,9 +2694,9 @@ function renderRoomSeats() {
       if (roomAdminIds.has(person.user_id)) title.title = "Room Administrator";
       status.textContent = mine ? "You are sitting · Tap profile" : (person.raised_hand ? "✋ Raised hand · Tap profile" : "Occupied · Tap profile");
     } else {
-      avatar.textContent = "＋";
+      avatar.textContent = seatLocked ? "🔒" : "＋";
       title.textContent = seatNo === 0 ? "Owner Seat" : "Seat " + seatNo;
-      status.textContent = seatNo === 0 ? "Owner only" : "Tap to sit";
+      status.textContent = seatNo === 0 ? "Owner only" : (seatLocked ? "Locked by room staff" : "Tap to sit");
     }
   });
 }
@@ -2688,6 +2711,12 @@ async function joinRoomSeat(seatNo) {
     return;
   }
   if (seatNo < 0 || seatNo > 6) return;
+  if (seatNo > 0) {
+    const { data: lockRow, error: lockError } = await supabaseClient.from("room_seat_locks").select("seat_no").eq("room_id", activeRoomId).eq("seat_no", seatNo).maybeSingle();
+    if (lockError) { showToast("Seat lock status check nahi ho saka: " + lockError.message); return; }
+    if (lockRow) { roomSeatLocks.add(seatNo); renderRoomSeats(); showToast("Ye seat room Admin ne lock ki hui hai."); return; }
+    roomSeatLocks.delete(seatNo);
+  }
   const state = roomSeatsChannel.presenceState();
   const occupied = Object.values(state).flat().find(p => Number(p.seat) === seatNo);
   if (occupied && occupied.user_id !== currentUser.id) {
@@ -2775,7 +2804,7 @@ async function connectRoomSeats(roomId) {
       .on("presence", { event: "leave" }, renderRoomSeats)
       .on("broadcast", { event: "kick" }, async ({ payload }) => {
         if (payload?.user_id === currentUser?.id && payload?.room_id === roomId) {
-          showToast("Owner ne aap ko room se remove kar diya.");
+          showToast("Aap ko room se Kick kar diya gaya hai. 48 hours tak is room mein entry band rahegi.");
           await leaveVoiceRoom();
         }
       })
@@ -3251,6 +3280,9 @@ async function enterPublicRoom(room) {
   if (!room?.id) return showToast("Room not found.");
   try {
     showToast("Joining " + (room.name || "room") + "…");
+    const { data: accessAllowed, error: accessError } = await supabaseClient.rpc("premika_room_check_access", { _room_id: room.id });
+    if (accessError) throw accessError;
+    if (accessAllowed !== true) throw new Error("Aap ko is room mein filhal entry ki ijazat nahi.");
     if (room.owner_id !== currentUser.id) {
       const { error } = await supabaseClient.rpc("join_room", { _room_id: room.id });
       if (error) throw error;
@@ -3271,6 +3303,9 @@ async function showMyRoom(room) {
   roomRecord = room;
   activeRoomId = room.id;
   await loadRoomAdminIds(room.id);
+  const { data: savedLocks, error: savedLocksError } = await supabaseClient.from("room_seat_locks").select("seat_no").eq("room_id", room.id);
+  if (savedLocksError) throw new Error("Room seat-lock SQL setup required: " + savedLocksError.message);
+  roomSeatLocks = new Set((savedLocks || []).map(x => Number(x.seat_no)));
   await connectRoomSeats(room.id);
   if (room.owner_id === currentUser.id && myRoomSeat === null) {
     await joinRoomSeat(0);
@@ -3529,10 +3564,31 @@ $("room-minimize-btn")?.addEventListener("click",()=>{
   $("premika-mini-room").classList.remove("hidden");
   $("premika-mini-room").querySelector(".mini-room-title").textContent=roomRecord?.name||"Voice room active";
 });
-$("settings-seats-open")?.addEventListener("click",()=>{
-  if(roomRecord?.owner_id!==currentUser?.id) return showToast("Sirf room owner seats lock/unlock kar sakta hai.");
+$("settings-seats-open")?.addEventListener("click", async ()=>{
+  if (!currentUser || !activeRoomId) return showToast("Pehle room open karein.");
+  const isOwner = roomRecord?.owner_id === currentUser.id;
+  const isAdmin = roomAdminIds.has(currentUser.id);
+  if (!isOwner && !isAdmin) return showToast("Sirf Room Owner ya Admin seats lock/unlock kar sakta hai.");
+  const { data: locks, error } = await supabaseClient.from("room_seat_locks").select("seat_no").eq("room_id", activeRoomId);
+  if (error) return showToast("Seat lock list load nahi hui: " + error.message + ". SQL setup check karein.");
+  roomSeatLocks = new Set((locks || []).map(x => Number(x.seat_no)));
   const list=$("room-seat-lock-list"); list.replaceChildren();
-  for(let n=1;n<=6;n++){const row=document.createElement("div");row.className="settings-row";const label=document.createElement("strong");label.textContent="Seat "+n;const btn=document.createElement("button");btn.type="button";btn.className="settings-action";const key="premika-seat-lock-"+activeRoomId+"-"+n;let locked=localStorage.getItem(key)==="1";btn.textContent=locked?"Unlock":"Lock";btn.addEventListener("click",()=>{locked=!locked;localStorage.setItem(key,locked?"1":"0");btn.textContent=locked?"Unlock":"Lock";showToast("Seat "+n+(locked?" locked":" unlocked")+" on this device.")});row.append(label,btn);list.append(row)}
+  for(let n=1;n<=6;n++){
+    const row=document.createElement("div");row.className="settings-row";
+    const label=document.createElement("strong");label.textContent="Seat "+n;
+    const btn=document.createElement("button");btn.type="button";btn.className="settings-action";
+    let locked=roomSeatLocks.has(n);btn.textContent=locked?"Unlock":"Lock";
+    btn.addEventListener("click",async()=>{
+      btn.disabled=true;
+      try{
+        const {error:rpcError}=await supabaseClient.rpc("premika_room_set_seat_lock",{_room_id:activeRoomId,_seat_no:n,_locked:!locked});
+        if(rpcError)throw rpcError;
+        locked=!locked;if(locked)roomSeatLocks.add(n);else roomSeatLocks.delete(n);
+        btn.textContent=locked?"Unlock":"Lock";renderRoomSeats();showToast("Seat "+n+(locked?" lock ho gayi.":" unlock ho gayi."));
+      }catch(e){showToast("Seat update failed: "+e.message)}finally{btn.disabled=false}
+    });
+    row.append(label,btn);list.append(row);
+  }
   $("premika-room-settings").classList.add("hidden");$("premika-seat-settings").classList.remove("hidden");
 });
 $("settings-leave-room")?.addEventListener("click",async()=>{if(await premikaConfirm("Leave Room?","You will disconnect from this room.")){ $("premika-room-settings").classList.add("hidden"); await leaveVoiceRoom(); }});
@@ -3583,6 +3639,47 @@ $("premika-mini-room").addEventListener("click",e=>{if(e.target.id!=="mini-room-
 $("premika-confirm").addEventListener("click",e=>{if(e.target===$("premika-confirm"))finishConfirm(false)});
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){["premika-room-settings","premika-seat-settings","premika-editor"].forEach(id=>$(id).classList.add("hidden"));finishConfirm(false)}});
 
+
+// ===== PREMIKA GIFTS + BFF BOND =====
+const PREMIKA_GIFTS=[{id:'rose',name:'Rose',emoji:'🌹',price:50},{id:'heart',name:'Heart',emoji:'💖',price:100},{id:'teddy',name:'Teddy',emoji:'🧸',price:250},{id:'crown',name:'Crown',emoji:'👑',price:500},{id:'diamond',name:'Diamond',emoji:'💎',price:1000}];
+async function premikaRefreshWallet(){
+ if(!currentUser||!supabaseClient)return;
+ const {data,error}=await supabaseClient.from('wallets').select('balance').eq('user_id',currentUser.id).maybeSingle();
+ if(error){console.warn('Wallet refresh:',error.message);return;}
+ $('coin-balance').textContent=String(data?.balance??0);
+}
+function premikaGiftMembers(){
+ const select=$('premika-gift-recipient');if(!select)return;
+ select.replaceChildren(new Option('Select room member',''));
+ const states=roomSeatsChannel?.presenceState?.()||{};const seen=new Set();
+ Object.values(states).flat().forEach(p=>{const id=p.user_id;if(id&&id!==currentUser?.id&&!seen.has(id)){seen.add(id);select.add(new Option(p.display_name||p.username||'Room member',id));}});
+}
+function premikaRenderGifts(){
+ const root=$('premika-gift-catalogue');if(!root)return;root.replaceChildren();
+ PREMIKA_GIFTS.forEach(g=>{const b=document.createElement('button');b.type='button';b.className='gift-item';b.innerHTML='<b>'+g.emoji+'</b>'+g.name+'<br><small>'+g.price+' coins</small>';b.addEventListener('click',()=>premikaSendGift(g));root.append(b);});
+}
+async function premikaSendGift(gift){
+ const to=$('premika-gift-recipient')?.value;if(!to)return showToast('Pehle room member select karein.');
+ if(!activeRoomId)return showToast('Gift bhejne ke liye room mein hona zaroori hai.');
+ const status=$('premika-gift-status');status.textContent='Sending gift…';
+ try{const {data,error}=await supabaseClient.rpc('premika_send_gift',{p_receiver_id:to,p_gift_code:gift.id,p_room_id:activeRoomId});if(error)throw error;status.textContent=gift.emoji+' Gift sent successfully!';showToast('Gift sent!');await premikaRefreshWallet();}
+ catch(e){status.textContent='Gift send nahi hua: '+e.message;showToast('Gift error: '+e.message);}
+}
+$('premika-gift-open')?.addEventListener('click',()=>{if(!activeRoomId)return showToast('Pehle room join karein.');premikaGiftMembers();premikaRenderGifts();$('premika-gift-status').textContent='';$('premika-gift-modal').classList.remove('hidden');});
+document.querySelectorAll('[data-close="premika-gift-modal"]').forEach(b=>b.addEventListener('click',()=>$('premika-gift-modal').classList.add('hidden')));
+$('premika-bff-request')?.addEventListener('click',async()=>{
+ const username=$('premika-bff-username')?.value.trim().replace(/^@/,'');if(!username)return showToast('Username enter karein.');
+ try{const {data,error}=await supabaseClient.rpc('premika_bff_send_request',{p_username:username});if(error)throw error;$('premika-bff-status').textContent='BFF request sent 💜';$('premika-bff-username').value='';await premikaLoadBff();}
+ catch(e){showToast('BFF request error: '+e.message);}
+});
+async function premikaLoadBff(){
+ if(!currentUser||!supabaseClient)return;const root=$('premika-bff-pending');if(!root)return;
+ try{const {data,error}=await supabaseClient.rpc('premika_bff_list');if(error)throw error;root.replaceChildren();
+ (data||[]).forEach(row=>{const line=document.createElement('div');line.className='settings-row';const label=document.createElement('span');label.textContent=(row.other_username?'@'+row.other_username:'BFF member')+' · '+(row.status==='accepted'?'💜 '+row.bond_points+' bond points':row.status);line.append(label);
+ if(row.status==='pending'&&row.direction==='incoming'){const b=document.createElement('button');b.className='settings-action';b.textContent='Accept';b.onclick=async()=>{const {error:e}=await supabaseClient.rpc('premika_bff_respond',{p_request_id:row.request_id,p_accept:true});if(e)return showToast(e.message);await premikaLoadBff();};line.append(b);}
+ root.append(line);});if(!data?.length)root.textContent='No BFF requests or bond yet.';
+ }catch(e){root.textContent='BFF SQL setup required: '+e.message;}
+}
 
 // ===== PREMIKA ADMIN PANEL =====
 let premikaIsAdmin = false;
