@@ -1,3 +1,4 @@
+
 name: Premika Android APK
 
 on:
@@ -27,15 +28,23 @@ jobs:
 
       - name: Prepare Web App
         run: |
-          mkdir -p www
+          mkdir -p www assets
           cp index.html www/index.html
+          cp icon.png assets/icon.png
           npm init -y
-          npm install @capacitor/core@^7 @capacitor/android@^7 @capacitor/cli@^7
+          npm install @capacitor/core@^7 @capacitor/android@^7 @capacitor/cli@^7 @capacitor/assets
 
       - name: Initialize Capacitor
         run: |
           npx cap init Premika com.nothing8420.premika --web-dir=www
           npx cap add android
+
+      - name: Generate Premika App Icon
+        run: |
+          npx capacitor-assets generate --android
+
+      - name: Sync Android
+        run: |
           npx cap sync android
 
       - name: Build APK
