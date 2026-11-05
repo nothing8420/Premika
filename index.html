@@ -1650,6 +1650,11 @@ if (profile.avatar_url) {
 
     try {
       await loadProfile(user);
+
+      // Load the authenticated user's real wallet balance on every login/session restore.
+      // The database balance is already updated by the Admin approval RPC.
+      await premikaRefreshWallet();
+
       await loadWalletCoinPackages();
 
       if (currentProfile && currentProfile.username) {
@@ -3764,10 +3769,18 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"){["premika-room-sett
 const PREMIKA_GIFTS=[{id:'rose',name:'Rose',emoji:'🌹',price:50},{id:'heart',name:'Heart',emoji:'💖',price:100},{id:'teddy',name:'Teddy',emoji:'🧸',price:250},{id:'crown',name:'Crown',emoji:'👑',price:500},{id:'diamond',name:'Diamond',emoji:'💎',price:1000}];
 async function premikaRefreshWallet(){
  if(!currentUser||!supabaseClient)return;
+ const balanceEl=$('coin-balance');
+ if(!balanceEl)return;
  const {data,error}=await supabaseClient.from('wallets').select('balance').eq('user_id',currentUser.id).maybeSingle();
  if(error){console.warn('Wallet refresh:',error.message);return;}
- $('coin-balance').textContent=String(data?.balance??0);
+ balanceEl.textContent=String(data?.balance??0);
 }
+
+// Refresh the wallet again when the user returns to Premika after an Admin approval.
+window.addEventListener('focus',()=>{premikaRefreshWallet().catch(e=>console.warn('Wallet focus refresh:',e));});
+document.addEventListener('visibilitychange',()=>{
+ if(!document.hidden) premikaRefreshWallet().catch(e=>console.warn('Wallet visibility refresh:',e));
+});
 function premikaGiftMembers(){
  const select=$('premika-gift-recipient');if(!select)return;
  select.replaceChildren(new Option('Select room member',''));
