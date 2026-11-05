@@ -3208,12 +3208,14 @@ async function loadMyRoom() {
       .maybeSingle();
     if (error) throw error;
     const room = data || null;
-    // Room creation is explicit: opening this page must not create a demo room.
+    // Opening My Room automatically opens the signed-in user's own saved room.
+    // Room creation remains explicit; no demo room is created.
     showRoomManager(room);
     if (!room) {
       $("active-room").style.display = "none";
       return null;
     }
+    await showMyRoom(room);
     return room;
   })();
   try { return await myRoomLoadPromise; }
@@ -3633,7 +3635,26 @@ $("wallet-submit-topup")?.addEventListener("click",async()=>{
   if(!transactionId)return showToast("Transaction ID enter karein.");
   const btn=$("wallet-submit-topup");btn.disabled=true;status.textContent="Submitting payment request…";
   try{
-    const {error}=await supabaseClient.from("topup_requests").insert({user_id:currentUser.id,package_id:packageId,provider:walletSelectedProvider,transaction_reference:transactionId,status:"pending"});
+    // Fetch the selected package price because this database requires amount.
+    const {data: selectedPackage, error: packageError} = await supabaseClient
+      .from("coin_packages")
+      .select("id,price_pkr")
+      .eq("id", packageId)
+      .single();
+    if(packageError) throw packageError;
+    if(!selectedPackage) throw new Error("Selected coin package was not found.");
+
+    // Keep legacy required payment_reference and amount columns populated,
+    // while also saving the provider/transaction_reference fields added by SQL.
+    const {error}=await supabaseClient.from("topup_requests").insert({
+      user_id:currentUser.id,
+      package_id:packageId,
+      amount:selectedPackage.price_pkr,
+      payment_reference:transactionId,
+      provider:walletSelectedProvider,
+      transaction_reference:transactionId,
+      status:"pending"
+    });
     if(error)throw error;
     status.textContent="Request submit ho gayi. Admin payment verify karke coins add karega.";
     $("wallet-transaction-id").value="";showToast("Payment request submitted.");
