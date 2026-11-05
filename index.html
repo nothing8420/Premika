@@ -1993,7 +1993,7 @@ async function searchFriends() {
     for (const person of data) {
       const row = document.createElement("div");
       row.className = "user-row";
-      row.dataset.chatFriendId = friendId;
+      row.dataset.chatFriendId = person.id;
 
       const info = document.createElement("div");
       info.className = "user-info";
@@ -2120,7 +2120,7 @@ async function loadFriendRequests() {
       const row = document.createElement("div");
       row.className = "user-row";
       // Connect this friend row to the unread-count badge updater.
-      row.dataset.chatFriendId = friendId;
+      row.dataset.chatFriendId = request.sender_id;
 
       const info = document.createElement("div");
       info.className = "user-info";
