@@ -1927,7 +1927,16 @@ $("profile-picture-input").addEventListener("change", function () {
 
       supabaseClient = window.supabase.createClient(
         SUPABASE_URL,
-        SUPABASE_KEY
+        SUPABASE_KEY,
+        {
+          auth: {
+            // Keep the signed-in user logged in across app/browser restarts.
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: true,
+            storage: window.localStorage
+          }
+        }
       );
 
       const { data, error } =
