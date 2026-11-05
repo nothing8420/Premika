@@ -250,6 +250,9 @@ button {
   border:1px solid #ffffff18;border-radius:20px;padding:6px 13px;
   font-size:13px;margin-top:4px;
 }
+
+.premika-bff-badge{display:inline-flex;align-items:center;gap:5px;margin:7px 4px 0;padding:5px 10px;border-radius:999px;background:linear-gradient(110deg,#6e2b9c,#b34be0);border:1px solid #e4b4ff;color:#fff;font-size:10px;font-weight:800;box-shadow:0 3px 12px #a34bd744}
+.premika-bff-seat-tag{display:inline-block;margin-left:4px;padding:2px 5px;border-radius:8px;background:#8739ad;color:#fff;font-size:8px;font-weight:800}
 .profile-photo-label {color:#d8b4f4;font-size:12px;margin-top:11px;display:inline-block}
 .profile-divider {border:0;border-top:1px solid #ffffff18;margin:16px 0}
 .profile-field-label {display:block;color:#c6b2d8;font-size:12px;font-weight:700;margin:15px 0 5px}
@@ -1233,11 +1236,11 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
 <!-- PREMIKA GIFT CENTRE -->
 <div id="premika-gift-modal" class="premium-overlay hidden" role="dialog" aria-modal="true">
  <div class="premium-sheet"><div class="premium-sheet-head"><div><small>PREMIKA COMMUNITY</small><h2>Gift Centre 💜</h2></div><button class="sheet-close" data-close="premika-gift-modal">×</button></div>
- <div class="gift-centre-tabs"><button type="button" class="active" data-gift-page="gifts">🎁 Gifts</button><button type="button" data-gift-page="bond">💜 BFF Bond</button></div>
+ <div class="gift-centre-tabs"><button type="button" class="active" data-gift-page="gifts">🎁 Gifts</button><button type="button" data-gift-page="bond">💜 BFF Circle</button></div>
  <section id="gift-page-gifts" class="gift-centre-page"><p class="small-text">Choose a seated room member and send a gift using coins.</p>
  <select id="premika-gift-recipient" class="input-field"><option value="">Select room member</option></select>
  <div id="premika-gift-catalogue" class="gift-catalogue"></div><p id="premika-gift-status" class="small-text" aria-live="polite"></p></section>
- <section id="gift-page-bond" class="gift-centre-page hidden"><h3 class="section-title">One Special BFF 💜</h3><p class="small-text" id="premika-bff-status">Send a BFF request by username or accept an invitation. One accepted BFF per account.</p>
+ <section id="gift-page-bond" class="gift-centre-page hidden"><h3 class="section-title">BFF Circle 💜</h3><p class="small-text" id="premika-bff-status">Aap maximum 10 accepted BFF connections bana sakte hain. Requests alag-alag manage hongi.</p><div class="small-text" id="premika-bff-count" aria-live="polite" style="margin:8px 0 12px">Accepted BFF: 0 / 10</div>
  <input id="premika-bff-username" class="input-field" maxlength="20" placeholder="Enter friend's username">
  <button id="premika-bff-request" class="primary-btn" type="button" style="width:100%">Send BFF Request</button>
  <div id="premika-bff-pending" class="small-text" style="margin-top:10px"></div></section>
@@ -1273,6 +1276,7 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
     <div id="view-profile-avatar" class="profile-view-avatar">P</div>
     <div id="view-profile-name" class="profile-view-name">Premika User</div>
     <div id="view-profile-username" class="profile-handle">@username</div>
+    <div id="view-profile-bff-badge" class="premika-bff-badge" hidden>💜 BFF Circle</div>
     <p id="view-profile-bio" class="profile-view-bio">No bio added yet.</p>
     <div class="profile-room-actions" style="display:flex;gap:9px;align-items:center;position:relative">
       <button id="view-profile-more" class="secondary-btn" type="button" aria-label="More options">⋮</button>
@@ -2281,6 +2285,7 @@ async function viewUserProfile(userId, options = {}) {
     const avatar = $("view-profile-avatar");
     const name = $("view-profile-name");
     const username = $("view-profile-username");
+    const bffBadge = $("view-profile-bff-badge");
     const bio = $("view-profile-bio");
     const messageBtn = $("view-profile-message");
     const closeBtn = $("close-user-profile");
@@ -2306,6 +2311,12 @@ async function viewUserProfile(userId, options = {}) {
         name.textContent = person.display_name || person.username || "Premika User";
         username.textContent = "@" + (person.username || "username");
         bio.textContent = person.bio || "No bio added yet.";
+        const roomPresence = Object.values(roomSeatsChannel?.presenceState?.() || {}).flat().find(p => p?.user_id === person.id);
+        const profileBffCount = person.id === currentUser.id ? (premikaBffAcceptedCount || 0) : Number(roomPresence?.bff_count || 0);
+        if (bffBadge) {
+          bffBadge.hidden = profileBffCount <= 0;
+          bffBadge.textContent = profileBffCount > 0 ? `💜 BFF Circle · ${profileBffCount}/10` : "";
+        }
 
         setAvatarElement(
             avatar,
@@ -2925,7 +2936,9 @@ function renderRoomSeats() {
         const name = document.createElement("strong"); name.textContent = (person.display_name || person.username || "Member") + (roomAdminIds.has(person.user_id) ? " ★" : "");
         if (roomAdminIds.has(person.user_id)) name.title = "Room Administrator";
         const seat = document.createElement("small"); seat.textContent = (Number(person.seat) === 0 ? "Owner Seat" : "Seat " + Number(person.seat)) + (person.raised_hand ? " · ✋ Hand raised" : " · Live");
-        info.append(name,seat); item.append(avatar,info);
+        info.append(name,seat);
+        if (Number(person.bff_count) > 0) { const tag=document.createElement("span"); tag.className="premika-bff-seat-tag"; tag.textContent="💜 BFF " + Math.min(10,Number(person.bff_count)); info.appendChild(tag); }
+        item.append(avatar,info);
         if (person.user_id === currentUser?.id) { const you=document.createElement("em"); you.textContent="YOU"; item.appendChild(you); }
         liveList.appendChild(item);
       });
@@ -2946,7 +2959,7 @@ function renderRoomSeats() {
       setAvatarElement(avatar, person.avatar_url, person.display_name || person.username || "Member");
       title.textContent = (person.display_name || person.username || "Member") + (roomAdminIds.has(person.user_id) ? " ★" : "");
       if (roomAdminIds.has(person.user_id)) title.title = "Room Administrator";
-      status.textContent = mine ? "You are sitting · Tap profile" : (person.raised_hand ? "✋ Raised hand · Tap profile" : "Occupied · Tap profile");
+      status.textContent = (mine ? "You are sitting · Tap profile" : (person.raised_hand ? "✋ Raised hand · Tap profile" : "Occupied · Tap profile")) + (Number(person.bff_count) > 0 ? " · 💜 BFF " + Math.min(10,Number(person.bff_count)) : "");
     } else {
       avatar.textContent = seatLocked ? "🔒" : "＋";
       title.textContent = seatNo === 0 ? "Owner Seat" : "Seat " + seatNo;
@@ -2984,6 +2997,7 @@ async function joinRoomSeat(seatNo) {
       username: currentProfile?.username || "User",
       display_name: currentProfile?.display_name || currentProfile?.username || "User",
       avatar_url: currentProfile?.avatar_url || null,
+      bff_count: Math.min(10, Number(premikaBffAcceptedCount || 0)),
       seat: seatNo,
       joined_at: new Date().toISOString()
     });
@@ -4000,18 +4014,61 @@ document.querySelectorAll('[data-gift-page]').forEach(b=>b.addEventListener('cli
  $('gift-page-bond').classList.toggle('hidden',page!=='bond');
  if(page==='bond')premikaLoadBff();else premikaGiftMembers();
 }));
+let premikaBffAcceptedCount = 0;
+const PREMIKA_BFF_LIMIT = 10;
 $('premika-bff-request')?.addEventListener('click',async()=>{
- const username=$('premika-bff-username')?.value.trim().replace(/^@/,'');if(!username)return showToast('Username enter karein.');
- try{const {data,error}=await supabaseClient.rpc('premika_bff_send_request',{p_username:username});if(error)throw error;$('premika-bff-status').textContent='BFF request sent 💜';$('premika-bff-username').value='';await premikaLoadBff();}
- catch(e){showToast('BFF request error: '+e.message);}
+ const username=$('premika-bff-username')?.value.trim().replace(/^@/,'');
+ if(!username)return showToast('Username enter karein.');
+ if(premikaBffAcceptedCount>=PREMIKA_BFF_LIMIT)return showToast('Aap 10 BFF connections ki maximum limit par hain.');
+ try{
+  const {error}=await supabaseClient.rpc('premika_bff_send_request',{p_username:username});
+  if(error)throw error;
+  $('premika-bff-status').textContent='BFF request sent 💜';
+  $('premika-bff-username').value='';
+  await premikaLoadBff();
+ }catch(e){showToast('BFF request error: '+e.message);}
 });
 async function premikaLoadBff(){
- if(!currentUser||!supabaseClient)return;const root=$('premika-bff-pending');if(!root)return;
- try{const {data,error}=await supabaseClient.rpc('premika_bff_list');if(error)throw error;root.replaceChildren();
- (data||[]).forEach(row=>{const line=document.createElement('div');line.className='settings-row';const label=document.createElement('span');label.textContent=(row.other_username?'@'+row.other_username:'BFF member')+' · '+(row.status==='accepted'?'💜 '+row.bond_points+' bond points':row.status);line.append(label);
- if(row.status==='pending'&&row.direction==='incoming'){const b=document.createElement('button');b.className='settings-action';b.textContent='Accept';b.onclick=async()=>{const {error:e}=await supabaseClient.rpc('premika_bff_respond',{p_request_id:row.request_id,p_accept:true});if(e)return showToast(e.message);await premikaLoadBff();};line.append(b);}
- root.append(line);});if(!data?.length)root.textContent='No BFF requests or bond yet.';
- }catch(e){root.textContent='BFF SQL setup required: '+e.message;}
+ if(!currentUser||!supabaseClient)return;
+ const root=$('premika-bff-pending');if(!root)return;
+ try{
+  const {data,error}=await supabaseClient.rpc('premika_bff_list');if(error)throw error;
+  const rows=Array.isArray(data)?data:[];
+  premikaBffAcceptedCount=rows.filter(row=>row.status==='accepted').length;
+  const count=$('premika-bff-count');
+  if(count)count.textContent='Accepted BFF: '+premikaBffAcceptedCount+' / '+PREMIKA_BFF_LIMIT;
+  const sendButton=$('premika-bff-request');
+  if(sendButton){sendButton.disabled=premikaBffAcceptedCount>=PREMIKA_BFF_LIMIT;sendButton.textContent=premikaBffAcceptedCount>=PREMIKA_BFF_LIMIT?'BFF Limit Reached':'Send BFF Request';}
+  if (roomSeatsChannel && myRoomSeat !== null) {
+   await roomSeatsChannel.track({
+    user_id: currentUser.id, username: currentProfile?.username || "User",
+    display_name: currentProfile?.display_name || currentProfile?.username || "User",
+    avatar_url: currentProfile?.avatar_url || null,
+    bff_count: Math.min(10, premikaBffAcceptedCount), seat: myRoomSeat,
+    joined_at: new Date().toISOString()
+   });
+  }
+  root.replaceChildren();
+  rows.forEach(row=>{
+   const line=document.createElement('div');line.className='settings-row';
+   const label=document.createElement('span');
+   label.textContent=(row.other_username?'@'+row.other_username:'BFF member')+' · '+(row.status==='accepted'?'💜 '+(row.bond_points||0)+' bond points':row.status);
+   line.append(label);
+   if(row.status==='pending'&&row.direction==='incoming'){
+    const b=document.createElement('button');b.className='settings-action';b.textContent='Accept';
+    b.disabled=premikaBffAcceptedCount>=PREMIKA_BFF_LIMIT;
+    b.onclick=async()=>{
+     if(premikaBffAcceptedCount>=PREMIKA_BFF_LIMIT)return showToast('Aap 10 BFF connections ki maximum limit par hain.');
+     const {error:e}=await supabaseClient.rpc('premika_bff_respond',{p_request_id:row.request_id,p_accept:true});
+     if(e){showToast('BFF accept error: '+e.message);return;}
+     await premikaLoadBff();
+    };
+    line.append(b);
+   }
+   root.append(line);
+  });
+  if(!rows.length)root.textContent='No BFF requests or connections yet.';
+ }catch(e){root.textContent='BFF database setup required: '+e.message;}
 }
 
 // ===== PREMIKA ADMIN PANEL =====
