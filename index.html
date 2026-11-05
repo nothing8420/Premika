@@ -757,6 +757,26 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
 
 
 .gift-catalogue{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:12px}.gift-item{padding:13px 8px;border:1px solid #8055a0;border-radius:15px;background:#ffffff0b;color:#fff;text-align:center}.gift-item b{display:block;font-size:27px;margin-bottom:5px}.gift-item small{color:#e6c4ff}
+
+/* Premika polish: responsive cards, tabs and admin reward controls */
+.admin-tabs{display:flex;gap:8px;overflow-x:auto;padding:3px 2px 10px;scrollbar-width:thin}
+.admin-tabs button{white-space:nowrap;flex:0 0 auto}
+.admin-user-row,.admin-payment-row{border:1px solid #ffffff18;border-radius:16px;padding:13px;margin:9px 0;background:linear-gradient(145deg,#2b1a3c,#1a1027);gap:12px;flex-wrap:wrap}
+.admin-user-copy{min-width:0;flex:1}.admin-user-copy small{overflow-wrap:anywhere;line-height:1.5}
+.admin-actions{display:flex;gap:7px;flex-wrap:wrap}.admin-actions button{min-height:36px}
+.admin-reward-box{padding:15px;border:1px solid #a96bd455;border-radius:18px;background:linear-gradient(145deg,#332044,#1a1028);margin:14px 0}
+.admin-reward-box label{display:block;color:#d8c2e8;font-size:11px;margin:10px 0 6px}
+.admin-reward-box input{width:100%}.admin-selected-user{font-size:12px;color:#e6caff;padding:10px;border-radius:12px;background:#ffffff0b;margin:8px 0;overflow-wrap:anywhere}
+.gift-centre-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+.gift-centre-tabs button{padding:12px;border:1px solid #ffffff20;border-radius:13px;background:#ffffff0b;color:#fff;font-weight:800}
+.gift-centre-tabs button.active{background:linear-gradient(120deg,#8b4bb0,#552a76);border-color:#d9a7ff}
+.gift-centre-page{padding:6px 0}.gift-centre-page.hidden{display:none!important}
+.coin-package-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:12px 0}
+.coin-package-card{padding:13px;border:1px solid #ffffff20;border-radius:16px;background:linear-gradient(145deg,#342044,#1a1028);color:#fff;text-align:left}
+.coin-package-card:focus,.coin-package-card.selected{outline:2px solid #d9a7ff;border-color:#d9a7ff}
+.coin-package-card strong{display:block;font-size:17px;color:#f0d9ff}.coin-package-card small{display:block;color:#c7b2d8;margin-top:5px}
+@media(max-width:360px){.coin-package-grid{grid-template-columns:1fr}}
+
 </style>
 </head>
 
@@ -1078,21 +1098,15 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
     <label class="profile-field-label" for="profile-bio">About Me / Bio</label>
     <textarea id="profile-bio" class="input-field profile-textarea" placeholder="Write something about yourself..." maxlength="160" rows="3" style="resize:vertical"></textarea>
     <button id="save-bio-btn" class="primary-btn profile-action">Save Bio</button>
+    <button id="profile-gift-centre-open" class="secondary-btn profile-action" type="button" style="width:100%;margin-top:12px">🎁 Open Gift Centre · Gifts & BFF Bond</button>
 
     <hr class="profile-divider">
-    <section class="panel" id="premika-bff-panel">
-      <h3 class="section-title">💜 BFF Bond</h3>
-      <p class="small-text" id="premika-bff-status">One BFF connection per account. Send a request or accept an invitation.</p>
-      <input id="premika-bff-username" class="input-field" maxlength="20" placeholder="Enter friend's username">
-      <button id="premika-bff-request" class="primary-btn" type="button" style="width:100%">Send BFF Request</button>
-      <div id="premika-bff-pending" class="small-text" style="margin-top:10px"></div>
-    </section>
-
     <section class="wallet-preview" id="premika-wallet-purchase">
       <div class="wallet-preview-head"><div><small>PREMIKA WALLET</small><h3>Buy Coins</h3></div><span class="wallet-chip">PAYMENT</span></div>
       <p class="wallet-note">Package select karein, JazzCash ya Easypaisa se payment bhejein, phir Transaction ID submit karein. Admin verification ke baad coins add honge.</p>
-      <label class="small-text" for="wallet-package">Coin Package</label>
-      <select id="wallet-package" class="input-field"><option value="">Loading packages…</option></select>
+      <label class="small-text" for="wallet-package">Choose Your Coin Package</label>
+      <div id="wallet-package-cards" class="coin-package-grid"><div class="empty-state">Loading packages…</div></div>
+      <select id="wallet-package" class="input-field" style="display:none"><option value="">Loading packages…</option></select>
       <div class="wallet-methods" style="grid-template-columns:repeat(2,1fr);margin-top:10px">
         <button type="button" class="wallet-method" data-wallet-provider="JazzCash"><b>JC</b><span>JazzCash</span><small>Select method</small></button>
         <button type="button" class="wallet-method" data-wallet-provider="Easypaisa"><b>EP</b><span>Easypaisa</span><small>Select method</small></button>
@@ -1131,7 +1145,23 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
         <div class="admin-stat"><small>Pending Payments</small><strong id="admin-pending-count">—</strong></div>
       </div>
     </div>
-    <div id="admin-users-tab" class="admin-hidden"><h3 class="section-title">User Management</h3><input id="admin-user-search" class="input-field" placeholder="Search username or email"><div id="admin-users-list" class="empty-state">Loading users…</div></div>
+    <div id="admin-users-tab" class="admin-hidden">
+      <h3 class="section-title">User Management</h3>
+      <p class="small-text">Username, email ya User ID se member search karein.</p>
+      <input id="admin-user-search" class="input-field" placeholder="Search @username / email / User ID" autocomplete="off">
+      <div id="admin-users-list" class="empty-state">Loading users…</div>
+      <div class="admin-reward-box">
+        <h3 class="section-title">🎁 Monthly Rewards / Manual Top-up</h3>
+        <p class="small-text">Pehle search result se user select karein, phir coins gift karein. Har reward ka reason history mein save hoga.</p>
+        <div id="admin-reward-selected" class="admin-selected-user">No user selected.</div>
+        <label for="admin-reward-amount">Coins to add</label>
+        <input id="admin-reward-amount" class="input-field" type="number" min="1" step="1" placeholder="Example: 200">
+        <label for="admin-reward-note">Reward reason</label>
+        <input id="admin-reward-note" class="input-field" maxlength="100" placeholder="Monthly Reward - November 2026">
+        <button id="admin-reward-send" class="primary-btn" type="button" style="width:100%;margin-top:12px">🎁 Send Free Coins</button>
+        <p id="admin-reward-status" class="small-text" aria-live="polite"></p>
+      </div>
+    </div>
     <div id="admin-coins-tab" class="admin-hidden">
       <h3 class="section-title">Payment Account Details</h3>
       <div class="admin-user-row"><div class="admin-user-copy"><strong>JazzCash</strong><small>Account: 03222469085</small><small>Title: MUHAMMAD HASEEB</small></div></div>
@@ -1189,10 +1219,15 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
 
 <!-- PREMIKA GIFT CENTRE -->
 <div id="premika-gift-modal" class="premium-overlay hidden" role="dialog" aria-modal="true">
- <div class="premium-sheet"><div class="premium-sheet-head"><div><small>PREMIKA GIFT CENTRE</small><h2>Send a Gift 🎁</h2></div><button class="sheet-close" data-close="premika-gift-modal">×</button></div>
- <p class="small-text">Choose a seated room member and send a gift using coins.</p>
+ <div class="premium-sheet"><div class="premium-sheet-head"><div><small>PREMIKA COMMUNITY</small><h2>Gift Centre 💜</h2></div><button class="sheet-close" data-close="premika-gift-modal">×</button></div>
+ <div class="gift-centre-tabs"><button type="button" class="active" data-gift-page="gifts">🎁 Gifts</button><button type="button" data-gift-page="bond">💜 BFF Bond</button></div>
+ <section id="gift-page-gifts" class="gift-centre-page"><p class="small-text">Choose a seated room member and send a gift using coins.</p>
  <select id="premika-gift-recipient" class="input-field"><option value="">Select room member</option></select>
- <div id="premika-gift-catalogue" class="gift-catalogue"></div><p id="premika-gift-status" class="small-text" aria-live="polite"></p>
+ <div id="premika-gift-catalogue" class="gift-catalogue"></div><p id="premika-gift-status" class="small-text" aria-live="polite"></p></section>
+ <section id="gift-page-bond" class="gift-centre-page hidden"><h3 class="section-title">One Special BFF 💜</h3><p class="small-text" id="premika-bff-status">Send a BFF request by username or accept an invitation. One accepted BFF per account.</p>
+ <input id="premika-bff-username" class="input-field" maxlength="20" placeholder="Enter friend's username">
+ <button id="premika-bff-request" class="primary-btn" type="button" style="width:100%">Send BFF Request</button>
+ <div id="premika-bff-pending" class="small-text" style="margin-top:10px"></div></section>
  </div></div>
 <!-- PREMIKA ROOM SETTINGS -->
 <div id="premika-room-settings" class="premium-overlay hidden" role="dialog" aria-modal="true">
@@ -3568,9 +3603,18 @@ async function loadWalletCoinPackages(){
     const {data,error}=await supabaseClient.from("coin_packages").select("id,title,price_pkr,coins,is_active,sort_order").eq("is_active",true).order("sort_order");
     if(error) throw error;
     walletCoinPackages=data||[]; select.replaceChildren();
-    if(!walletCoinPackages.length){select.add(new Option("No active packages available",""));return;}
+    const cards=$("wallet-package-cards"); if(cards) cards.replaceChildren();
+    if(!walletCoinPackages.length){select.add(new Option("No active packages available",""));if(cards)cards.textContent="No active coin packages available.";return;}
     select.add(new Option("Select coin package",""));
-    walletCoinPackages.forEach(pkg=>select.add(new Option(`${pkg.title} — ${pkg.coins} coins · PKR ${pkg.price_pkr}`,pkg.id)));
+    walletCoinPackages.forEach(pkg=>{
+      select.add(new Option(`${pkg.title} — ${pkg.coins} coins · PKR ${pkg.price_pkr}`,pkg.id));
+      if(cards){const card=document.createElement("button");card.type="button";card.className="coin-package-card";card.dataset.packageId=pkg.id;
+        const price=document.createElement("strong");price.textContent=`PKR ${pkg.price_pkr}`;
+        const coins=document.createElement("small");coins.textContent=`🪙 ${pkg.coins.toLocaleString()} Coins`;
+        const title=document.createElement("small");title.textContent=pkg.title;card.append(price,coins,title);
+        card.addEventListener("click",()=>{select.value=pkg.id;cards.querySelectorAll(".coin-package-card").forEach(c=>c.classList.toggle("selected",c===card));});cards.append(card);
+      }
+    });
   }catch(e){select.replaceChildren(new Option("Packages unavailable",""));$("wallet-payment-status").textContent="Packages load nahi huay: "+e.message;}
 }
 document.querySelectorAll("[data-wallet-provider]").forEach(button=>button.addEventListener("click",()=>{
@@ -3717,8 +3761,20 @@ async function premikaSendGift(gift){
  try{const {data,error}=await supabaseClient.rpc('premika_send_gift',{p_receiver_id:to,p_gift_code:gift.id,p_room_id:activeRoomId});if(error)throw error;status.textContent=gift.emoji+' Gift sent successfully!';showToast('Gift sent!');await premikaRefreshWallet();}
  catch(e){status.textContent='Gift send nahi hua: '+e.message;showToast('Gift error: '+e.message);}
 }
-$('premika-gift-open')?.addEventListener('click',()=>{if(!activeRoomId)return showToast('Pehle room join karein.');premikaGiftMembers();premikaRenderGifts();$('premika-gift-status').textContent='';$('premika-gift-modal').classList.remove('hidden');});
+$('premika-gift-open')?.addEventListener('click',()=>{premikaGiftMembers();premikaRenderGifts();$('premika-gift-status').textContent=activeRoomId?'Choose a room member to send a gift.':'Gift sending ke liye room join karein; BFF Bond yahan use kar sakte hain.';$('premika-gift-modal').classList.remove('hidden');});
+$('profile-gift-centre-open')?.addEventListener('click',()=>{
+ premikaGiftMembers();premikaRenderGifts();
+ document.querySelector('[data-gift-page="bond"]')?.click();
+ $('premika-gift-modal').classList.remove('hidden');
+});
 document.querySelectorAll('[data-close="premika-gift-modal"]').forEach(b=>b.addEventListener('click',()=>$('premika-gift-modal').classList.add('hidden')));
+document.querySelectorAll('[data-gift-page]').forEach(b=>b.addEventListener('click',()=>{
+ const page=b.dataset.giftPage;
+ document.querySelectorAll('[data-gift-page]').forEach(x=>x.classList.toggle('active',x===b));
+ $('gift-page-gifts').classList.toggle('hidden',page!=='gifts');
+ $('gift-page-bond').classList.toggle('hidden',page!=='bond');
+ if(page==='bond')premikaLoadBff();else premikaGiftMembers();
+}));
 $('premika-bff-request')?.addEventListener('click',async()=>{
  const username=$('premika-bff-username')?.value.trim().replace(/^@/,'');if(!username)return showToast('Username enter karein.');
  try{const {data,error}=await supabaseClient.rpc('premika_bff_send_request',{p_username:username});if(error)throw error;$('premika-bff-status').textContent='BFF request sent 💜';$('premika-bff-username').value='';await premikaLoadBff();}
@@ -3735,6 +3791,8 @@ async function premikaLoadBff(){
 
 // ===== PREMIKA ADMIN PANEL =====
 let premikaIsAdmin = false;
+let premikaAdminUsersCache = [];
+let premikaSelectedRewardUser = null;
 async function initializePremikaAdmin(){
   if(!currentUser || !supabaseClient) return;
   try{
@@ -3755,13 +3813,14 @@ async function loadPremikaAdmin(){
   try{
     const [users,payments,packages]=await Promise.all([
       supabaseClient.rpc("premika_admin_list_users"),
-      supabaseClient.from("topup_requests").select("id,user_id,package_id,provider,transaction_reference,receipt_path,status,created_at").eq("status","pending").order("created_at",{ascending:false}),
+      supabaseClient.from("topup_requests").select("id,user_id,provider,transaction_reference,receipt_path,status,created_at").eq("status","pending").order("created_at",{ascending:false}),
       supabaseClient.from("coin_packages").select("id,title,price_pkr,coins,is_active,sort_order").order("sort_order")
     ]);
     if(users.error) throw users.error;
     if(payments.error) throw payments.error;
     if(packages.error) throw packages.error;
     const userRows=Array.isArray(users.data)?users.data:[];
+    premikaAdminUsersCache=userRows;
     $("admin-user-count").textContent=String(userRows.length);
     $("admin-active-count").textContent=String(userRows.filter(u=>!u.is_blocked).length);
     $("admin-blocked-count").textContent=String(userRows.filter(u=>u.is_blocked).length);
@@ -3782,9 +3841,16 @@ function renderAdminUsers(rows){
     const actions=document.createElement("div");actions.className="admin-actions";
     const block=document.createElement("button");block.className=u.is_blocked?"secondary-btn":"danger-btn";block.textContent=u.is_blocked?"Unblock":"Block";
     block.addEventListener("click",async()=>{if(!await premikaConfirm(u.is_blocked?"Unblock user?":"Block user?","This changes this user's access to Premika."))return;try{const {error}=await supabaseClient.rpc("premika_admin_set_user_blocked",{p_user_id:u.user_id,p_blocked:!u.is_blocked});if(error)throw error;showToast("User status updated.");await loadPremikaAdmin()}catch(e){showToast(e.message)}});
+    const selectUser=document.createElement("button");selectUser.className="primary-btn";selectUser.textContent="Select";
+    selectUser.addEventListener("click",()=>{
+      premikaSelectedRewardUser=u;
+      $("admin-reward-selected").textContent=(u.username?"@"+u.username:"Premika User")+" · "+(u.email||u.user_id)+" · Current balance: "+(u.balance??0)+" coins";
+      $("admin-reward-amount")?.focus();
+      showToast("Reward recipient selected.");
+    });
     const coins=document.createElement("button");coins.className="secondary-btn";coins.textContent="Coins ±";
     coins.addEventListener("click",async()=>{const value=await premikaEditText("Adjust wallet coins","Example: 500 or -100","");if(!value)return;const amount=Number(value);if(!Number.isSafeInteger(amount)||amount===0)return showToast("Enter a valid non-zero whole number.");try{const {error}=await supabaseClient.rpc("premika_admin_adjust_coins",{p_user_id:u.user_id,p_amount:amount,p_description:"Admin wallet adjustment"});if(error)throw error;showToast("Wallet updated.");await loadPremikaAdmin()}catch(e){showToast(e.message)}});
-    actions.append(block,coins);row.append(copy,actions);root.append(row);
+    actions.append(selectUser,block,coins);row.append(copy,actions);root.append(row);
   });
 }
 function renderAdminPayments(rows){
@@ -3793,7 +3859,7 @@ function renderAdminPayments(rows){
   rows.forEach(r=>{
     const row=document.createElement("div");row.className="admin-payment-row";
     const copy=document.createElement("div");copy.className="admin-user-copy";
-    const strong=document.createElement("strong");strong.textContent=(r.provider||"").toUpperCase()+" · "+r.package_id;
+    const strong=document.createElement("strong");strong.textContent=(r.provider||"PAYMENT").toUpperCase()+" · Payment Request";
     const small=document.createElement("small");small.textContent="User: "+r.user_id+" · Ref: "+r.transaction_reference;
     copy.append(strong,small);
     const actions=document.createElement("div");actions.className="admin-actions";
@@ -3814,9 +3880,29 @@ document.querySelectorAll("[data-admin-tab]").forEach(b=>b.addEventListener("cli
   ["dashboard","users","coins"].forEach(k=>$("admin-"+k+"-tab").classList.toggle("admin-hidden",b.dataset.adminTab!==k));
 }));
 $("admin-refresh-btn")?.addEventListener("click",loadPremikaAdmin);
-$("admin-user-search")?.addEventListener("input",e=>{
-  const q=e.target.value.trim().toLowerCase();
-  document.querySelectorAll("#admin-users-list .admin-user-row").forEach(row=>row.classList.toggle("admin-hidden",!row.textContent.toLowerCase().includes(q)));
+function filterPremikaAdminUsers(){
+ const q=( $("admin-user-search")?.value || "").trim().toLowerCase();
+ const root=$("admin-users-list"); if(!root)return;
+ const matches=premikaAdminUsersCache.filter(u=>[u.username,u.email,u.user_id].some(v=>String(v||"").toLowerCase().includes(q)));
+ renderAdminUsers(matches);
+ if(!matches.length)root.textContent=q?"No matching user found.":"No users found.";
+}
+$("admin-user-search")?.addEventListener("input",filterPremikaAdminUsers);
+$("admin-reward-send")?.addEventListener("click",async()=>{
+ if(!premikaIsAdmin)return showToast("Admin access required.");
+ const u=premikaSelectedRewardUser, amount=Number($("admin-reward-amount")?.value), note=$("admin-reward-note")?.value.trim();
+ if(!u)return showToast("Pehle search result se user select karein.");
+ if(!Number.isSafeInteger(amount)||amount<1)return showToast("Coins ki valid quantity enter karein.");
+ if(!note)return showToast("Reward reason enter karein.");
+ if(!await premikaConfirm("Send free coins?",`${amount} coins ${u.username?'@'+u.username:u.email||u.user_id} ko add honge.`))return;
+ const btn=$("admin-reward-send");btn.disabled=true;$("admin-reward-status").textContent="Reward processing…";
+ try{
+  const {data,error}=await supabaseClient.rpc("premika_admin_adjust_coins",{p_user_id:u.user_id,p_amount:amount,p_description:note});
+  if(error)throw error;
+  $("admin-reward-status").textContent=data||"Coins successfully added.";
+  $("admin-reward-amount").value="";$("admin-reward-note").value="";premikaSelectedRewardUser=null;$("admin-reward-selected").textContent="No user selected.";
+  showToast("Free coins sent successfully.");await loadPremikaAdmin();
+ }catch(e){$("admin-reward-status").textContent="Reward failed: "+e.message;showToast(e.message)}finally{btn.disabled=false;}
 });
 
 // START PREMIKA
