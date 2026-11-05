@@ -1148,7 +1148,10 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
     <div id="admin-users-tab" class="admin-hidden">
       <h3 class="section-title">User Management</h3>
       <p class="small-text">Username, email ya User ID se member search karein.</p>
-      <input id="admin-user-search" class="input-field" placeholder="Search @username / email / User ID" autocomplete="off">
+      <div class="admin-search-row" style="display:flex;gap:8px;align-items:center;margin:10px 0 14px">
+        <input id="admin-user-search" class="input-field" style="flex:1;min-width:0;margin:0" placeholder="Search @username / email / User ID" autocomplete="off">
+        <button id="admin-user-search-btn" class="primary-btn" type="button" style="white-space:nowrap;min-width:88px">Search</button>
+      </div>
       <div id="admin-users-list" class="empty-state">Loading users…</div>
       <div class="admin-reward-box">
         <h3 class="section-title">🎁 Monthly Rewards / Manual Top-up</h3>
@@ -3822,9 +3825,13 @@ async function initializePremikaAdmin(){
     premikaIsAdmin = data === true;
     $("admin-nav-btn")?.classList.toggle("admin-hidden",!premikaIsAdmin);
     if(premikaIsAdmin) await loadPremikaAdmin();
+    else if($("admin-status")) $("admin-status").textContent="Admin access is not enabled for this account.";
   }catch(e){
     premikaIsAdmin=false;
-    $("admin-nav-btn")?.classList.add("admin-hidden");
+    // Do not silently remove the Admin tab: show the actionable database error in the panel.
+    $("admin-nav-btn")?.classList.remove("admin-hidden");
+    if($("admin-status")) $("admin-status").textContent="Admin permission setup required: "+(e.message||"Unknown error");
+    ["admin-payments-list","admin-users-list","admin-packages-list"].forEach(id=>{if($(id)) $(id).textContent="Admin permissions need the SQL fix. Refresh after running it.";});
     console.warn("Admin check:",e.message);
   }
 }
@@ -3834,7 +3841,7 @@ async function loadPremikaAdmin(){
   try{
     const [users,payments,packages]=await Promise.all([
       supabaseClient.rpc("premika_admin_list_users"),
-      supabaseClient.from("topup_requests").select("id,user_id,provider,transaction_reference,receipt_path,status,created_at").eq("status","pending").order("created_at",{ascending:false}),
+      supabaseClient.from("topup_requests").select("id,user_id,package_id,provider,transaction_reference,receipt_path,status,created_at").eq("status","pending").order("created_at",{ascending:false}),
       supabaseClient.from("coin_packages").select("id,title,price_pkr,coins,is_active,sort_order").order("sort_order")
     ]);
     if(users.error) throw users.error;
@@ -3848,7 +3855,12 @@ async function loadPremikaAdmin(){
     $("admin-pending-count").textContent=String((payments.data||[]).length);
     renderAdminUsers(userRows);renderAdminPayments(payments.data||[]);renderAdminPackages(packages.data||[]);
     $("admin-status").textContent="Admin data updated.";
-  }catch(e){$("admin-status").textContent="Admin SQL setup required: "+e.message;showToast("Admin data error: "+e.message)}
+  }catch(e){
+    const message=e.message||"Unknown error";
+    $("admin-status").textContent="Admin data error: "+message;
+    ["admin-payments-list","admin-users-list","admin-packages-list"].forEach(id=>{if($(id)) $(id).textContent="Could not load data: "+message;});
+    showToast("Admin data error: "+message);
+  }
 }
 function renderAdminUsers(rows){
   const root=$("admin-users-list");root.replaceChildren();
@@ -3909,6 +3921,8 @@ function filterPremikaAdminUsers(){
  if(!matches.length)root.textContent=q?"No matching user found.":"No users found.";
 }
 $("admin-user-search")?.addEventListener("input",filterPremikaAdminUsers);
+$("admin-user-search-btn")?.addEventListener("click",filterPremikaAdminUsers);
+$("admin-user-search")?.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();filterPremikaAdminUsers();}});
 $("admin-reward-send")?.addEventListener("click",async()=>{
  if(!premikaIsAdmin)return showToast("Admin access required.");
  const u=premikaSelectedRewardUser, amount=Number($("admin-reward-amount")?.value), note=$("admin-reward-note")?.value.trim();
