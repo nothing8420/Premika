@@ -441,6 +441,16 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
 .profile-action{min-height:46px}
 .profile-view-modal{background:#05030bdc;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
 .profile-view-card{border-radius:27px;background:linear-gradient(150deg,#342044,#171020);border:1px solid #8055a0;box-shadow:0 25px 80px #000a}
+
+#chat-unread-total,.chat-unread-badge{display:inline-flex;align-items:center;justify-content:center;min-width:19px;height:19px;padding:0 6px;border-radius:20px;background:#ff4d8d;color:#fff;font-size:10px;font-weight:900;line-height:1;box-shadow:0 2px 9px #ff4d8d55}
+.chat-unread-badge{margin-left:auto;flex:none}
+#chat-friends-list .user-row{gap:10px}
+#premika-message-notice{position:fixed;top:calc(12px + env(safe-area-inset-top));left:50%;transform:translate(-50%,-18px);width:min(430px,calc(100vw - 24px));z-index:10050;display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid #c18be8;border-radius:16px;background:linear-gradient(120deg,#3a2050,#21132f);color:#fff;box-shadow:0 12px 36px #0009;opacity:0;pointer-events:none;transition:opacity .22s,transform .22s}
+#premika-message-notice.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+#premika-message-notice .notice-copy{min-width:0;flex:1;font-size:12px;line-height:1.35}
+#premika-message-notice .notice-copy strong{display:block;font-size:13px;margin-bottom:2px}
+#premika-message-notice button{border:0;background:#ffffff18;color:#fff;border-radius:10px;padding:7px 10px;font-weight:800}
+
 #chat-window{border-color:#8055a0}
 #chat-friends-list .user-row .user-info strong:hover{color:var(--accent)}
 #friend-search-results .user-row{margin-top:5px}
@@ -1196,7 +1206,7 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
     <button class="nav-btn" data-page="chat"
       onclick="showPage('chat',this)">
       <span class="nav-icon">✉</span>
-      Chat
+      Chat <span id="chat-unread-total" class="hidden" aria-label="Unread messages">0</span>
     </button>
 
 <button class="nav-btn" data-page="room-suggestions"
@@ -1309,6 +1319,14 @@ button:active{transform:scale(.97)}button:disabled{opacity:.55;cursor:not-allowe
     <p id="username-status" class="small-text" style="margin-top:12px"></p>
 
   </div>
+</div>
+
+
+<div id="premika-message-notice" role="status" aria-live="polite">
+  <div aria-hidden="true" style="font-size:21px">💬</div>
+  <div class="notice-copy"><strong id="premika-message-notice-title">New message</strong><span id="premika-message-notice-body">You received a message.</span></div>
+  <button id="premika-message-notice-open" type="button">Open</button>
+  <button id="premika-message-notice-close" type="button" aria-label="Close notification">×</button>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js"></script>
@@ -1428,6 +1446,10 @@ console.info("Supabase client:", supabaseClient ? "loaded" : "not loaded");
         presenceTimer = null;
       }
 
+      if (premikaDirectMessageChannel) {
+        await supabaseClient.removeChannel(premikaDirectMessageChannel);
+        premikaDirectMessageChannel = null;
+      }
       if (currentUser) {
         await supabaseClient.from("user_presence").upsert({
           user_id: currentUser.id, is_online: false, last_seen: new Date().toISOString()
@@ -1650,11 +1672,8 @@ if (profile.avatar_url) {
 
     try {
       await loadProfile(user);
-
-      // Load the authenticated user's real wallet balance on every login/session restore.
-      // The database balance is already updated by the Admin approval RPC.
       await premikaRefreshWallet();
-
+      await premikaStartDirectMessageNotifications();
       await loadWalletCoinPackages();
 
       if (currentProfile && currentProfile.username) {
@@ -1970,6 +1989,7 @@ async function searchFriends() {
     for (const person of data) {
       const row = document.createElement("div");
       row.className = "user-row";
+      row.dataset.chatFriendId = friendId;
 
       const info = document.createElement("div");
       info.className = "user-info";
@@ -2095,6 +2115,8 @@ async function loadFriendRequests() {
 
       const row = document.createElement("div");
       row.className = "user-row";
+      // Connect this friend row to the unread-count badge updater.
+      row.dataset.chatFriendId = friendId;
 
       const info = document.createElement("div");
       info.className = "user-info";
@@ -2243,6 +2265,7 @@ async function loadFriends() {
       row.append(info, button);
       container.appendChild(row);
     }
+    premikaUpdateUnreadBadges();
 
   } catch (error) {
     container.textContent =
@@ -2333,6 +2356,174 @@ async function viewUserProfile(userId, options = {}) {
         showToast("Profile error: " + error.message);
     }
 }
+
+// =====================================
+// PRIVATE MESSAGE NOTIFICATIONS + UNREAD COUNTS
+// =====================================
+let premikaMessageNoticeTimer = null;
+let premikaDirectMessageChannel = null;
+let premikaUnreadByFriend = {};
+let premikaNoticeFriendId = null;
+let premikaNoticeFriend = null;
+
+function premikaUnreadStorageKey() {
+  return currentUser ? "premika-chat-last-read-" + currentUser.id : "";
+}
+function premikaLastRead(friendId) {
+  const key = premikaUnreadStorageKey();
+  if (!key) return new Date().toISOString();
+  try {
+    const map = JSON.parse(localStorage.getItem(key) || "{}");
+    return map[friendId] || localStorage.getItem(key + "-started") || new Date().toISOString();
+  } catch (_) {
+    return new Date().toISOString();
+  }
+}
+function premikaSetChatRead(friendId) {
+  const key = premikaUnreadStorageKey();
+  if (!key || !friendId) return;
+  try {
+    const map = JSON.parse(localStorage.getItem(key) || "{}");
+    map[friendId] = new Date().toISOString();
+    localStorage.setItem(key, JSON.stringify(map));
+  } catch (error) {
+    console.warn("Unread state storage:", error);
+  }
+  premikaUnreadByFriend[friendId] = 0;
+  premikaUpdateUnreadBadges();
+}
+function premikaUpdateUnreadBadges() {
+  const total = Object.values(premikaUnreadByFriend).reduce((sum, n) => sum + Number(n || 0), 0);
+  const totalBadge = $("chat-unread-total");
+  if (totalBadge) {
+    totalBadge.textContent = total > 99 ? "99+" : String(total);
+    totalBadge.classList.toggle("hidden", total < 1);
+  }
+  document.querySelectorAll("[data-chat-friend-id]").forEach(row => {
+    const id = row.dataset.chatFriendId;
+    let badge = row.querySelector(".chat-unread-badge");
+    const count = Number(premikaUnreadByFriend[id] || 0);
+    if (count > 0) {
+      if (!badge) {
+        badge = document.createElement("span");
+        badge.className = "chat-unread-badge";
+        badge.setAttribute("aria-label", "Unread messages");
+        row.appendChild(badge);
+      }
+      badge.textContent = count > 99 ? "99+" : String(count);
+    } else if (badge) {
+      badge.remove();
+    }
+  });
+}
+function premikaShowMessageNotice(friendId, friendName, messageText) {
+  const notice = $("premika-message-notice");
+  if (!notice) return;
+  premikaNoticeFriendId = friendId;
+  premikaNoticeFriend = friendName || "Friend";
+  $("premika-message-notice-title").textContent = "New message from " + premikaNoticeFriend;
+  $("premika-message-notice-body").textContent = messageText || "You received a new private message.";
+  notice.classList.add("show");
+  clearTimeout(premikaMessageNoticeTimer);
+  premikaMessageNoticeTimer = setTimeout(() => notice.classList.remove("show"), 5500);
+}
+async function premikaHandleIncomingDirectMessage(message) {
+  if (!currentUser || !message || message.receiver_id !== currentUser.id || !message.sender_id) return;
+  const senderId = message.sender_id;
+  const isOpenChat = activeChatFriendId === senderId &&
+    !$("chat-window")?.classList.contains("hidden");
+  if (isOpenChat) {
+    loadMessages();
+    premikaSetChatRead(senderId);
+    return;
+  }
+
+  premikaUnreadByFriend[senderId] = Number(premikaUnreadByFriend[senderId] || 0) + 1;
+  premikaUpdateUnreadBadges();
+
+  let senderName = "Friend";
+  try {
+    const { data } = await supabaseClient.from("profiles")
+      .select("id,username,display_name")
+      .eq("id", senderId).maybeSingle();
+    senderName = data?.display_name || data?.username || senderName;
+  } catch (error) {
+    console.warn("Message sender lookup:", error);
+  }
+  premikaShowMessageNotice(senderId, senderName, message.content || "You received a new message.");
+  if (typeof loadChatFriends === "function" && $("chat")?.classList.contains("active")) {
+    loadChatFriends();
+  }
+}
+async function premikaLoadUnreadMessages() {
+  if (!currentUser || !supabaseClient) return;
+  const key = premikaUnreadStorageKey();
+  try {
+    if (!localStorage.getItem(key + "-started")) {
+      localStorage.setItem(key + "-started", new Date().toISOString());
+    }
+    const { data, error } = await supabaseClient.from("direct_messages")
+      .select("id,sender_id,created_at")
+      .eq("receiver_id", currentUser.id)
+      .order("created_at", { ascending: false })
+      .limit(500);
+    if (error) throw error;
+
+    const lastReadMap = JSON.parse(localStorage.getItem(key) || "{}");
+    const counts = {};
+    (data || []).forEach(message => {
+      const lastRead = lastReadMap[message.sender_id] || localStorage.getItem(key + "-started");
+      if (message.created_at && lastRead && new Date(message.created_at) > new Date(lastRead)) {
+        counts[message.sender_id] = (counts[message.sender_id] || 0) + 1;
+      }
+    });
+    premikaUnreadByFriend = counts;
+    premikaUpdateUnreadBadges();
+  } catch (error) {
+    console.warn("Unread messages load:", error.message);
+  }
+}
+async function premikaStartDirectMessageNotifications() {
+  if (!currentUser || !supabaseClient) return;
+  if (premikaDirectMessageChannel) {
+    await supabaseClient.removeChannel(premikaDirectMessageChannel);
+    premikaDirectMessageChannel = null;
+  }
+  await premikaLoadUnreadMessages();
+  const userId = currentUser.id;
+  premikaDirectMessageChannel = supabaseClient
+    .channel("premika-inbox-" + userId)
+    .on("postgres_changes", {
+      event: "INSERT",
+      schema: "public",
+      table: "direct_messages",
+      filter: "receiver_id=eq." + userId
+    }, payload => {
+      if (currentUser?.id === userId) {
+        premikaHandleIncomingDirectMessage(payload.new);
+      }
+    })
+    .subscribe(status => {
+      if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
+        console.warn("Private message notifications realtime:", status);
+      }
+    });
+}
+$("premika-message-notice-open")?.addEventListener("click", () => {
+  const id = premikaNoticeFriendId;
+  const person = premikaNoticeFriend;
+  $("premika-message-notice").classList.remove("show");
+  if (!id) return;
+  supabaseClient.from("profiles").select("id,username,display_name,avatar_url,bio")
+    .eq("id", id).maybeSingle().then(({data}) => {
+      if (data) openChat(id, data);
+      else showPage("chat");
+    });
+});
+$("premika-message-notice-close")?.addEventListener("click", () => {
+  $("premika-message-notice").classList.remove("show");
+});
+
 // =====================================
 // LOAD CHAT FRIENDS
 // =====================================
@@ -2409,6 +2600,9 @@ async function loadChatFriends() {
       container.appendChild(row);
     }
 
+    // Re-apply saved unread counts after rebuilding the friend list.
+    premikaUpdateUnreadBadges();
+
   } catch (error) {
     container.textContent =
       "Chat list error: " + error.message;
@@ -2430,6 +2624,8 @@ async function openChat(friendId, person) {
     activeChatSubscription = null;
   }
   activeChatFriendId = friendId;
+  premikaSetChatRead(friendId);
+  $("premika-message-notice")?.classList.remove("show");
 
   $("chat-friends-list").parentElement.classList.add("hidden");
   const chatWindow = $("chat-window");
@@ -3769,18 +3965,10 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape"){["premika-room-sett
 const PREMIKA_GIFTS=[{id:'rose',name:'Rose',emoji:'🌹',price:50},{id:'heart',name:'Heart',emoji:'💖',price:100},{id:'teddy',name:'Teddy',emoji:'🧸',price:250},{id:'crown',name:'Crown',emoji:'👑',price:500},{id:'diamond',name:'Diamond',emoji:'💎',price:1000}];
 async function premikaRefreshWallet(){
  if(!currentUser||!supabaseClient)return;
- const balanceEl=$('coin-balance');
- if(!balanceEl)return;
  const {data,error}=await supabaseClient.from('wallets').select('balance').eq('user_id',currentUser.id).maybeSingle();
  if(error){console.warn('Wallet refresh:',error.message);return;}
- balanceEl.textContent=String(data?.balance??0);
+ $('coin-balance').textContent=String(data?.balance??0);
 }
-
-// Refresh the wallet again when the user returns to Premika after an Admin approval.
-window.addEventListener('focus',()=>{premikaRefreshWallet().catch(e=>console.warn('Wallet focus refresh:',e));});
-document.addEventListener('visibilitychange',()=>{
- if(!document.hidden) premikaRefreshWallet().catch(e=>console.warn('Wallet visibility refresh:',e));
-});
 function premikaGiftMembers(){
  const select=$('premika-gift-recipient');if(!select)return;
  select.replaceChildren(new Option('Select room member',''));
